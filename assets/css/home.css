@@ -6,7 +6,7 @@ section { padding-block: 4.5rem; border-top: 1px solid var(--rule); }
 
 /* header */
 header .wrap { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; padding-block: 1.75rem; }
-nav { display: flex; gap: 1.4rem; flex-wrap: wrap; font-size: .9rem; color: var(--soft); padding-top: .15rem; }
+nav { display: flex; align-items: center; gap: 1.4rem; flex-wrap: wrap; font-size: .9rem; color: var(--soft); }
 nav a { text-decoration: none; }
 .who-hdr { display: grid; gap: .25rem; }
 .sf-time { display: flex; align-items: center; gap: .45rem; font-size: .82rem; color: var(--muted); line-height: 1.4; }

@@ -49,3 +49,12 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--scarlet); out
 .truck svg { width: 100%; height: 100%; display: block; transition: transform .25s ease; }
 .truck.back svg { transform: scaleX(-1); }
 .wheel { transform-box: fill-box; transform-origin: center; }
+
+/* light/dark toggle (button injected by site.js) */
+.theme-slot { display: inline-flex; align-items: center; }
+.tg-icon { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 999px; border: 1px solid var(--rule); background: transparent; color: var(--soft); cursor: pointer; padding: 0; }
+.tg-icon:hover { color: var(--ink); border-color: var(--ink); }
+.tg-icon svg { display: block; }
+.tg-icon .i-moon { display: none; }
+.is-dark .tg-icon .i-sun { display: none; }
+.is-dark .tg-icon .i-moon { display: block; }

@@ -1,7 +1,7 @@
 /* Changelog page: narrow reading column, dated entries with type tags. */
 .page { max-width: 44rem; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); padding-block: 2rem 4rem; }
-.top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 4rem; }
-.top nav { font-size: .9rem; color: var(--soft); }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 4rem; }
+.top nav { display: flex; align-items: center; gap: 1rem; font-size: .9rem; color: var(--soft); }
 h1 { font-family: var(--display); font-weight: 300; font-size: clamp(2rem, 5vw, 2.75rem); letter-spacing: -.03em; line-height: 1.1; margin: 0 0 .75rem; }
 .intro { color: var(--soft); margin: 0 0 3rem; max-width: 48ch; }
 .entry { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: 1.5rem; padding-block: 1.75rem; border-top: 1px solid var(--rule); }

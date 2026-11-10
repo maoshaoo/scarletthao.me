@@ -2,6 +2,43 @@
 (function () {
   'use strict';
 
+  // Light/dark toggle: a sun/moon button in the header. Remembers the visitor's choice;
+  // until they choose, the site follows their device setting.
+  var root = document.documentElement;
+  var darkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  var isDark = function () {
+    var t = root.getAttribute('data-theme');
+    return t ? t === 'dark' : !!(darkQuery && darkQuery.matches);
+  };
+  var themeButtons = [];
+  var syncTheme = function () {
+    var dark = isDark();
+    root.classList.toggle('is-dark', dark);
+    themeButtons.forEach(function (b) {
+      b.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+      b.setAttribute('title', dark ? 'Switch to light mode' : 'Switch to dark mode');
+    });
+  };
+  var SUN = '<svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g></svg>';
+  var MOON = '<svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+  document.querySelectorAll('.theme-slot').forEach(function (slot) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tg-icon';
+    b.setAttribute('data-umami-event', 'toggle-theme');
+    b.innerHTML = SUN + MOON;
+    b.addEventListener('click', function () {
+      var next = isDark() ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+      syncTheme();
+    });
+    slot.appendChild(b);
+    themeButtons.push(b);
+  });
+  if (darkQuery && darkQuery.addEventListener) darkQuery.addEventListener('change', syncTheme);
+  syncTheme();
+
   // Copy-email button (home page)
   var copyBtn = document.getElementById('copy-email');
   var addr = document.getElementById('addr');
