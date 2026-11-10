@@ -4,61 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Changelog · Scarlett Hao</title>
+<link rel="canonical" href="https://www.scarletthao.me/changelog.html">
 <meta name="description" content="What's new on scarletthao.me.">
 <meta property="og:title" content="Changelog · Scarlett Hao">
 <meta property="og:description" content="What's new on scarletthao.me.">
-<meta property="og:image" content="https://www.scarletthao.me/og-image.png">
+<meta property="og:image" content="https://www.scarletthao.me/assets/images/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
-<style>
-:root {
-  --bg: #FCFCFA; --ink: #1C2321; --soft: #4A5450; --muted: #858F8A; --rule: #E5E8E3; --scarlet: #B3261E;
-  --truck-cab: #F4F5F2; --truck-glass: #DCE3E6; --truck-tire: #2A302D; --lane: #E3A90F;
-  --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
-  --body: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --bg: #141817; --ink: #ECEFEB; --soft: #B9C1BC; --muted: #7F8984; --rule: #262D2A; --scarlet: #F0776D; --truck-cab: #2A312E; --truck-glass: #3D4A4F; --truck-tire: #0B0D0C; --lane: #F2C94C; color-scheme: dark; }
-}
-:root[data-theme="dark"] { --bg: #141817; --ink: #ECEFEB; --soft: #B9C1BC; --muted: #7F8984; --rule: #262D2A; --scarlet: #F0776D; --truck-cab: #2A312E; --truck-glass: #3D4A4F; --truck-tire: #0B0D0C; --lane: #F2C94C; color-scheme: dark; }
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 1.0625rem; line-height: 1.65; }
-.page { max-width: 44rem; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); padding-block: 2rem 4rem; }
-a { color: inherit; text-decoration-color: var(--muted); text-underline-offset: 4px; }
-a:hover { color: var(--scarlet); text-decoration-color: var(--scarlet); }
-a:focus-visible { outline: 1.5px solid var(--scarlet); outline-offset: 3px; border-radius: 2px; }
-.top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 4rem; }
-.mark { font-family: var(--display); font-weight: 500; font-size: 1.1rem; text-decoration: none; }
-.mark span { color: var(--scarlet); }
-.top nav { font-size: .9rem; color: var(--soft); }
-h1 { font-family: var(--display); font-weight: 300; font-size: clamp(2rem, 5vw, 2.75rem); letter-spacing: -.03em; line-height: 1.1; margin: 0 0 .75rem; }
-.intro { color: var(--soft); margin: 0 0 3rem; max-width: 48ch; }
-.entry { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: 1.5rem; padding-block: 1.75rem; border-top: 1px solid var(--rule); }
-.entry:last-of-type { border-bottom: 1px solid var(--rule); }
-.date { font-family: var(--mono); font-size: .78rem; color: var(--muted); padding-top: .3rem; font-variant-numeric: tabular-nums; }
-.entry h2 { font-family: var(--display); font-weight: 400; font-size: 1.3rem; letter-spacing: -.015em; margin: 0 0 .5rem; }
-.entry ul { margin: 0; padding-left: 1.1rem; color: var(--soft); display: grid; gap: .3rem; }
-.tag { display: inline-block; font-family: var(--mono); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; margin-left: .5rem; vertical-align: .25em; padding: .15rem .5rem; border-radius: 999px; border: 1px solid currentColor; line-height: 1.4; }
-.tag-new { color: var(--ink); }
-.tag-fun { color: var(--scarlet); }
-.tag-func { color: var(--muted); }
-.legend { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; align-items: center; margin: -1.5rem 0 2.5rem; font-size: .85rem; color: var(--soft); }
-.legend .tag { margin-left: 0; margin-right: .35rem; }
-@media (max-width: 560px) { .entry { grid-template-columns: minmax(0, 1fr); gap: .25rem; } .date { padding-top: 0; } }
-.road { position: fixed; left: 0; right: 0; bottom: 0; height: calc(44px + env(safe-area-inset-bottom, 0px)); padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg); border-top: 1px solid var(--rule); z-index: 20; pointer-events: none; }
-.road::after { content: ""; position: absolute; left: 0; right: 0; bottom: calc(6px + env(safe-area-inset-bottom, 0px)); height: 3px; background: repeating-linear-gradient(90deg, var(--lane) 0 18px, transparent 18px 30px); border-radius: 2px; }
-.truck { position: absolute; left: 0; bottom: calc(9px + env(safe-area-inset-bottom, 0px)); width: 92px; height: 34px; will-change: transform; }
-.truck svg { width: 100%; height: 100%; display: block; transition: transform .25s ease; }
-.truck.back svg { transform: scaleX(-1); }
-.wheel { transform-box: fill-box; transform-origin: center; }
-body { padding-bottom: 44px; }
-.cl-foot { display: grid; gap: .6rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); font-size: .8rem; color: var(--muted); }
-.fb-top { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-.fb-note { margin: 0; max-width: 60ch; }
-</style>
+
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/changelog.css">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
@@ -75,6 +32,17 @@ body { padding-bottom: 44px; }
     <h1>Changelog</h1>
     <p class="intro">This site is a product too. Here&rsquo;s what&rsquo;s shipped, newest first.</p>
     <div class="legend" aria-label="Tag key"><span><span class="tag tag-new">New</span>new sections and content</span><span><span class="tag tag-fun">Fun</span>personality and whimsy</span><span><span class="tag tag-func">Functionality</span>how the site works</span></div>
+
+    <article class="entry">
+      <div class="date">2026-11-09</div>
+      <div>
+        <h2>Spring cleaning <span class="tag tag-func">Functionality</span></h2>
+        <ul>
+          <li>Reorganized the site&rsquo;s files: images in one folder, and shared styles and scripts used by every page.</li>
+          <li>Added a friendly 404 page, a sitemap, and a public README.</li>
+        </ul>
+      </div>
+    </article>
 
     <article class="entry">
       <div class="date">2026-11-09</div>
@@ -208,55 +176,6 @@ body { padding-bottom: 44px; }
     <p class="fb-note">Words are mine. The site is built with <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a>, hosted on <a href="https://github.com/maoshaoo/scarletthao.me" target="_blank" rel="noopener">GitHub</a>, and tracked in <a href="https://linear.app" target="_blank" rel="noopener">Linear</a>.</p>
   </footer>
 </div>
-<div class="road" aria-hidden="true">
-  <div class="truck" id="truck"><svg viewBox="0 0 184 68"><defs><pattern id="pat-confetti" width="24" height="20" patternUnits="userSpaceOnUse" patternTransform="scale(1.6)"><rect width="24" height="20" fill="var(--truck-cab)"/><rect x="3" y="3" width="5" height="2" rx="1" fill="var(--scarlet)" transform="rotate(25 5 4)"/><circle cx="16" cy="6" r="1.8" fill="var(--lane)"/><rect x="12" y="13" width="5" height="2" rx="1" fill="var(--ink)" transform="rotate(-30 14 14)"/><circle cx="5" cy="15" r="1.5" fill="var(--scarlet)"/><rect x="19" y="14" width="4" height="2" rx="1" fill="var(--lane)" transform="rotate(60 21 15)"/></pattern></defs><g>
-      <!-- trailer -->
-      <rect class="trailer" x="4" y="10" width="104" height="40" rx="3" fill="url(#pat-confetti)" stroke="var(--ink)" stroke-width="2"/>
-      
-      <!-- hitch -->
-      <rect x="106" y="46" width="12" height="4" fill="var(--ink)"/>
-      <!-- cab -->
-      <path d="M116 50 V22 Q116 16 122 16 H150 Q156 16 160 22 L172 36 Q176 40 176 46 V50 Z" fill="var(--truck-cab)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>
-      <!-- windshield, empty -->
-      <path d="M146 21 H152 Q155 21 157 24 L167 36 H146 Z" fill="var(--truck-glass)" stroke="var(--ink)" stroke-width="1.5" stroke-linejoin="round"/>
-      <!-- side window, empty -->
-      <rect x="124" y="21" width="17" height="14" rx="2" fill="var(--truck-glass)" stroke="var(--ink)" stroke-width="1.5"/>
-      <!-- roof sensor pod -->
-      <rect x="130" y="9" width="18" height="5" rx="2.5" fill="var(--ink)"/>
-      <rect x="137" y="5" width="4" height="4" rx="1" fill="var(--scarlet)"/>
-      <!-- mirror sensor -->
-      <rect x="160" y="24" width="3" height="9" rx="1.5" fill="var(--ink)"/>
-      <!-- headlight -->
-      <rect x="171" y="42" width="5" height="3" rx="1" fill="var(--scarlet)"/>
-      <!-- wheels -->
-      <g class="wheel"><circle cx="22" cy="54" r="7" fill="var(--truck-tire)"/><circle cx="22" cy="54" r="2.5" fill="var(--truck-cab)"/><rect x="21" y="48" width="2" height="4" fill="var(--truck-cab)"/></g>
-      <g class="wheel"><circle cx="40" cy="54" r="7" fill="var(--truck-tire)"/><circle cx="40" cy="54" r="2.5" fill="var(--truck-cab)"/><rect x="39" y="48" width="2" height="4" fill="var(--truck-cab)"/></g>
-      <g class="wheel"><circle cx="128" cy="54" r="7" fill="var(--truck-tire)"/><circle cx="128" cy="54" r="2.5" fill="var(--truck-cab)"/><rect x="127" y="48" width="2" height="4" fill="var(--truck-cab)"/></g>
-      <g class="wheel"><circle cx="164" cy="54" r="7" fill="var(--truck-tire)"/><circle cx="164" cy="54" r="2.5" fill="var(--truck-cab)"/><rect x="163" y="48" width="2" height="4" fill="var(--truck-cab)"/></g>
-    </g></svg></div>
-</div>
-<script>
-(function () {
-  var truck = document.getElementById('truck');
-  if (!truck) return;
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var wheels = truck.querySelectorAll('.wheel');
-  var lastY = window.scrollY, ticking = false;
-  function update() {
-    ticking = false;
-    var max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    var y = window.scrollY;
-    var p = Math.min(1, Math.max(0, y / max));
-    var track = window.innerWidth - truck.offsetWidth - 16;
-    truck.style.transform = 'translateX(' + (8 + p * track) + 'px)';
-    if (!reduce) wheels.forEach(function (w) { w.style.transform = 'rotate(' + (y * 0.9) + 'deg)'; });
-    if (y < lastY) truck.classList.add('back'); else if (y > lastY) truck.classList.remove('back');
-    lastY = y;
-  }
-  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-  window.addEventListener('resize', update);
-  update();
-})();
-</script>
+<script src="assets/js/site.js" defer></script>
 </body>
 </html>

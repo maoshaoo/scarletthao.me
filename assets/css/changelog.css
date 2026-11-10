@@ -1,0 +1,19 @@
+/* Changelog page: narrow reading column, dated entries with type tags. */
+.page { max-width: 44rem; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); padding-block: 2rem 4rem; }
+.top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 4rem; }
+.top nav { font-size: .9rem; color: var(--soft); }
+h1 { font-family: var(--display); font-weight: 300; font-size: clamp(2rem, 5vw, 2.75rem); letter-spacing: -.03em; line-height: 1.1; margin: 0 0 .75rem; }
+.intro { color: var(--soft); margin: 0 0 3rem; max-width: 48ch; }
+.entry { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: 1.5rem; padding-block: 1.75rem; border-top: 1px solid var(--rule); }
+.entry:last-of-type { border-bottom: 1px solid var(--rule); }
+.date { font-family: var(--mono); font-size: .78rem; color: var(--muted); padding-top: .3rem; font-variant-numeric: tabular-nums; }
+.entry h2 { font-family: var(--display); font-weight: 400; font-size: 1.3rem; letter-spacing: -.015em; margin: 0 0 .5rem; }
+.entry ul { margin: 0; padding-left: 1.1rem; color: var(--soft); display: grid; gap: .3rem; }
+.tag { display: inline-block; font-family: var(--mono); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; margin-left: .5rem; vertical-align: .25em; padding: .15rem .5rem; border-radius: 999px; border: 1px solid currentColor; line-height: 1.4; }
+.tag-new { color: var(--ink); }
+.tag-fun { color: var(--scarlet); }
+.tag-func { color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; align-items: center; margin: -1.5rem 0 2.5rem; font-size: .85rem; color: var(--soft); }
+.legend .tag { margin-left: 0; margin-right: .35rem; }
+@media (max-width: 560px) { .entry { grid-template-columns: minmax(0, 1fr); gap: .25rem; } .date { padding-top: 0; } }
+.cl-foot { display: grid; gap: .6rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); font-size: .8rem; color: var(--muted); }
