@@ -46,6 +46,9 @@ h1 { font-family: var(--display); font-weight: 300; font-size: clamp(2rem, 5vw, 
 .truck.back svg { transform: scaleX(-1); }
 .wheel { transform-box: fill-box; transform-origin: center; }
 body { padding-bottom: 44px; }
+.cl-foot { display: grid; gap: .6rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); font-size: .8rem; color: var(--muted); }
+.fb-top { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.fb-note { margin: 0; max-width: 60ch; }
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -62,6 +65,17 @@ body { padding-bottom: 44px; }
   <main>
     <h1>Changelog</h1>
     <p class="intro">This site is a product too. Here&rsquo;s what&rsquo;s shipped, newest first.</p>
+
+    <article class="entry">
+      <div class="date">2026-11-09</div>
+      <div>
+        <h2>Footer colophon <span class="tag">New</span></h2>
+        <ul>
+          <li>Added a short note on how the site is made: words are mine; built with Claude Code, hosted on GitHub, tracked in Linear.</li>
+          <li>Hid the r&eacute;sum&eacute; link until the PDF is ready.</li>
+        </ul>
+      </div>
+    </article>
 
     <article class="entry">
       <div class="date">2026-11-09</div>
@@ -138,6 +152,11 @@ body { padding-bottom: 44px; }
       </div>
     </article>
   </main>
+
+  <footer class="cl-foot">
+    <div class="fb-top"><span>© 2026 Scarlett Hao</span><a href="index.html">scarletthao.me</a></div>
+    <p class="fb-note">Words are mine. The site is built with <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a>, hosted on <a href="https://github.com/maoshaoo/scarletthao.me" target="_blank" rel="noopener">GitHub</a>, and tracked in <a href="https://linear.app" target="_blank" rel="noopener">Linear</a>.</p>
+  </footer>
 </div>
 <div class="road" aria-hidden="true">
   <div class="truck" id="truck"><svg viewBox="0 0 184 68"><defs><pattern id="pat-confetti" width="24" height="20" patternUnits="userSpaceOnUse" patternTransform="scale(1.6)"><rect width="24" height="20" fill="var(--truck-cab)"/><rect x="3" y="3" width="5" height="2" rx="1" fill="var(--scarlet)" transform="rotate(25 5 4)"/><circle cx="16" cy="6" r="1.8" fill="var(--lane)"/><rect x="12" y="13" width="5" height="2" rx="1" fill="var(--ink)" transform="rotate(-30 14 14)"/><circle cx="5" cy="15" r="1.5" fill="var(--scarlet)"/><rect x="19" y="14" width="4" height="2" rx="1" fill="var(--lane)" transform="rotate(60 21 15)"/></pattern></defs><g>

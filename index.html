@@ -103,7 +103,9 @@ nav a { text-decoration: none; }
 button.copy { font: 400 .82rem var(--body); background: transparent; color: var(--soft); border: 1px solid var(--rule); padding: .35rem .85rem; border-radius: 999px; cursor: pointer; }
 button.copy:hover { border-color: var(--ink); color: var(--ink); }
 .links { display: flex; gap: 1.6rem; flex-wrap: wrap; font-size: .95rem; color: var(--soft); }
-footer .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-block: 1.75rem 2.75rem; border-top: 1px solid var(--rule); font-size: .8rem; color: var(--muted); }
+footer .wrap { display: grid; gap: .6rem; padding-block: 1.75rem 2.75rem; border-top: 1px solid var(--rule); font-size: .8rem; color: var(--muted); }
+.fb-top { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.fb-note { margin: 0; max-width: 60ch; }
 
 @media (max-width: 760px) {
   section { padding-block: 3.5rem; }
@@ -353,16 +355,15 @@ body { padding-bottom: 44px; }
         <a href="https://www.linkedin.com/in/shao1" target="_blank" rel="noopener" data-umami-event="click-linkedin">LinkedIn</a>
         <a href="https://scarletthao1.substack.com/" target="_blank" rel="noopener" data-umami-event="click-substack">Substack</a>
         <a href="https://twitter.com/scarmander15" target="_blank" rel="noopener" data-umami-event="click-x">X</a>
-        <span class="todo">Résumé PDF</span>
       </div>
     </div>
   </section>
 </main>
 
 <footer>
-  <div class="wrap">
-    <span>© 2026 Scarlett Hao</span>
-    <span><a href="changelog.html">Changelog</a> · San Francisco</span>
+  <div class="wrap fb">
+    <div class="fb-top"><span>© 2026 Scarlett Hao</span><span><a href="changelog.html">Changelog</a> · San Francisco</span></div>
+    <p class="fb-note">Words are mine. The site is built with <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a>, hosted on <a href="https://github.com/maoshaoo/scarletthao.me" target="_blank" rel="noopener">GitHub</a>, and tracked in <a href="https://linear.app" target="_blank" rel="noopener">Linear</a>.</p>
   </div>
 </footer>
 
