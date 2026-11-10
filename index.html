@@ -397,10 +397,45 @@ document.getElementById('copy-email').addEventListener('click', function () {
     var h = parseInt(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', hour12: false }).format(now), 10) % 24;
     var x = h < 4 ? h + 24 : h, note = notes[0][2];
     for (var i = 0; i < notes.length; i++) if (x >= notes[i][0] && x < notes[i][1]) note = notes[i][2];
-    el.textContent = 'It\u2019s ' + time + ' in San Francisco. ' + note;
+    el.textContent = 'It\u2019s ' + time + ' in San Francisco' + (wx ? ', ' + wx : '') + '. ' + note;
+  }
+  var wx = '';
+  function describe(code) {
+    if (code === 0) return 'clear';
+    if (code <= 2) return 'mostly clear';
+    if (code === 3) return 'cloudy';
+    if (code === 45 || code === 48) return 'foggy';
+    if (code >= 51 && code <= 57) return 'drizzly';
+    if ((code >= 61 && code <= 67) || (code >= 80 && code <= 82)) return 'rainy';
+    if ((code >= 71 && code <= 77) || code === 85 || code === 86) return 'snowy';
+    if (code >= 95) return 'stormy';
+    return '';
+  }
+  function setWx(t, code) {
+    var d = describe(code);
+    wx = Math.round(t) + '\u00b0' + (d ? ' and ' + d : '');
+    render();
+  }
+  function loadWx() {
+    try {
+      var c = JSON.parse(sessionStorage.getItem('sf-wx') || 'null');
+      if (c && Date.now() - c.at < 15 * 60 * 1000) { setWx(c.t, c.code); return; }
+    } catch (e) {}
+    if (!window.fetch) return;
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=37.7749&longitude=-122.4194&current=temperature_2m,weather_code&temperature_unit=fahrenheit')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        if (!j || !j.current) return;
+        var t = j.current.temperature_2m, code = j.current.weather_code;
+        try { sessionStorage.setItem('sf-wx', JSON.stringify({ t: t, code: code, at: Date.now() })); } catch (e) {}
+        setWx(t, code);
+      })
+      .catch(function () {});
   }
   render();
+  loadWx();
   setInterval(render, 30000);
+  setInterval(loadWx, 15 * 60 * 1000);
 })();
 </script>
 <div class="road" aria-hidden="true">
