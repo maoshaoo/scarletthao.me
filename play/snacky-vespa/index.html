@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Snacky Vespa · Scarlett Hao</title>
+<meta name="description" content="Snack first, route second. A San Francisco ride planner that builds a scenic loop around Sunday’s weather and a snack stop.">
+<meta property="og:title" content="Snacky Vespa">
+<meta property="og:description" content="Snack first, route second. A San Francisco ride planner that builds a scenic loop around Sunday’s weather and a snack stop.">
+<meta property="og:url" content="https://www.scarletthao.me/play/snacky-vespa/">
+<meta property="og:image" content="https://www.scarletthao.me/assets/images/og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://www.scarletthao.me/play/snacky-vespa/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
+<script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="snacky-vespa.css">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+</head>
+<body>
+
+<header class="sv-top">
+  <div class="wrap">
+    <a class="mark" href="/">Scarlett Hao<span>.</span></a>
+    <nav><a href="/">&larr; Back to the site</a><span class="theme-slot"></span></nav>
+  </div>
+</header>
+
+<section class="wrap intro">
+  <p class="crumb">Play / Snacky Vespa</p>
+  <h1>Snack first, route second. <em>Introducing: Snacky Vespa.</em></h1>
+  <p class="lede">Most days, I’m on my Vespa somewhere in San Francisco, always thinking about what to eat next.</p>
+  <p class="lede">With a dozen microclimates, the sunny side of the city changes every week.</p>
+  <p class="lede">Pick a snack, a start time, and how long you’ve got, and this plans a scenic adventure that catches some sun, or visits Karl the Fog.</p>
+</section>
+
+<main class="wrap app">
+  <div class="panel">
+    <p class="mad">I want
+      <select id="a-snack" data-k="snack" aria-label="Snack"><option value="pastry">a pastry</option><option value="dumplings">dumplings</option><option value="coffee">coffee</option><option value="chips">chips</option><option value="pizza">pizza</option><option value="surprise">a surprise</option></select>
+      from
+      <select id="a-fresh" data-k="fresh" aria-label="New place or favorite"><option value="new">somewhere new</option><option value="fav">an old favorite</option></select>,
+      leaving
+      <select id="a-leave" data-k="leave" aria-label="Leave at"></select>
+      for
+      <select id="a-time" data-k="time" aria-label="How long"><option value="60">an hour</option><option value="120">two hours</option><option value="240">half the day</option></select>,
+      <select id="a-mood" data-k="mood" aria-label="Mood"><option value="sun">chasing the sun</option><option value="karl">visiting Karl the Fog</option></select>.
+    </p>
+    <details class="more"><summary id="a-start-sum">Starting near Mission</summary>
+      <select id="a-start" data-k="start" aria-label="Start near"></select>
+      <p class="hint">A general area, never an address.</p>
+    </details>
+
+    <section class="result" aria-live="polite">
+      <div class="r-eyebrow" id="r-eyebrow">Sunday</div>
+      <div class="stats">
+        <div class="stat"><b id="r-time">–</b><span>with stops</span></div>
+        <div class="stat"><b id="r-miles">–</b><span>miles</span></div>
+        <div class="stat"><b id="r-temp">–</b><span>along the way</span></div>
+      </div>
+      <ol class="stops" id="r-stops"></ol>
+      <ul class="why" id="r-why"></ul>
+      <div class="actions">
+        <button class="btn primary" type="button" id="r-roll" data-umami-event="snacky-roll">Roll again</button>
+        <a class="btn ghost" id="r-gmaps" href="https://www.google.com/maps" target="_blank" rel="noopener" data-umami-event="snacky-open-maps">Open in Google Maps</a>
+      </div>
+      <p class="hint">Every roll builds a new loop. Turn on “Avoid highways” in Google Maps; the link can’t set it.</p>
+    </section>
+  </div>
+
+  <div class="mapcol">
+    <div class="mapbox">
+      <svg id="map" viewBox="0 0 1000 833" role="img" aria-label="Sketch map of San Francisco with the suggested loop, stops, and weather"></svg>
+      <div class="legend">Sketch map · route lines are approximate</div>
+    </div>
+    <p class="hint" id="wx-src">Loading Sunday’s forecast…</p>
+  </div>
+</main>
+
+<footer class="wrap sv-foot">
+  <p>Snack spots and stops are public places around San Francisco. Weather from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>. “I’ve been here” is saved only in your browser. Ride safe, and check the road, not the app.</p>
+  <p><a href="/">scarletthao.me</a> · <a href="/changelog.html">Changelog</a></p>
+</footer>
+
+<script src="snacky-vespa.js" defer></script>
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>
