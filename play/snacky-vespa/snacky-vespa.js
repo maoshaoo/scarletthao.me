@@ -248,8 +248,8 @@
   }
 
   // ---------- Street routing (OpenRouteService, freeways off) ----------
-  // Preview: on only with #roads in the address until Scarlett approves it as the default.
-  var ROADS = /(^|#)roads\b/.test(location.hash);
+  // On for everyone. Add #sketch to the address to see the old sketch lines instead.
+  var ROADS = !/(^|#)sketch\b/.test(location.hash);
   var ORS_KEY = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjUwYTVlNDZiYWY1OTRlN2JhN2MwM2FmMGNhNGUzOTc4IiwiaCI6Im11cm11cjY0In0=';
   var ORS_URL = 'https://api.openrouteservice.org/v2/directions/driving-car/geojson';
   var ROUTE_TOKEN = 0;
