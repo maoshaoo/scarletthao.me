@@ -318,8 +318,26 @@
     l.appendChild(n); l.appendChild(d);
     return l;
   }
-  function render() {
-    var r = plan(); draw(r);
+  // ---------- Usage analytics (Umami, no cookies) ----------
+  // Only the choices on the page are sent: never a location or anything that identifies a person.
+  function track(name, data, tries) {
+    try {
+      if (window.umami && typeof window.umami.track === 'function') { window.umami.track(name, data); return; }
+    } catch (e) { return; }
+    if ((tries || 0) < 3) setTimeout(function () { track(name, data, (tries || 0) + 1); }, 1500);
+  }
+  var LAST = null;
+  function loopProps(r, reason) {
+    var snack = r.stops.filter(function (s) { return s.kind === 'snack'; })[0];
+    return {
+      reason: reason, snack: S.snack, snack_type: r.type, snack_spot: snack.n, fresh: S.fresh, mood: S.mood,
+      time: S.time, leave: S.leave, start: S.start, stops: r.stops.length, mins: r.mins,
+      west_sky: r.wx.west.sky, rain: r.rain ? 'yes' : 'no', forecast: FORECAST ? 'live' : 'typical'
+    };
+  }
+  function render(reason) {
+    var r = plan(); draw(r); LAST = r;
+    if (reason) track('snacky-loop', loopProps(r, reason));
     var temps = r.stops.map(function (s) { return r.wx[zoneOf(s.p)].t; });
     document.getElementById('r-eyebrow').textContent = SUNDAY.label + ' · ' + hourLabel(S.leave) + ' · from ' + STARTS[S.start].name;
     document.getElementById('r-time').textContent = fmtMins(r.mins);
@@ -334,7 +352,7 @@
       var sub = document.createElement('span'); sub.textContent = 'Snack stop · ' + s.s.hood + (s.s.fav ? ' · a Scarlett favorite' : '') + ' · ';
       var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'linkish';
       btn.textContent = been[s.n] ? 'Forget I’ve been' : 'I’ve been here';
-      btn.addEventListener('click', function () { if (been[s.n]) delete been[s.n]; else been[s.n] = 1; saveBeen(); S.seed++; render(); });
+      btn.addEventListener('click', function () { var add = !been[s.n]; if (add) been[s.n] = 1; else delete been[s.n]; saveBeen(); track('snacky-been-here', { spot: s.n, action: add ? 'add' : 'remove' }); S.seed++; render('been-here'); });
       sub.appendChild(btn); row.querySelector('div').appendChild(sub);
       ol.appendChild(row);
     });
@@ -359,19 +377,25 @@
     s.addEventListener('change', function () {
       S[s.dataset.k] = INT[s.dataset.k] ? parseInt(s.value, 10) : s.value;
       if (s.dataset.k === 'snack' && s.value === 'surprise') pickSurprise();
-      sync(); render();
+      track('snacky-setting', { key: s.dataset.k, value: s.value });
+      sync(); render('setting');
     });
   });
   document.getElementById('r-roll').addEventListener('click', function () {
     S.seed = Math.floor(Math.random() * 1e6);
     if (S.snack === 'surprise') pickSurprise();
-    render();
+    render('roll');
+  });
+  document.getElementById('r-gmaps').addEventListener('click', function () {
+    if (!LAST) return;
+    var p = loopProps(LAST, 'open-maps');
+    track('snacky-open-maps', { snack_spot: p.snack_spot, snack_type: p.snack_type, stops: p.stops, mins: p.mins, mood: p.mood, fresh: p.fresh });
   });
 
   sync(); render();
   var src = document.getElementById('wx-src');
   loadForecast().then(function (ok) {
     src.textContent = ok ? 'Forecast for Sunday, ' + SUNDAY.label.replace(/^\w+, /, '') + ', from Open-Meteo. Changes with the time you pick.' : 'Couldn’t load the forecast, so this shows a typical foggy Sunday morning.';
-    if (ok) render();
+    if (ok) render('first'); else if (LAST) track('snacky-loop', loopProps(LAST, 'first'));
   });
 })();
