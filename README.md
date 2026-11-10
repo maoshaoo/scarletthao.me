@@ -28,6 +28,8 @@ assets/
   images/logos/       company logos
 favicon.svg, favicon-32.png, apple-touch-icon.png   site icons (kept at the root, where browsers look for them)
 CNAME                 custom domain for GitHub Pages
+shortlinks.json       short links like /linkedin (see below)
+tools/                small helper scripts
 robots.txt, sitemap.xml
 ```
 
@@ -45,6 +47,16 @@ python3 -m http.server 8000
 1. Edit the page or asset.
 2. Add an entry to the top of `changelog.html`, tagged **New**, **Fun**, or **Functionality**.
 3. Push to `main`. GitHub Pages publishes within a minute or two.
+
+## Short links
+
+Short addresses like [scarletthao.me/linkedin](https://www.scarletthao.me/linkedin) forward to other sites. They're listed in `shortlinks.json`. To add or change one, edit that file and regenerate the pages:
+
+```sh
+python3 tools/make-shortlinks.py
+```
+
+Each link becomes a small page that waits half a second (so the visit is counted) and then forwards.
 
 ## Rights
 
