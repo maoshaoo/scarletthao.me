@@ -202,6 +202,16 @@ nav { padding-top: .15rem; }
 .truck.back svg { transform: scaleX(-1); }
 .wheel { transform-box: fill-box; transform-origin: center; }
 body { padding-bottom: 44px; }
+.card.has-photo { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 0; padding: 0; overflow: hidden; }
+.card-photo { display: block; width: 100%; height: 100%; min-height: 18rem; max-width: 100%; object-fit: cover; }
+.card-main { padding: clamp(1.4rem, 3.4vw, 2.25rem); display: grid; gap: 1.25rem; align-content: start; min-width: 0; }
+.card.has-photo .metrics { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 1.1rem; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: 1rem 1.5rem; align-content: start; }
+.brands { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); }
+.brands span { display: grid; place-items: center; text-align: center; padding: 1rem; background: var(--bg); font-family: var(--display); font-weight: 400; font-size: clamp(1rem, 2.2vw, 1.3rem); letter-spacing: -.01em; color: var(--ink); }
+@media (max-width: 760px) {
+  .card.has-photo { grid-template-columns: minmax(0, 1fr); }
+  .card-photo { min-height: 0; height: auto; aspect-ratio: 16 / 9; }
+}
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -264,27 +274,37 @@ body { padding-bottom: 44px; }
         <p class="sec-sub">Where I&rsquo;ve been, and how I left it better.</p>
       </div>
       <div class="cards">
-      <article class="card">
+      <article class="card has-photo">
+        <img class="card-photo" src="kodiak-photo.jpg" alt="A Kodiak driverless truck hauling two trailers along a sandy road in the Permian Basin" loading="lazy">
+        <div class="card-main">
         <div class="story">
         <div class="co"><img class="co-logo sq" src="kodiak-logo.png" alt="" width="44" height="44"><span>Kodiak AI</span></div>
         <h3>Building businesses on driverless trucks</h3>
         <p>We proved the value of bringing autonomy into a business that already runs: driverless trucks working alongside human-driven fleets, and a clear picture of how a customer actually adopts this technology, from the first load to the operating changes, trust, and economics that follow.</p>
         </div>
         <div class="metrics"><div class="m"><b>35+</b><span>driverless trucks in commercial service</span></div><div class="m"><b>24/7</b><span>hauling, with no one in the cab</span></div><div class="m"><b>1st</b><span>commercial driver-out L4 deployment in the US</span></div></div>
+        </div>
       </article>
-      <article class="card">
+      <article class="card has-photo">
+        <img class="card-photo" src="dds-photo.jpg" alt="A small drone silhouetted against a sunset sky" loading="lazy">
+        <div class="card-main">
         <div class="story">
         <div class="co"><img class="co-logo rd" src="dds-logo.png" alt="" width="44" height="44"><span>Defense Digital Service · U.S. Dept. of Defense</span></div>
         <h3>Keeping operators on mission</h3>
         <p>Through the <a href="https://www.dds.mil" target="_blank" rel="noopener">Defense Digital Service</a>, I helped operators complete their missions on a cyber-hardened commercial drone platform, building features alongside the people flying them so security made the job easier, not harder.</p>
         </div>
         <div class="metrics"><div class="m"><b>4,500+</b><span>units secured</span></div><div class="m"><b>5 min</b><span>time to first flight for a new user</span></div></div>
+        </div>
       </article>
-      <article class="card solo">
+      <article class="card has-photo">
+        <div class="card-photo brands" role="img" aria-label="Brands Scarlett worked with: Juul Labs, Tatcha, Royal Caribbean, Keurig"><span>Juul Labs</span><span>Tatcha</span><span>Royal Caribbean</span><span>Keurig</span></div>
+        <div class="card-main">
         <div class="story">
         <div class="co"><span class="logo" aria-hidden="true">DTC</span><span>Direct-to-consumer brands</span></div>
         <h3>Building the direct-to-consumer channel</h3>
         <p>I owned various parts of the funnel (acquisition, conversion, and retention) across established and growing brands, and led teams to deliver against revenue goals while growing brand and trust within natively owned ecosystems.</p>
+        </div>
+        
         </div>
       </article>
       </div>
