@@ -81,3 +81,4 @@
 
 .sv-foot { border-top: 1px solid var(--rule); padding-block: 1.5rem 2.5rem; font-size: .84rem; color: var(--muted); display: grid; gap: .4rem; }
 .sv-foot p { margin: 0; max-width: 70ch; }
+.route.streets { stroke-width: 4; }

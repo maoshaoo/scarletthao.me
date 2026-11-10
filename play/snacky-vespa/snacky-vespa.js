@@ -62,6 +62,26 @@
     { n: 'Hidden Garden Steps', p: [37.7605, -122.4732], b: 'More mosaic steps, with butterflies and lizards.' },
     { n: 'Mount Davidson cross', p: [37.7383, -122.4537], b: 'The highest point in SF, deep in a eucalyptus forest.' }
   ];
+  // Where to pull up and park for stops you walk into, and roughly how many minutes' walk each way. (MAO-69; check in Street View.)
+  var RIDE = {
+    'Wave Organ': [[37.8070, -122.4405], 5], 'Sutro Baths ruins': [[37.7797, -122.5104], 5],
+    'Lands End Labyrinth': [[37.7869, -122.4925], 10], '16th Avenue Tiled Steps': [[37.7563, -122.4733], 2],
+    'Seward Street Slides': [[37.7577, -122.4396], 2], 'Lyon Street Steps': [[37.7944, -122.4464], 2],
+    'Bernal Heights swing': [[37.7430, -122.4147], 15], 'Filbert Steps': [[37.8020, -122.4026], 10],
+    'Balmy Alley murals': [[37.7527, -122.4122], 3], 'Bison paddock': [[37.7695, -122.4955], 5],
+    'Under the bridge at Fort Point': [[37.8095, -122.4755], 3], 'Musée Mécanique': [[37.8083, -122.4160], 2],
+    'Dutch Windmill': [[37.7704, -122.5080], 3], 'Twin Peaks': [[37.7531, -122.4472], 3],
+    'Corona Heights': [[37.7652, -122.4373], 10], 'Stow Lake boathouse': [[37.7705, -122.4745], 2],
+    'Sea lions at Pier 39': [[37.8080, -122.4100], 3], 'Hidden Garden Steps': [[37.7604, -122.4733], 2],
+    'Mount Davidson cross': [[37.7370, -122.4545], 15]
+  };
+  CURIOS.forEach(function (c) { if (RIDE[c.n]) { c.ride = RIDE[c.n][0]; c.walk = RIDE[c.n][1]; } });
+  // Streets closed to cars and scooters. A route that runs along one is rejected. (MAO-70; recheck every few months.)
+  var CARFREE = [
+    { n: 'the Upper Great Highway', pts: [[37.7640, -122.5098], [37.7550, -122.5091], [37.7450, -122.5085], [37.7350, -122.5078]] },
+    { n: 'JFK Drive', pts: [[37.7713, -122.4545], [37.7720, -122.4600], [37.7706, -122.4660], [37.7700, -122.4730], [37.7695, -122.4800], [37.7697, -122.4900]] },
+    { n: 'the car-free part of Twin Peaks Blvd', pts: [[37.7605, -122.4470], [37.7580, -122.4460], [37.7560, -122.4480], [37.7548, -122.4470]] }
+  ];
   // Four parts of the city, each with its own forecast. f = where the forecast is taken; c = where the map tag sits.
   var ZONES = {
     west: { name: 'the west side', short: 'Ocean Beach', f: [37.7600, -122.5050], c: [37.7600, -122.4990] },
@@ -166,15 +186,16 @@
     if (windy(z)) f -= stop.exp ? 2 : 0.7;
     return f;
   }
+  function rp(s) { return s.ride || s.p; } // where you actually ride to
   // Order stops into a loop without crossings: nearest stop first, then untangle (2-opt).
   function order(stops, start) {
     var left = stops.slice(), out = [], cur = start;
     while (left.length) {
       var bi = 0;
-      for (var i = 1; i < left.length; i++) if (miles(cur, left[i].p) < miles(cur, left[bi].p)) bi = i;
-      cur = left[bi].p; out.push(left.splice(bi, 1)[0]);
+      for (var i = 1; i < left.length; i++) if (miles(cur, rp(left[i])) < miles(cur, rp(left[bi]))) bi = i;
+      cur = rp(left[bi]); out.push(left.splice(bi, 1)[0]);
     }
-    var pt = function (i) { return i === 0 || i === out.length + 1 ? start : out[i - 1].p; }, improved = true, guard = 0;
+    var pt = function (i) { return i === 0 || i === out.length + 1 ? start : rp(out[i - 1]); }, improved = true, guard = 0;
     while (improved && guard++ < 20) {
       improved = false;
       for (var a = 1; a < out.length; a++) for (var b = a + 1; b <= out.length; b++) {
@@ -192,7 +213,7 @@
     var pool = S.fresh === 'new' ? all.filter(function (s) { return !been[s.n]; }) : all.filter(function (s) { return s.fav || been[s.n]; });
     var poolNote = '';
     if (!pool.length) { pool = all; poolNote = S.fresh === 'new' ? 'You’ve been to every spot on the list for this snack. Picking from all of them.' : 'No favorites for this snack yet. Picking a new place.'; }
-    var maxK = budget >= 240 ? 5 : budget >= 120 ? 3 : 2, best = null;
+    var maxK = budget >= 240 ? 5 : budget >= 120 ? 3 : 2, cands = [];
     for (var it = 0; it < 400; it++) {
       var snack = pool[Math.floor(R() * pool.length)], k = 1 + Math.floor(R() * maxK), picks = [], tries = 0;
       while (picks.length < k && tries++ < 40) {
@@ -200,25 +221,94 @@
         if (picks.indexOf(c) < 0 && fit(c, wx) > -1.5) picks.push(c);
       }
       if (!picks.length) continue;
-      var stops = picks.map(function (c) { return { kind: 'curio', n: c.n, p: c.p, b: c.b, exp: c.exp }; });
+      var stops = picks.map(function (c) { return { kind: 'curio', n: c.n, p: c.p, b: c.b, exp: c.exp, ride: c.ride, walk: c.walk || 0 }; });
       stops.push({ kind: 'snack', n: snack.n, p: snack.p, s: snack });
       stops = order(stops, start);
-      var ps = [start].concat(stops.map(function (s) { return s.p; })).concat([start]);
-      var mi = pathMiles(ps), mins = Math.round(mi / MPH * 60 + SNACK_MIN + CURIO_MIN * picks.length);
+      var ps = [start].concat(stops.map(rp)).concat([start]);
+      var walk = stops.reduce(function (a, s) { return a + (s.walk || 0) * 2; }, 0);
+      var mi = pathMiles(ps), mins = Math.round(mi / MPH * 60 + SNACK_MIN + CURIO_MIN * picks.length + walk);
       if (mins > budget) continue;
       var si = stops.findIndex(function (s) { return s.kind === 'snack'; });
       var mid = stops.length > 1 ? 1 - Math.abs(si / (stops.length - 1) - 0.5) * 2 : 0.5;
       var avg = stops.reduce(function (a, s) { return a + fit(s, wx); }, 0) / stops.length;
       var score = avg + 1.5 * (mins / budget) + 0.6 * mid + R() * 0.8;
-      if (!best || score > best.score) best = { stops: stops, ps: ps, mi: mi, mins: mins, score: score };
+      cands.push({ stops: stops, ps: ps, mi: mi, mins: mins, score: score, extra: SNACK_MIN + CURIO_MIN * picks.length + walk });
     }
-    if (!best) { // nothing fits: straight to the closest snack and back
+    cands.sort(function (a, b) { return b.score - a.score; });
+    if (!cands.length) { // nothing fits: straight to the closest snack and back
       var near = pool.slice().sort(function (a, b) { return miles(start, a.p) - miles(start, b.p); })[0];
       var ps2 = [start, near.p, start], m2 = pathMiles(ps2);
-      best = { stops: [{ kind: 'snack', n: near.n, p: near.p, s: near }], ps: ps2, mi: m2, mins: Math.round(m2 / MPH * 60 + SNACK_MIN), tight: true };
+      cands.push({ stops: [{ kind: 'snack', n: near.n, p: near.p, s: near }], ps: ps2, mi: m2, mins: Math.round(m2 / MPH * 60 + SNACK_MIN), extra: SNACK_MIN, tight: true });
     }
-    best.type = type; best.wx = wx; best.poolNote = poolNote; best.rain = rain;
-    return best;
+    // keep a few distinct runners-up in case the best one can't be routed
+    var seen = {}, top = [];
+    cands.forEach(function (c) { var k = c.stops.map(function (s) { return s.n; }).join('|'); if (!seen[k] && top.length < 4) { seen[k] = 1; top.push(c); } });
+    top.forEach(function (c) { c.type = type; c.wx = wx; c.poolNote = poolNote; c.rain = rain; c.budget = budget; });
+    return top;
+  }
+
+  // ---------- Street routing (OpenRouteService, freeways off) ----------
+  // Preview: on only with #roads in the address until Scarlett approves it as the default.
+  var ROADS = /(^|#)roads\b/.test(location.hash);
+  var ORS_KEY = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjUwYTVlNDZiYWY1OTRlN2JhN2MwM2FmMGNhNGUzOTc4IiwiaCI6Im11cm11cjY0In0=';
+  var ORS_URL = 'https://api.openrouteservice.org/v2/directions/driving-car/geojson';
+  var ROUTE_TOKEN = 0;
+  function hashStr(t) { var h = 0; for (var i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
+  function metersXY(p, o) { return [(p[1] - o[1]) * 111320 * COS, (p[0] - o[0]) * 110540]; }
+  function segDist(p, a, b) { // meters from p to segment a-b
+    var P = metersXY(p, a), Bv = metersXY(b, a), L = Bv[0] * Bv[0] + Bv[1] * Bv[1];
+    var t = L ? Math.max(0, Math.min(1, (P[0] * Bv[0] + P[1] * Bv[1]) / L)) : 0;
+    return Math.hypot(P[0] - t * Bv[0], P[1] - t * Bv[1]);
+  }
+  function carFreeHit(geom) { // name of a car-free street the route runs along (more than 250 m), or ''
+    for (var c = 0; c < CARFREE.length; c++) {
+      var along = 0, L = CARFREE[c].pts;
+      for (var i = 1; i < geom.length; i++) {
+        var m = [(geom[i - 1][0] + geom[i][0]) / 2, (geom[i - 1][1] + geom[i][1]) / 2], near = false;
+        for (var j = 1; j < L.length && !near; j++) near = segDist(m, L[j - 1], L[j]) < 30;
+        if (near) along += miles(geom[i - 1], geom[i]) / 1.35 * 1609;
+      }
+      if (along > 250) return CARFREE[c].n;
+    }
+    return '';
+  }
+  function fetchRoute(ps) {
+    var key = 'sv-rt-' + hashStr(ps.map(function (p) { return p[0].toFixed(4) + ',' + p[1].toFixed(4); }).join(';'));
+    try { var c = JSON.parse(localStorage.getItem(key) || 'null'); if (c && Date.now() - c.at < 7 * 864e5) return Promise.resolve(c.r); } catch (e) {}
+    var ctl = window.AbortController ? new AbortController() : null, timer = setTimeout(function () { if (ctl) ctl.abort(); }, 9000);
+    return fetch(ORS_URL, {
+      method: 'POST', signal: ctl ? ctl.signal : undefined,
+      headers: { 'Authorization': ORS_KEY, 'Content-Type': 'application/json', 'Accept': 'application/geo+json' },
+      body: JSON.stringify({ coordinates: ps.map(function (p) { return [p[1], p[0]]; }), options: { avoid_features: ['highways'] }, radiuses: ps.map(function () { return 1000; }), instructions: false })
+    }).then(function (res) {
+      clearTimeout(timer);
+      if (!res.ok) throw new Error('http ' + res.status);
+      return res.json();
+    }).then(function (d) {
+      var f = d.features && d.features[0];
+      if (!f || !f.geometry) throw new Error('empty');
+      var g = f.geometry.coordinates.map(function (c) { return [c[1], c[0]]; }), step = Math.max(1, Math.ceil(g.length / 400));
+      var slim = g.filter(function (_, i) { return i % step === 0 || i === g.length - 1; });
+      var r = { geom: slim, meters: f.properties.summary.distance, secs: f.properties.summary.duration };
+      try { localStorage.setItem(key, JSON.stringify({ at: Date.now(), r: r })); } catch (e) {}
+      return r;
+    });
+  }
+  // Try the best loops in order until one routes on legal streets within the time chosen.
+  function routeLoop(list) {
+    var i = 0, why = 'no-route';
+    function next() {
+      if (i >= Math.min(list.length, 3)) return Promise.resolve({ ok: false, reason: why });
+      var c = list[i++];
+      return fetchRoute(c.ps).then(function (rt) {
+        var hit = carFreeHit(rt.geom);
+        if (hit) { why = 'car-free'; return next(); }
+        var mins = Math.round(rt.secs * 1.15 / 60 + c.extra);
+        if (mins > c.budget * 1.15 && i < Math.min(list.length, 3)) { why = 'too-long'; return next(); }
+        return { ok: true, cand: c, geom: rt.geom, mi: rt.meters / 1609, mins: mins, attempts: i };
+      }, function () { why = 'error'; return { ok: false, reason: why }; });
+    }
+    return next();
   }
 
   // ---------- Map ----------
@@ -265,9 +355,10 @@
       var t = el('text', { class: 'wx-tag', x: c[0], y: ty, 'text-anchor': 'middle' }); t.textContent = txt;
     });
   }
-  function draw(r) {
+  function draw(r, geom) {
     base(r.wx);
-    var route = el('path', { class: 'route', d: smooth(r.ps) });
+    var d = geom ? geom.map(function (p, i) { var q = xy(p[0], p[1]); return (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1); }).join(' ') : smooth(r.ps);
+    var route = el('path', { class: 'route' + (geom ? ' streets' : ''), d: d });
     if (MOTION && route.getTotalLength) {
       var len = route.getTotalLength();
       route.style.strokeDasharray = len; route.style.strokeDashoffset = len;
@@ -288,7 +379,7 @@
 
   // ---------- Result ----------
   function fmtMins(m) { var h = Math.floor(m / 60), mm = m % 60; return h ? h + 'h' + (mm ? ' ' + pad(mm) : '') : mm + ' min'; }
-  function explain(r) {
+  function explain(r, mode) {
     var out = [], used = {}, wx = r.wx;
     r.stops.forEach(function (s) { used[zoneOf(s.p)] = 1; });
     var snack = r.stops.filter(function (s) { return s.kind === 'snack'; })[0];
@@ -303,12 +394,16 @@
     });
     if (S.mood === 'karl' && !r.stops.some(function (s) { var z = wx[zoneOf(s.p)]; return z.sky === 'fog' || z.sky === 'patchy'; })) out.push(['', 'Karl is out today: no fog anywhere. Enjoy the sun instead.']);
     if (r.tight) out.push(['bad', 'Tight on time. Just the snack this round.']);
-    return out.slice(0, 4);
+    out = out.slice(0, mode && mode !== 'sketch' ? 3 : 4);
+    if (mode === 'routing') out.push(['', 'Finding real streets…']);
+    if (mode === 'streets') out.push(['good', 'Real streets, freeways off.']);
+    if (mode === 'fallback') out.push(['bad', 'Couldn’t find a street route right now, so the map shows a sketch. Google Maps will still route it.']);
+    return out;
   }
   function gmaps(r) {
     var s = function (p) { return p[0].toFixed(5) + ',' + p[1].toFixed(5); }, st = STARTS[S.start].p;
     return 'https://www.google.com/maps/dir/?api=1&origin=' + encodeURIComponent(s(st)) + '&destination=' + encodeURIComponent(s(st)) +
-      '&waypoints=' + encodeURIComponent(r.stops.slice(0, 9).map(function (x) { return s(x.p); }).join('|')) + '&travelmode=driving';
+      '&waypoints=' + encodeURIComponent(r.stops.slice(0, 9).map(function (x) { return s(rp(x)); }).join('|')) + '&travelmode=driving';
   }
   function item(numCls, num, title, sub) {
     var l = document.createElement('li'), n = document.createElement('span'), d = document.createElement('div'), b = document.createElement('b');
@@ -336,8 +431,20 @@
     };
   }
   function render(reason) {
-    var r = plan(); draw(r); LAST = r;
+    var list = plan(), r = list[0]; LAST = r;
+    paint(r, null, ROADS ? 'routing' : 'sketch');
     if (reason) track('snacky-loop', loopProps(r, reason));
+    if (!ROADS) return;
+    var token = ++ROUTE_TOKEN;
+    routeLoop(list).then(function (res) {
+      if (token !== ROUTE_TOKEN) return; // a newer roll replaced this one
+      if (res.ok) { var c = res.cand; c.mi = res.mi; c.mins = res.mins; LAST = c; paint(c, res.geom, 'streets'); }
+      else paint(r, null, 'fallback');
+      track('snacky-route', { status: res.ok ? 'ok' : res.reason, attempts: res.attempts || 0 });
+    });
+  }
+  function paint(r, geom, mode) {
+    draw(r, geom);
     var temps = r.stops.map(function (s) { return r.wx[zoneOf(s.p)].t; });
     document.getElementById('r-eyebrow').textContent = SUNDAY.label + ' · ' + hourLabel(S.leave) + ' · from ' + STARTS[S.start].name;
     document.getElementById('r-time').textContent = fmtMins(r.mins);
@@ -346,7 +453,7 @@
     document.getElementById('r-temp').textContent = lo === hi ? lo + '°' : lo + '–' + hi + '°';
     var ol = document.getElementById('r-stops'); ol.innerHTML = '';
     r.stops.forEach(function (s, i) {
-      if (s.kind !== 'snack') { ol.appendChild(item('', i + 1, s.n, s.b)); return; }
+      if (s.kind !== 'snack') { ol.appendChild(item('', i + 1, s.n, s.b + (s.walk >= 5 ? ' Park and walk about ' + s.walk + ' min.' : ''))); return; }
       var row = item('snk', i + 1, s.n, null);
       if (!been[s.n]) { var tg = document.createElement('i'); tg.className = 'tag-new'; tg.textContent = 'New'; row.querySelector('b').appendChild(tg); }
       var sub = document.createElement('span'); sub.textContent = 'Snack stop · ' + s.s.hood + (s.s.fav ? ' · a Scarlett favorite' : '') + ' · ';
@@ -358,7 +465,7 @@
     });
     ol.appendChild(item('home', '⌂', 'Back to ' + STARTS[S.start].name, null));
     var ul = document.getElementById('r-why'); ul.innerHTML = '';
-    explain(r).forEach(function (w) { var l = document.createElement('li'); if (w[0]) l.className = w[0]; l.textContent = w[1]; ul.appendChild(l); });
+    explain(r, mode).forEach(function (w) { var l = document.createElement('li'); if (w[0]) l.className = w[0]; l.textContent = w[1]; ul.appendChild(l); });
     document.getElementById('r-gmaps').href = gmaps(r);
   }
 
