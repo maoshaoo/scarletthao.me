@@ -190,6 +190,10 @@ footer .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wr
 @media (prefers-reduced-motion: no-preference) { .sf-time .dot { animation: sfpulse 2.4s ease-in-out infinite; } }
 @keyframes sfpulse { 50% { opacity: .3; } }
 nav { padding-top: .15rem; }
+.co-logo { width: 44px; height: 44px; display: block; flex: none; }
+.co-logo.sq { border-radius: 6px; }
+.co-logo.rd { border-radius: 50%; background: #fff; }
+.co { gap: .7rem; }
 </style>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
 </head>
@@ -251,7 +255,7 @@ nav { padding-top: .15rem; }
       <div class="cards">
       <article class="card">
         <div class="story">
-        <div class="co"><span class="logo" aria-hidden="true">K</span><span>Kodiak AI</span></div>
+        <div class="co"><img class="co-logo sq" src="kodiak-logo.png" alt="" width="44" height="44"><span>Kodiak AI</span></div>
         <h3>Building businesses on driverless trucks</h3>
         <p>We proved the value of bringing autonomy into a business that already runs: driverless trucks working alongside human-driven fleets, and a clear picture of how a customer actually adopts this technology, from the first load to the operating changes, trust, and economics that follow.</p>
         </div>
@@ -259,7 +263,7 @@ nav { padding-top: .15rem; }
       </article>
       <article class="card">
         <div class="story">
-        <div class="co"><span class="logo" aria-hidden="true">DDS</span><span>Defense Digital Service · U.S. Dept. of Defense</span></div>
+        <div class="co"><img class="co-logo rd" src="dds-logo.png" alt="" width="44" height="44"><span>Defense Digital Service · U.S. Dept. of Defense</span></div>
         <h3>Keeping operators on mission</h3>
         <p>Through the <a href="https://www.dds.mil" target="_blank" rel="noopener">Defense Digital Service</a>, I helped operators complete their missions on a cyber-hardened commercial drone platform, building features alongside the people flying them so security made the job easier, not harder.</p>
         </div>
