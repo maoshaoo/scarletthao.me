@@ -48,6 +48,8 @@ python3 -m http.server 8000
 2. Add an entry to the top of `changelog.html`, tagged **New**, **Fun**, or **Functionality**.
 3. Push to `main`. GitHub Pages publishes within a minute or two.
 
+Commit messages: a short, plain title describing the change, and at most one or two human-readable lines underneath. Longer notes live with the task, not in the commit.
+
 ## Short links
 
 Short addresses like [scarletthao.me/linkedin](https://www.scarletthao.me/linkedin) forward to other sites. They're listed in `shortlinks.json`. To add or change one, edit that file and regenerate the pages:
