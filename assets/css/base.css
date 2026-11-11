@@ -11,6 +11,10 @@
   --truck-glass: #DCE3E6;
   --truck-tire: #2A302D;
   --lane: #E3A90F;
+  --cheer-bg: #FFF4D6;
+  --cheer-ink: #4A3A0A;
+  --calm-bg: #EEF1EF;
+  --calm-ink: #2E3633;
   --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
   --body: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
@@ -18,13 +22,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #141817; --ink: #ECEFEB; --soft: #B9C1BC; --muted: #7F8984; --rule: #262D2A; --card: #1A1F1D; --scarlet: #F0776D;
-    --truck-cab: #2A312E; --truck-glass: #3D4A4F; --truck-tire: #0B0D0C; --lane: #F2C94C;
+    --truck-cab: #2A312E; --truck-glass: #3D4A4F; --truck-tire: #0B0D0C; --lane: #F2C94C; --cheer-bg: #2E2712; --cheer-ink: #F3E3B5; --calm-bg: #222927; --calm-ink: #D6DDD9;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #141817; --ink: #ECEFEB; --soft: #B9C1BC; --muted: #7F8984; --rule: #262D2A; --card: #1A1F1D; --scarlet: #F0776D;
-  --truck-cab: #2A312E; --truck-glass: #3D4A4F; --truck-tire: #0B0D0C; --lane: #F2C94C;
+  --truck-cab: #2A312E; --truck-glass: #3D4A4F; --truck-tire: #0B0D0C; --lane: #F2C94C; --cheer-bg: #2E2712; --cheer-ink: #F3E3B5; --calm-bg: #222927; --calm-ink: #D6DDD9;
   color-scheme: dark;
 }
 
@@ -66,3 +70,16 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--scarlet); out
 /* Skip link: hidden until a keyboard user tabs to it */
 .skip { position: absolute; left: max(16px, env(safe-area-inset-left, 0px)); top: -100px; z-index: 100; background: var(--ink); color: var(--bg); font: 500 .9rem var(--body); padding: .55rem .95rem; border-radius: 8px; text-decoration: none; }
 .skip:focus { top: calc(12px + env(safe-area-inset-top, 0px)); }
+
+/* Holiday banner (assets/js/holidays.js) */
+.hbanner { position: relative; display: flex; justify-content: center; align-items: center; gap: .8rem; padding: .65rem calc(3rem + env(safe-area-inset-right, 0px)) .65rem max(16px, env(safe-area-inset-left, 0px)); font: 400 .95rem/1.45 var(--body); }
+.hbanner.warm { background: var(--cheer-bg); color: var(--cheer-ink); }
+.hbanner.quiet { background: var(--calm-bg); color: var(--calm-ink); }
+.hb-ico { flex: none; width: 1.8rem; display: grid; place-items: center; font-size: 1.15rem; line-height: 1; }
+.hb-ico svg { width: 1.8rem; height: auto; display: block; border-radius: 2px; }
+.hb-txt { flex: 0 1 auto; min-width: 0; margin: 0; max-width: 60rem; }
+.hb-txt b { font-weight: 500; }
+.hb-x { position: absolute; right: max(8px, env(safe-area-inset-right, 0px)); top: 50%; transform: translateY(-50%); background: none; border: 0; color: inherit; opacity: .65; font-size: 1.25rem; line-height: 1; cursor: pointer; padding: .3rem .5rem; border-radius: 6px; }
+.hb-x:hover { opacity: 1; }
+.hb-x:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.road .truck .costume { position: absolute; left: 70%; top: -14px; font-size: 18px; line-height: 1; pointer-events: none; }

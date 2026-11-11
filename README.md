@@ -71,3 +71,7 @@ This repository is public so the site can be hosted and so others can see how it
 ## Not counting your own visits
 
 Open any page with `?me` on the end (for example `scarletthao.me/?me`) once on each device. Umami stops counting that browser. `?me=off` turns counting back on.
+
+## Holiday banners
+
+The list of holidays and their lines lives in `assets/js/holidays.js`. Preview any banner with `?holiday=<id>`, for example `/?holiday=veterans`. Lunar New Year dates are listed by year and need adding every few years.
