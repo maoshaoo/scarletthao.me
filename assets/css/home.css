@@ -51,8 +51,12 @@ section { padding-block: 4.5rem; border-top: 1px solid var(--rule); }
 .m { display: grid; gap: .3rem; }
 .m b { font-family: var(--display); font-weight: 300; font-size: clamp(2rem, 4.5vw, 2.6rem); line-height: 1; letter-spacing: -.035em; color: var(--scarlet); font-variant-numeric: tabular-nums; }
 .m span { font-size: .85rem; color: var(--muted); line-height: 1.4; }
-.brands { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); }
-.brands span { display: grid; place-items: center; text-align: center; padding: 1rem; background: var(--bg); font-family: var(--display); font-weight: 400; font-size: clamp(1rem, 2.2vw, 1.3rem); letter-spacing: -.01em; color: var(--ink); }
+/* DTC card: a grid of brand logos. Three across when the card stacks (phones), two across when the photo sits beside the text. Logos stay on white in dark mode so they read. */
+.brands { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr; gap: 1px; background: #E4E4E0; }
+.brands span { display: grid; place-items: center; min-width: 0; min-height: 0; padding: 12%; background: #FFFFFF; }
+.brands img { display: block; width: 100%; height: 100%; max-height: 3.2rem; object-fit: contain; }
+.brands .bl-plant-people { max-height: 4.4rem; }
+.brands .bl-equilibria { max-height: 1.9rem; }
 
 /* fit */
 .fit .wrap { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 3.5rem; }
@@ -102,4 +106,5 @@ footer .wrap { display: grid; gap: .6rem; padding-block: 1.75rem 2.75rem; border
   #experience .cards { width: min(72rem, calc(100vw - 40px)); margin-left: calc(50% - min(36rem, 50vw - 20px)); }
   #experience .card { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   #experience .card-photo { min-height: 22rem; }
+  #experience .brands { grid-template-columns: 1fr 1fr; }
 }
