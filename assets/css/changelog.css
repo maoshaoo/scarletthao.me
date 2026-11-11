@@ -27,3 +27,4 @@ h1 { font-family: var(--display); font-weight: 300; font-size: clamp(2rem, 5vw, 
 .entry .tag:hover { background: var(--card); }
 .flt-status { margin: -1.5rem 0 2rem; font-size: .88rem; color: var(--soft); }
 #flt-all { font: inherit; color: var(--scarlet); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.tally { font-size: .62rem; margin-left: .2rem; vertical-align: .45em; line-height: 0; letter-spacing: 0; }
