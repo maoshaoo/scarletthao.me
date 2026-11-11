@@ -23,6 +23,9 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>
 /* Play: a short list of side projects, one card each. */
+.back-top { display: flex; justify-content: flex-end; font-size: .9rem; }
+.back-top a { color: var(--soft); text-decoration: none; }
+.back-top a:hover { color: var(--ink); }
 .play { display: grid; gap: 1.2rem; padding-block: 1.5rem 4rem; }
 .play h1 { margin: 0; }
 .play .lede { margin: 0; color: var(--soft); max-width: 72ch; }
@@ -41,22 +44,8 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<header class="site-hdr" style="--hdr-w: 44rem">
-  <div class="wrap">
-    <div class="who-hdr">
-      <a class="mark" href="/">Scarlett Hao<span>.</span></a>
-      <div class="sf-time"><span class="dot" aria-hidden="true"></span><span id="sf-time">San Francisco</span></div>
-    </div>
-    <nav aria-label="Main">
-      <a href="/#experience">Experience</a>
-      <a href="/#about">About</a>
-      <a href="/play/" data-umami-event="click-nav-play" aria-current="page">Play</a>
-      <a href="/#contact">Contact</a>
-      <span class="theme-slot"></span>
-    </nav>
-  </div>
-</header>
 <div class="page">
+  <nav class="back-top" aria-label="Site"><a href="/" data-umami-event="click-play-back">Back to the site &rarr;</a></nav>
   <main class="play" id="main">
     <h1>Play</h1>
     <p class="lede">Small things I build for fun.</p>
@@ -64,7 +53,6 @@
       <li><a class="proj" href="/play/brain-power/" data-umami-event="click-play-brain-power"><span class="k">Trivia</span><b>Brain Power</b><span class="d">Feel smart, or get smart. A quiz board for what you know and what you want to learn.</span><span class="go">Play a board &rarr;</span></a></li>
       <li><a class="proj" href="/play/snacky-vespa/" data-umami-event="click-play-snacky-vespa"><span class="k">Ride planner</span><b>Snacky Vespa <span class="wip"><span aria-hidden="true">🚧</span> Work in progress</span></b><span class="d">Snack first, route second. A loop around San Francisco that chases the sun, or visits Karl the Fog.</span><span class="go">Plan a ride &rarr;</span></a></li>
     </ul>
-    <p><a href="/">&larr; Back to scarletthao.me</a></p>
   </main>
 </div>
 <script src="/assets/js/site.js?v=3" defer></script>
