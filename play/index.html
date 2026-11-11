@@ -25,7 +25,9 @@
 /* Play: a short list of side projects, one card each. */
 .play { display: grid; gap: 1.2rem; padding-block: 1.5rem 4rem; }
 .play h1 { margin: 0; }
-.play .lede { margin: 0; color: var(--soft); max-width: 46ch; }
+.play .lede { margin: 0; color: var(--soft); max-width: 72ch; }
+.proj .wip { display: inline-flex; align-items: center; gap: .35rem; font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; color: var(--cheer-ink); background: var(--cheer-bg); border: 1px solid var(--lane); border-radius: 999px; padding: .1rem .55rem; vertical-align: 1px; }
+
 .projects { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: .9rem; }
 .proj { display: grid; gap: .3rem; border: 1px solid var(--rule); border-radius: 14px; background: var(--card); padding: 1.1rem 1.25rem; text-decoration: none; color: var(--ink); }
 .proj:hover { border-color: var(--muted); }
@@ -45,10 +47,10 @@
   </header>
   <main class="play" id="main">
     <h1>Play</h1>
-    <p class="lede">Small things I build for fun, mostly about snacks, San Francisco, and knowing the answer at trivia night.</p>
+    <p class="lede">Small things I build for fun.</p>
     <ul class="projects">
       <li><a class="proj" href="/play/brain-power/" data-umami-event="click-play-brain-power"><span class="k">Trivia</span><b>Brain Power</b><span class="d">Feel smart, or get smart. A quiz board for what you know and what you want to learn.</span><span class="go">Play a board &rarr;</span></a></li>
-      <li><a class="proj" href="/play/snacky-vespa/" data-umami-event="click-play-snacky-vespa"><span class="k">Ride planner</span><b>Snacky Vespa</b><span class="d">Snack first, route second. A loop around San Francisco that chases the sun, or visits Karl the Fog.</span><span class="go">Plan a ride &rarr;</span></a></li>
+      <li><a class="proj" href="/play/snacky-vespa/" data-umami-event="click-play-snacky-vespa"><span class="k">Ride planner</span><b>Snacky Vespa <span class="wip"><span aria-hidden="true">🚧</span> Work in progress</span></b><span class="d">Snack first, route second. A loop around San Francisco that chases the sun, or visits Karl the Fog.</span><span class="go">Plan a ride &rarr;</span></a></li>
     </ul>
     <p><a href="/">&larr; Back to scarletthao.me</a></p>
   </main>
