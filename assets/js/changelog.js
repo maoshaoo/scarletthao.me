@@ -47,14 +47,6 @@
     t.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
   });
 
-  // Tally: a small superscript count after each tag in the key
-  btns.forEach(function (b) {
-    var n = document.querySelectorAll('article.entry .tag-' + b.dataset.tag).length;
-    var t = b.querySelector('.tag'); var sup = document.createElement('sup');
-    sup.className = 'tally'; sup.textContent = n; sup.setAttribute('aria-label', n + ' updates');
-    t.appendChild(sup);
-  });
-
   var h = location.hash.replace('#', '');
   for (var k in HASH) if (HASH[k] === h) apply(k, false);
 })();
