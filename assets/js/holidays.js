@@ -83,8 +83,11 @@
     try { localStorage.setItem(key, '1'); } catch (e) {}
   });
   el.appendChild(ico); el.appendChild(txt); el.appendChild(x);
+  // Sits just below the pinned header and scrolls away with the page
+  var hdr = document.querySelector('header.site-hdr');
   var skip = document.querySelector('.skip');
-  document.body.insertBefore(el, skip ? skip.nextSibling : document.body.firstChild);
+  if (hdr) hdr.parentNode.insertBefore(el, hdr.nextSibling);
+  else document.body.insertBefore(el, skip ? skip.nextSibling : document.body.firstChild);
   document.documentElement.classList.add('has-hbanner');
 
   // Halloween: the scroll truck wears a pumpkin
