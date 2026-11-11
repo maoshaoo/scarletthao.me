@@ -106,3 +106,10 @@ footer .wrap { display: grid; gap: .6rem; padding-block: 1.75rem 2.75rem; border
 .more span { display: inline-block; transition: transform .2s; }
 .more:hover span { transform: translateX(3px); }
 .more:focus-visible { outline: 2px solid var(--scarlet); outline-offset: 3px; }
+
+/* Wider experience cards on desktop: they break out of the text column to about 72rem, centered. */
+@media (min-width: 900px) {
+  #experience .cards { width: min(72rem, calc(100vw - 40px)); margin-left: calc(50% - min(36rem, 50vw - 20px)); }
+  #experience .card { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  #experience .card-photo { min-height: 22rem; }
+}
