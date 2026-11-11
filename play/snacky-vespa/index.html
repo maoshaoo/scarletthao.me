@@ -15,8 +15,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
-<script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
-<link rel="stylesheet" href="/assets/css/base.css">
+<script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);var m=/[?&]me(=off)?(&|$)/.exec(location.search);if(m){if(m[1])localStorage.removeItem("umami.disabled");else localStorage.setItem("umami.disabled","1")}}catch(e){}</script>
+<link rel="stylesheet" href="/assets/css/base.css?v=2">
 <link rel="stylesheet" href="snacky-vespa.css?v=3">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -84,11 +84,11 @@
 </main>
 
 <footer class="wrap sv-foot">
-  <p>Snack spots and stops are public places around San Francisco. Weather from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>. “I’ve been here” is saved only in your browser. Anonymous usage counts (which options people pick) go to Umami, with no cookies. Ride safe, and check the road, not the app.</p>
+  <p>Snack spots and stops are public places around San Francisco. Weather from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>. Routes from <a href="https://openrouteservice.org" target="_blank" rel="noopener">openrouteservice</a>, map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. “I’ve been here” is saved only in your browser. Anonymous usage counts (which options people pick) go to Umami, with no cookies. Ride safe, and check the road, not the app.</p>
   <p><a href="/">scarletthao.me</a> · <a href="/changelog.html">Changelog</a></p>
 </footer>
 
 <script src="snacky-vespa.js?v=3" defer></script>
-<script src="/assets/js/site.js" defer></script>
+<script src="/assets/js/site.js?v=2" defer></script>
 </body>
 </html>

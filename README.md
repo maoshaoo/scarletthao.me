@@ -66,3 +66,7 @@ Each link becomes a small page that waits half a second (so the visit is counted
 © 2026 Scarlett Hao. All rights reserved.
 
 This repository is public so the site can be hosted and so others can see how it's built. The words, photos, and design are not licensed for reuse. Company names and logos belong to their respective owners and are used only to describe past work.
+
+## Not counting your own visits
+
+Open any page with `?me` on the end (for example `scarletthao.me/?me`) once on each device. Umami stops counting that browser. `?me=off` turns counting back on.

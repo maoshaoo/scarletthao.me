@@ -58,3 +58,7 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--scarlet); out
 .tg-icon .i-moon { display: none; }
 .is-dark .tg-icon .i-sun { display: none; }
 .is-dark .tg-icon .i-moon { display: block; }
+
+/* Owner switch note (?me) */
+.me-note { position: fixed; left: 50%; bottom: calc(64px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 50; background: var(--ink); color: var(--bg); font: 400 .85rem var(--body); padding: .55rem 1rem; border-radius: 999px; box-shadow: 0 4px 16px rgba(0,0,0,.15); transition: opacity .4s; max-width: calc(100% - 32px); text-align: center; }
+.me-note.gone { opacity: 0; pointer-events: none; }

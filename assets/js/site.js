@@ -39,6 +39,18 @@
   if (darkQuery && darkQuery.addEventListener) darkQuery.addEventListener('change', syncTheme);
   syncTheme();
 
+  // Owner switch: visiting any page with ?me stops Umami counting this browser (?me=off turns it back on).
+  // The setting itself is saved by the early script in each page's <head>, before Umami loads.
+  var me = /[?&]me(=off)?(&|$)/.exec(location.search);
+  if (me) {
+    var note = document.createElement('div');
+    note.className = 'me-note'; note.setAttribute('role', 'status');
+    note.textContent = me[1] ? 'Counting your visits again on this device.' : 'Not counting your visits on this device.';
+    document.body.appendChild(note);
+    setTimeout(function () { note.classList.add('gone'); }, 4000);
+    try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {}
+  }
+
   // Copy-email button (home page)
   var copyBtn = document.getElementById('copy-email');
   var addr = document.getElementById('addr');
