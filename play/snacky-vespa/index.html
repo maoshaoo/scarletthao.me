@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
 <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);var m=/[?&]me(=off)?(&|$)/.exec(location.search);if(m){if(m[1])localStorage.removeItem("umami.disabled");else localStorage.setItem("umami.disabled","1")}}catch(e){}</script>
-<link rel="stylesheet" href="/assets/css/base.css?v=4">
+<link rel="stylesheet" href="/assets/css/base.css?v=5">
 <link rel="stylesheet" href="snacky-vespa.css?v=5">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -26,12 +26,22 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<header class="sv-top">
+<header class="site-hdr" style="--hdr-w: 72rem">
   <div class="wrap">
-    <a class="mark" href="/">Scarlett Hao<span>.</span></a>
-    <nav><a href="/">&larr; Back to the site</a><span class="theme-slot"></span></nav>
+    <div class="who-hdr">
+      <a class="mark" href="/">Scarlett Hao<span>.</span></a>
+      <div class="sf-time"><span class="dot" aria-hidden="true"></span><span id="sf-time">San Francisco</span></div>
+    </div>
+    <nav aria-label="Main">
+      <a href="/#experience">Experience</a>
+      <a href="/#about">About</a>
+      <a href="/play/" data-umami-event="click-nav-play" aria-current="page">Play</a>
+      <a href="/#contact">Contact</a>
+      <span class="theme-slot"></span>
+    </nav>
   </div>
 </header>
+
 
 <section class="wrap intro" id="main">
   <p class="crumb">Play / Snacky Vespa <span class="wip"><span aria-hidden="true">🚧</span> Work in progress</span></p>
@@ -91,7 +101,7 @@
 </footer>
 
 <script src="snacky-vespa.js?v=3" defer></script>
-<script src="/assets/js/site.js?v=2" defer></script>
+<script src="/assets/js/site.js?v=3" defer></script>
 <script src="/assets/js/holidays.js?v=1" defer></script>
 </body>
 </html>

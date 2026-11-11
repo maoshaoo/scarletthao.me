@@ -66,7 +66,15 @@
     });
   }
 
-  // Live San Francisco time and weather under the name (home page)
+  // Sticky header: add a line under it once the page scrolls
+  var hdr = document.querySelector('.site-hdr');
+  if (hdr) {
+    var onScroll = function () { hdr.classList.toggle('scrolled', window.scrollY > 8); };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  // Live San Francisco time and weather under the name (every page)
   var timeEl = document.getElementById('sf-time');
   if (timeEl && window.Intl) {
     var notes = [
