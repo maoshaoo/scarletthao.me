@@ -17,3 +17,13 @@ h1 { font-family: var(--display); font-weight: 300; font-size: clamp(2rem, 5vw, 
 .legend .tag { margin-left: 0; margin-right: .35rem; }
 @media (max-width: 560px) { .entry { grid-template-columns: minmax(0, 1fr); gap: .25rem; } .date { padding-top: 0; } }
 .cl-foot { display: grid; gap: .6rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); font-size: .8rem; color: var(--muted); }
+
+/* Tag filters */
+.flt { display: inline-flex; align-items: center; font: inherit; color: inherit; background: none; border: 1px solid transparent; border-radius: 999px; padding: .2rem .7rem .2rem .25rem; cursor: pointer; }
+.flt:hover { border-color: var(--rule); }
+.flt[aria-pressed="true"] { border-color: var(--ink); color: var(--ink); background: var(--card); }
+.flt:focus-visible, .entry .tag:focus-visible, #flt-all:focus-visible { outline: 2px solid var(--scarlet); outline-offset: 2px; }
+.entry .tag { cursor: pointer; }
+.entry .tag:hover { background: var(--card); }
+.flt-status { margin: -1.5rem 0 2rem; font-size: .88rem; color: var(--soft); }
+#flt-all { font: inherit; color: var(--scarlet); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
