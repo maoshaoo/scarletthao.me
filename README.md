@@ -30,6 +30,7 @@ favicon.svg, favicon-32.png, apple-touch-icon.png   site icons (kept at the root
 CNAME                 custom domain for GitHub Pages
 shortlinks.json       short links like /linkedin (see below)
 tools/                small helper scripts
+work/                 Work stories (coming soon page for now)
 play/snacky-vespa/    Snacky Vespa, a Sunday ride planner (weather + snack stop)
 robots.txt, sitemap.xml
 ```

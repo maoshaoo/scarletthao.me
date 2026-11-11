@@ -100,3 +100,9 @@ footer .wrap { display: grid; gap: .6rem; padding-block: 1.75rem 2.75rem; border
   .card-photo { min-height: 0; height: auto; aspect-ratio: 16 / 9; }
   .fit .wrap { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
 }
+
+/* "Read the full story" link at the bottom of each experience card */
+.more { justify-self: start; font-weight: 500; font-size: .95rem; color: var(--scarlet); text-decoration: none; border-bottom: 1.5px solid currentColor; padding-bottom: 1px; }
+.more span { display: inline-block; transition: transform .2s; }
+.more:hover span { transform: translateX(3px); }
+.more:focus-visible { outline: 2px solid var(--scarlet); outline-offset: 3px; }
