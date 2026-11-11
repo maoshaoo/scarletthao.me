@@ -31,6 +31,8 @@ CNAME                 custom domain for GitHub Pages
 shortlinks.json       short links like /linkedin (see below)
 tools/                small helper scripts
 work/                 Work stories (coming soon page for now)
+play/                 Side projects (index page)
+play/brain-power/     Brain Power, a trivia board
 play/snacky-vespa/    Snacky Vespa, a Sunday ride planner (weather + snack stop)
 robots.txt, sitemap.xml
 ```

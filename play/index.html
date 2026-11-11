@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Play · Scarlett Hao</title>
+<meta name="description" content="Small things Scarlett Hao builds for fun: a Vespa ride planner and a trivia board.">
+<meta property="og:title" content="Play · Scarlett Hao">
+<meta property="og:description" content="Small things I build for fun.">
+<meta property="og:url" content="https://www.scarletthao.me/play/">
+<meta property="og:image" content="https://www.scarletthao.me/assets/images/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://www.scarletthao.me/play/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
+<script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);var m=/[?&]me(=off)?(&|$)/.exec(location.search);if(m){if(m[1])localStorage.removeItem("umami.disabled");else localStorage.setItem("umami.disabled","1")}}catch(e){}</script>
+<link rel="stylesheet" href="/assets/css/base.css?v=4">
+<link rel="stylesheet" href="/assets/css/changelog.css">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style>
+/* Play: a short list of side projects, one card each. */
+.play { display: grid; gap: 1.2rem; padding-block: 1.5rem 4rem; }
+.play h1 { margin: 0; }
+.play .lede { margin: 0; color: var(--soft); max-width: 46ch; }
+.projects { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: .9rem; }
+.proj { display: grid; gap: .3rem; border: 1px solid var(--rule); border-radius: 14px; background: var(--card); padding: 1.1rem 1.25rem; text-decoration: none; color: var(--ink); }
+.proj:hover { border-color: var(--muted); }
+.proj:hover .go { transform: translateX(3px); }
+.proj .k { font-family: var(--mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.proj b { font-family: var(--display); font-weight: 400; font-size: 1.4rem; letter-spacing: -.01em; }
+.proj span.d { color: var(--soft); }
+.proj .go { color: var(--scarlet); font-weight: 500; display: inline-block; transition: transform .2s; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="page">
+  <header class="top">
+    <a class="mark" href="/">Scarlett Hao<span>.</span></a>
+    <span class="theme-slot"></span>
+  </header>
+  <main class="play" id="main">
+    <h1>Play</h1>
+    <p class="lede">Small things I build for fun, mostly about snacks, San Francisco, and knowing the answer at trivia night.</p>
+    <ul class="projects">
+      <li><a class="proj" href="/play/brain-power/" data-umami-event="click-play-brain-power"><span class="k">Trivia</span><b>Brain Power</b><span class="d">Feel smart, or get smart. A quiz board for what you know and what you want to learn.</span><span class="go">Play a board &rarr;</span></a></li>
+      <li><a class="proj" href="/play/snacky-vespa/" data-umami-event="click-play-snacky-vespa"><span class="k">Ride planner</span><b>Snacky Vespa</b><span class="d">Snack first, route second. A loop around San Francisco that chases the sun, or visits Karl the Fog.</span><span class="go">Plan a ride &rarr;</span></a></li>
+    </ul>
+    <p><a href="/">&larr; Back to scarletthao.me</a></p>
+  </main>
+</div>
+<script src="/assets/js/site.js?v=2" defer></script>
+<script src="/assets/js/holidays.js?v=1" defer></script>
+</body>
+</html>

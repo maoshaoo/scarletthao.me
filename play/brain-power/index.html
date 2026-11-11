@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brain Power · Scarlett Hao</title>
+<meta name="description" content="Feel smart, or get smart. A trivia board of categories by point value, with modes for what you know and what you want to learn.">
+<meta property="og:title" content="Brain Power">
+<meta property="og:description" content="Feel smart, or get smart. A trivia board for what you know and what you want to learn.">
+<meta property="og:url" content="https://www.scarletthao.me/play/brain-power/">
+<meta property="og:image" content="https://www.scarletthao.me/assets/images/og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://www.scarletthao.me/play/brain-power/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
+<script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);var m=/[?&]me(=off)?(&|$)/.exec(location.search);if(m){if(m[1])localStorage.removeItem("umami.disabled");else localStorage.setItem("umami.disabled","1")}}catch(e){}</script>
+<link rel="stylesheet" href="/assets/css/base.css?v=4">
+<link rel="stylesheet" href="brain-power.css?v=1">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bp-top">
+  <div class="wrap">
+    <a class="mark" href="/">Scarlett Hao<span>.</span></a>
+    <nav><a href="/play/">&larr; More play</a><span class="theme-slot"></span></nav>
+  </div>
+</header>
+
+<section class="wrap intro" id="main">
+  <p class="crumb">Play / Brain Power</p>
+  <h1>Brain Power. <em>Feel smart, or get smart.</em></h1>
+  <p class="lede">I’m pretty good at history, sports, and politics. Pop culture, music, movies, and art? Not so much. So this board does both: one mode to show off, one to catch up, and one for chaos.</p>
+
+  <div class="modes" role="group" aria-label="Mode">
+    <button class="mode" type="button" id="m-feel" data-m="feel" aria-pressed="true"><b>Feel smart</b><span>Categories you already know. A confidence boost.</span></button>
+    <button class="mode" type="button" id="m-get" data-m="get" aria-pressed="false"><b>Get smart</b><span>Categories you want to get better at. Misses come back later.</span></button>
+    <button class="mode" type="button" id="m-wild" data-m="wild" aria-pressed="false"><b>Wild card</b><span>Five random categories. Anything goes.</span></button>
+  </div>
+
+  <details class="picker">
+    <summary id="pk-sum">Using Scarlett’s picks. Set your own categories</summary>
+    <p class="help">Tap a category to cycle it: <b>I know this</b> (Feel smart), <b>Teach me</b> (Get smart), or neither.</p>
+    <div class="cats" id="cats"></div>
+  </details>
+</section>
+
+<main class="wrap stage">
+  <div class="scorebar"><span class="label" id="sb-label">Feel smart</span><span><span class="label">Score </span><span class="score" id="score">0</span></span></div>
+  <div class="board" id="board" role="grid" aria-label="Quiz board"></div>
+
+  <section class="clue" id="clue" hidden aria-live="polite">
+    <div class="meta"><b id="c-cat"></b><span id="c-val"></span></div>
+    <p class="q" id="c-q"></p>
+    <div class="opts" id="c-opts"></div>
+    <p class="why" id="c-why" hidden></p>
+    <button class="btn" type="button" id="c-back" hidden>Back to the board</button>
+  </section>
+
+  <section class="done" id="done" hidden aria-live="polite">
+    <h2 id="d-score"></h2>
+    <p id="d-line"></p>
+    <button class="btn primary" type="button" id="d-again">New board</button>
+  </section>
+</main>
+
+<footer class="wrap bp-foot">
+  <p>Clues written by hand for now; a bigger question bank is coming. Your category picks are saved only in your browser. Anonymous usage counts (which modes and categories people pick) go to Umami, with no cookies.</p>
+  <p><a href="/">scarletthao.me</a> · <a href="/play/">Play</a> · <a href="/changelog.html">Changelog</a></p>
+</footer>
+
+<script src="brain-power.js?v=1" defer></script>
+<script src="/assets/js/site.js?v=2" defer></script>
+<script src="/assets/js/holidays.js?v=1" defer></script>
+</body>
+</html>
