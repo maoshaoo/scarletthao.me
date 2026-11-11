@@ -1,9 +1,9 @@
 /* Snacky Vespa: page layout, the fill-in sentence, the result list, and the sketch map. Colors come from base.css. */
-:root { --water: #DCE6E8; --land: #F4F5F2; --park: #DCE8D5; --fog: #FFFFFF; --fog-op: .85; --bridge: #C0462B; --rain: #5D7A86; --good: #3E8E5A; }
+:root { --on-accent: #FFFFFF; --water: #DCE6E8; --land: #F4F5F2; --park: #DCE8D5; --fog: #FFFFFF; --fog-op: .85; --bridge: #C0462B; --rain: #5D7A86; --good: #3E8E5A; }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --water: #142226; --land: #1F2523; --park: #21332A; --fog: #9AA6A2; --fog-op: .55; --bridge: #E0694F; --rain: #8FB0BD; --good: #6CC08A; }
+  :root:not([data-theme="light"]) { --on-accent: #141817; --water: #142226; --land: #1F2523; --park: #21332A; --fog: #9AA6A2; --fog-op: .55; --bridge: #E0694F; --rain: #8FB0BD; --good: #6CC08A; }
 }
-:root[data-theme="dark"] { --water: #142226; --land: #1F2523; --park: #21332A; --fog: #9AA6A2; --fog-op: .55; --bridge: #E0694F; --rain: #8FB0BD; --good: #6CC08A; }
+:root[data-theme="dark"] { --on-accent: #141817; --water: #142226; --land: #1F2523; --park: #21332A; --fog: #9AA6A2; --fog-op: .55; --bridge: #E0694F; --rain: #8FB0BD; --good: #6CC08A; }
 
 .wrap { max-width: 72rem; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
 .sv-top .wrap { padding-block: 1.5rem 0; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
@@ -49,8 +49,8 @@
 .why li.bad::before { background: var(--scarlet); }
 .actions { display: flex; gap: .6rem; flex-wrap: wrap; }
 .btn { font: 500 .92rem var(--body); border-radius: 999px; padding: .55rem 1.15rem; cursor: pointer; text-decoration: none; border: 1px solid var(--ink); }
-.btn.primary { background: var(--scarlet); border-color: var(--scarlet); color: #FFFFFF; }
-.btn.primary:hover { color: #FFFFFF; filter: brightness(1.08); }
+.btn.primary { background: var(--scarlet); border-color: var(--scarlet); color: var(--on-accent); }
+.btn.primary:hover { color: var(--on-accent); filter: brightness(1.08); }
 .btn.ghost { background: transparent; color: var(--ink); }
 
 .mapbox { position: relative; border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; background: var(--water); }

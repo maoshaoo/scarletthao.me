@@ -3,7 +3,7 @@
   --bg: #FCFCFA;
   --ink: #1C2321;
   --soft: #4A5450;
-  --muted: #858F8A;
+  --muted: #687270;
   --rule: #E5E8E3;
   --card: #FFFFFF;
   --scarlet: #B3261E;
@@ -62,3 +62,7 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--scarlet); out
 /* Owner switch note (?me) */
 .me-note { position: fixed; left: 50%; bottom: calc(64px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 50; background: var(--ink); color: var(--bg); font: 400 .85rem var(--body); padding: .55rem 1rem; border-radius: 999px; box-shadow: 0 4px 16px rgba(0,0,0,.15); transition: opacity .4s; max-width: calc(100% - 32px); text-align: center; }
 .me-note.gone { opacity: 0; pointer-events: none; }
+
+/* Skip link: hidden until a keyboard user tabs to it */
+.skip { position: absolute; left: max(16px, env(safe-area-inset-left, 0px)); top: -100px; z-index: 100; background: var(--ink); color: var(--bg); font: 500 .9rem var(--body); padding: .55rem .95rem; border-radius: 8px; text-decoration: none; }
+.skip:focus { top: calc(12px + env(safe-area-inset-top, 0px)); }
