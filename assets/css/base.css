@@ -75,6 +75,9 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--scarlet); out
 .hbanner { position: relative; display: flex; justify-content: center; align-items: center; gap: .8rem; padding: .65rem calc(3rem + env(safe-area-inset-right, 0px)) .65rem max(16px, env(safe-area-inset-left, 0px)); font: 400 .95rem/1.45 var(--body); }
 .hbanner.warm { background: var(--cheer-bg); color: var(--cheer-ink); }
 .hbanner.quiet { background: var(--calm-bg); color: var(--calm-ink); }
+.hbanner.fact { background: var(--card); color: var(--soft); border-bottom: 1px solid var(--rule); }
+.hb-k { flex: none; font: 400 .7rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--scarlet); }
+@media (max-width: 600px) { .hbanner.fact { flex-direction: column; align-items: flex-start; gap: .25rem; } }
 .hb-ico { flex: none; width: 1.8rem; display: grid; place-items: center; font-size: 1.15rem; line-height: 1; }
 .hb-ico svg { width: 1.8rem; height: auto; display: block; border-radius: 2px; }
 .hb-txt { flex: 0 1 auto; min-width: 0; margin: 0; max-width: 60rem; }
