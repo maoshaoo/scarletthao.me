@@ -48,3 +48,5 @@
 .story .foot a, .story .foot2 a { color: var(--soft); }
 .story .next { display: inline-block; margin-top: 2rem; color: var(--scarlet); font-weight: 500; text-decoration: none; border-bottom: 1.5px solid currentColor; }
 .story .next:focus-visible { outline: 2px solid var(--scarlet); outline-offset: 3px; }
+.story .through { margin: 1.25rem 0 0; color: var(--ink); font-size: 1.05rem; }
+.story sup { line-height: 0; }
