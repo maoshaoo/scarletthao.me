@@ -1,14 +1,14 @@
 /* Home page: one medium-width column; hero, intro, patterns, experience cards, fit, about, contact. */
 .wrap { max-width: 56rem; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
 .eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-h1, h2, h3 { font-family: var(--display); font-weight: 300; letter-spacing: -.025em; text-wrap: balance; margin: 0; }
+h1, h2, h3, .hero-title { font-family: var(--display); font-weight: 300; letter-spacing: -.025em; text-wrap: balance; margin: 0; }
 section { padding-block: 4.5rem; border-top: 1px solid var(--rule); }
 
 /* hero */
 .hero { border-top: 0; padding-block: 4.5rem 4rem; }
 .hero .wrap { display: grid; gap: 1.5rem; }
-.hero h1 { font-size: clamp(2.2rem, 5.6vw, 4rem); line-height: 1.08; letter-spacing: -.035em; max-width: 18ch; }
-.hero h1 em { font-style: normal; color: var(--scarlet); }
+.hero .hero-title { margin: 0; color: var(--ink); font-size: clamp(2.2rem, 5.6vw, 4rem); line-height: 1.08; letter-spacing: -.035em; max-width: 18ch; }
+.hero .hero-title em { font-style: normal; color: var(--scarlet); }
 .arc { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem .75rem; font-family: var(--mono); font-size: .82rem; letter-spacing: .02em; color: var(--ink); }
 .arc i { font-style: normal; color: var(--scarlet); }
 
@@ -16,7 +16,7 @@ section { padding-block: 4.5rem; border-top: 1px solid var(--rule); }
 .intro .wrap { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: 2.5rem; align-items: start; }
 .headshot { aspect-ratio: 4 / 5; width: 100%; height: auto; max-width: 100%; border-radius: 18px; object-fit: cover; object-position: 50% 20%; display: block; border: 1px solid var(--rule); }
 .intro-text { display: grid; gap: 1.1rem; }
-.intro h2 { font-size: clamp(1.6rem, 3.4vw, 2.1rem); line-height: 1.15; }
+.intro h1 { font-size: clamp(1.6rem, 3.4vw, 2.1rem); line-height: 1.15; }
 .intro p { margin: 0; color: var(--soft); font-size: 1.08rem; max-width: 60ch; }
 .intro .who { color: var(--ink); font-family: var(--display); font-weight: 300; font-size: clamp(1.2rem, 2.4vw, 1.4rem); line-height: 1.4; }
 
