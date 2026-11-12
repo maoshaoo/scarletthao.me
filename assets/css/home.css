@@ -14,7 +14,7 @@ section { padding-block: 4.5rem; border-top: 1px solid var(--rule); }
 
 /* intro */
 .intro .wrap { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: 2.5rem; align-items: start; }
-.headshot { aspect-ratio: 1; width: 100%; height: auto; max-width: 100%; border-radius: 50%; object-fit: cover; display: block; border: 1px solid var(--rule); }
+.headshot { aspect-ratio: 4 / 5; width: 100%; height: auto; max-width: 100%; border-radius: 18px; object-fit: cover; object-position: 50% 20%; display: block; border: 1px solid var(--rule); }
 .intro-text { display: grid; gap: 1.1rem; }
 .intro h2 { font-size: clamp(1.6rem, 3.4vw, 2.1rem); line-height: 1.15; }
 .intro p { margin: 0; color: var(--soft); font-size: 1.08rem; max-width: 60ch; }
@@ -88,7 +88,7 @@ footer .wrap { display: grid; gap: .6rem; padding-block: 1.75rem 2.75rem; border
 @media (max-width: 760px) {
   section { padding-block: 3.5rem; }
   .intro .wrap { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
-  .headshot { width: 7.5rem; }
+  .headshot { width: 9rem; }
   .patterns .wrap { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
   .card { grid-template-columns: minmax(0, 1fr); }
   .card-photo { min-height: 0; height: auto; aspect-ratio: 16 / 9; }
