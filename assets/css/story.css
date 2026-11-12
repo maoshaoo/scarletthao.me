@@ -50,3 +50,4 @@
 .story .next:focus-visible { outline: 2px solid var(--scarlet); outline-offset: 3px; }
 .story .through { margin: 1.25rem 0 0; color: var(--ink); font-size: 1.05rem; }
 .story sup { line-height: 0; }
+.story h1 sup { font-size: .32em; vertical-align: 1.1em; margin-left: .1em; line-height: 0; }
