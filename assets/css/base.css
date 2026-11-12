@@ -72,7 +72,7 @@ a:focus-visible, button:focus-visible { outline: 1.5px solid var(--scarlet); out
 .skip:focus { top: calc(12px + env(safe-area-inset-top, 0px)); }
 
 /* Holiday banner (assets/js/holidays.js) */
-.hbanner { position: relative; display: flex; justify-content: center; align-items: center; gap: .8rem; padding: .65rem calc(3rem + env(safe-area-inset-right, 0px)) .65rem max(16px, env(safe-area-inset-left, 0px)); font: 400 .95rem/1.45 var(--body); }
+.hbanner { position: relative; display: flex; justify-content: flex-start; align-items: center; gap: .8rem; padding: .65rem calc(3rem + env(safe-area-inset-right, 0px)) .65rem max(16px, env(safe-area-inset-left, 0px)); font: 400 .95rem/1.45 var(--body); }
 .hbanner.warm { background: var(--cheer-bg); color: var(--cheer-ink); }
 .hbanner.quiet { background: var(--calm-bg); color: var(--calm-ink); }
 .hbanner.fact { background: var(--card); color: var(--soft); border-bottom: 1px solid var(--rule); }

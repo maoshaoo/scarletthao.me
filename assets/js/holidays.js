@@ -186,6 +186,20 @@
     if (hdr) hdr.parentNode.insertBefore(el, hdr.nextSibling);
     else document.body.insertBefore(el, skip ? skip.nextSibling : document.body.firstChild);
     document.documentElement.classList.add('has-hbanner');
+    // Line the banner's text up with the left edge of the page: the name in the header, or the page column when there's no header
+    function align() {
+      var t = document.querySelector('header.site-hdr .mark'), left;
+      if (t) left = t.getBoundingClientRect().left;
+      else {
+        t = document.querySelector('.page') || document.querySelector('main');
+        if (!t) return;
+        left = t.getBoundingClientRect().left + parseFloat(getComputedStyle(t).paddingLeft || 0);
+      }
+      el.style.paddingLeft = Math.max(16, Math.round(left)) + 'px';
+    }
+    align();
+    window.addEventListener('resize', align);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(align);
   }
 
   var preview = (location.search.match(/[?&]holiday=([\w-]+)/) || [])[1];
