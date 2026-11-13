@@ -10,7 +10,8 @@ section { padding-block: 4.5rem; border-top: 1px solid var(--rule); }
 .hero .hero-title { margin: 0; color: var(--ink); font-size: clamp(2.2rem, 5.6vw, 4rem); line-height: 1.08; letter-spacing: -.035em; max-width: 18ch; }
 .hero .hero-title em { font-style: normal; color: var(--scarlet); }
 .arc { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem .75rem; font-family: var(--mono); font-size: .82rem; letter-spacing: .02em; color: var(--ink); }
-.arc i { font-style: normal; color: var(--scarlet); }
+.arc span { white-space: nowrap; }
+.arc i { font-style: normal; color: var(--scarlet); margin-right: .35rem; }
 
 /* intro */
 .intro .wrap { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: 2.5rem; align-items: start; }

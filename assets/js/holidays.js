@@ -188,14 +188,25 @@
     document.documentElement.classList.add('has-hbanner');
     // Line the banner's text up with the left edge of the page: the name in the header, or the page column when there's no header
     function align() {
-      var t = document.querySelector('header.site-hdr .mark'), left;
-      if (t) left = t.getBoundingClientRect().left;
-      else {
-        t = document.querySelector('.page') || document.querySelector('main');
-        if (!t) return;
-        left = t.getBoundingClientRect().left + parseFloat(getComputedStyle(t).paddingLeft || 0);
+      var t = document.querySelector('header.site-hdr .mark'), box, left, right;
+      if (t) {
+        left = t.getBoundingClientRect().left;
+        box = document.querySelector('header.site-hdr .wrap');
+      } else {
+        box = document.querySelector('.page') || document.querySelector('main');
+        if (!box) return;
+        left = box.getBoundingClientRect().left + parseFloat(getComputedStyle(box).paddingLeft || 0);
       }
       el.style.paddingLeft = Math.max(16, Math.round(left)) + 'px';
+      // Line the close button up with the right edge of the same column
+      if (box) {
+        var vw = document.documentElement.clientWidth;
+        right = box.getBoundingClientRect().right - parseFloat(getComputedStyle(box).paddingRight || 0);
+        var gap = Math.max(8, Math.round(vw - right - 8));
+        var x = el.querySelector('.hb-x');
+        if (x) x.style.right = gap + 'px';
+        el.style.paddingRight = (gap + 40) + 'px';
+      }
     }
     align();
     window.addEventListener('resize', align);

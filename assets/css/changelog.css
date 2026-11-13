@@ -9,7 +9,7 @@ h1 { font-family: var(--display); font-weight: 300; font-size: clamp(2rem, 5vw, 
 .date { font-family: var(--mono); font-size: .78rem; color: var(--muted); padding-top: .3rem; font-variant-numeric: tabular-nums; }
 .entry h2 { font-family: var(--display); font-weight: 400; font-size: 1.3rem; letter-spacing: -.015em; margin: 0 0 .5rem; }
 .entry ul { margin: 0; padding-left: 1.1rem; color: var(--soft); display: grid; gap: .3rem; }
-.tag { display: inline-block; font-family: var(--mono); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; margin-left: .5rem; vertical-align: .25em; padding: .15rem .5rem; border-radius: 999px; border: 1px solid currentColor; line-height: 1.4; }
+.tag { display: inline-block; font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; margin-left: .5rem; vertical-align: .25em; padding: .15rem .5rem; border-radius: 999px; border: 1px solid currentColor; line-height: 1.4; }
 .tag-new { color: var(--ink); }
 .tag-fun { color: var(--scarlet); }
 .tag-func { color: var(--muted); }

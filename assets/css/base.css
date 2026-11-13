@@ -35,6 +35,7 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+p, li { text-wrap: pretty; }
 body { margin: 0; padding-bottom: 44px; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 1.0625rem; line-height: 1.65; }
 a { color: inherit; text-decoration-color: var(--muted); text-underline-offset: 4px; transition: color .2s, text-decoration-color .2s; }
 a:hover { color: var(--scarlet); text-decoration-color: var(--scarlet); }
