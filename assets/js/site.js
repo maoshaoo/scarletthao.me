@@ -66,6 +66,36 @@
     });
   }
 
+  // Résumé on request (home page): a small card that starts an email asking for it
+  var resBtn = document.getElementById('res-btn'), resPop = document.getElementById('res-pop');
+  if (resBtn && resPop) {
+    var resFb = document.getElementById('res-fb');
+    var setOpen = function (open) {
+      resPop.hidden = !open; resBtn.setAttribute('aria-expanded', String(open));
+      if (!open) resFb.textContent = '';
+    };
+    resBtn.addEventListener('click', function (e) { e.stopPropagation(); setOpen(resPop.hidden); });
+    resPop.addEventListener('click', function (e) { e.stopPropagation(); });
+    document.addEventListener('click', function () { if (!resPop.hidden) setOpen(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !resPop.hidden) { setOpen(false); resBtn.focus(); } });
+    document.getElementById('res-mail').addEventListener('click', function () {
+      resFb.textContent = 'Opening your email app. If nothing opens, use Copy the note.';
+    });
+    var resCopy = document.getElementById('res-copy');
+    resCopy.addEventListener('click', function () {
+      var note = 'To: hello@scarletthao.me\nSubject: Résumé request\n\nHi Scarlett,\n\nWould love to learn more. Can you share your résumé?\n\nA bit about me and the role:\n';
+      var ok = function () { resFb.textContent = 'Copied. Paste it into any email to hello@scarletthao.me.'; };
+      var fail = function () { resFb.textContent = 'Couldn’t copy. Email hello@scarletthao.me and ask for it.'; };
+      try { navigator.clipboard.writeText(note).then(ok, fail); } catch (e) { fail(); }
+    });
+    // scarletthao.me/resume lands on /#resume: scroll to it and open the card
+    if (location.hash === '#resume') setTimeout(function () {
+      setOpen(true);
+      var hdrH = (document.querySelector('.site-hdr') || {}).offsetHeight || 0;
+      window.scrollTo({ top: resPop.getBoundingClientRect().top + window.scrollY - hdrH - 24 });
+    }, 300);
+  }
+
   // Sticky header: add a line under it once the page scrolls
   var hdr = document.querySelector('.site-hdr');
   if (hdr) {

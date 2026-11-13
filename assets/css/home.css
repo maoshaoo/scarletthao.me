@@ -82,6 +82,22 @@ section { padding-block: 4.5rem; border-top: 1px solid var(--rule); }
 button.copy { font: 400 .82rem var(--body); background: transparent; color: var(--soft); border: 1px solid var(--rule); padding: .35rem .85rem; border-radius: 999px; cursor: pointer; }
 button.copy:hover { border-color: var(--ink); color: var(--ink); }
 .links { display: flex; gap: 1.6rem; flex-wrap: wrap; font-size: .95rem; color: var(--soft); }
+/* Résumé on request: a link-styled button that opens a small card, which starts an email */
+.res-wrap { position: relative; display: inline-block; }
+.links button.res { font: inherit; color: var(--scarlet); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-decoration-color: currentColor; text-underline-offset: 4px; }
+.res-pop[hidden] { display: none; }
+.res-pop { position: absolute; left: 0; bottom: calc(100% + .75rem); z-index: 20; width: min(19.5rem, calc(100vw - 40px)); display: grid; gap: .55rem; padding: 1rem 1.1rem 1.05rem; background: var(--card); color: var(--ink); border: 1px solid var(--rule); border-radius: 14px; box-shadow: 0 14px 34px rgba(0, 0, 0, .12); }
+.res-chip { justify-self: start; font: 500 .78rem/1 var(--body); color: var(--cheer-ink); background: var(--cheer-bg); border: 1px solid var(--lane); border-radius: 999px; padding: .32rem .62rem; }
+.res-h { margin: 0; font: 400 1.2rem/1.2 var(--display); letter-spacing: -.01em; }
+.res-p { margin: 0; color: var(--soft); font-size: .92rem; line-height: 1.45; }
+.res-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .15rem; }
+.res-btn { font: 500 .85rem/1 var(--body); color: var(--ink); background: none; border: 1px solid var(--rule); border-radius: 999px; padding: .55rem .9rem; cursor: pointer; text-decoration: none; }
+.res-btn:hover { border-color: var(--ink); color: var(--ink); }
+.res-btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.res-btn.primary:hover { color: var(--bg); opacity: .88; }
+.res-fb { margin: 0; min-height: 1.2em; font-size: .82rem; color: var(--muted); }
+.res-fb:empty { display: none; }
+@media (prefers-reduced-motion: no-preference) { .res-pop:not([hidden]) { animation: res-in .16s ease-out; } @keyframes res-in { from { opacity: 0; transform: translateY(4px); } } }
 
 /* footer */
 footer .wrap { display: grid; gap: .6rem; padding-block: 1.75rem 2.75rem; border-top: 1px solid var(--rule); font-size: .8rem; color: var(--muted); }
