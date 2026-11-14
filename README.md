@@ -28,6 +28,8 @@ assets/
   images/logos/       company logos
 favicon.svg, favicon-32.png, apple-touch-icon.png   site icons (kept at the root, where browsers look for them)
 CNAME                 custom domain for GitHub Pages
+feed.xml              RSS feed of the changelog (built by tools/make-feed.py)
+llms.txt              a short guide to the site for AI assistants (llmstxt.org)
 shortlinks.json       short links like /linkedin (see below)
 tools/                small helper scripts
 work/                 Work stories (coming soon page for now)
@@ -77,3 +79,11 @@ Open any page with `?me` on the end (for example `scarletthao.me/?me`) once on e
 ## Holiday banners
 
 The list of holidays and their lines lives in `assets/js/holidays.js`. Preview any banner with `?holiday=<id>`, for example `/?holiday=veterans`. Lunar New Year dates are listed by year and need adding every few years.
+
+## RSS feed
+
+`feed.xml` is built from `changelog.html`. After adding a changelog entry, run:
+
+```
+python3 tools/make-feed.py
+```

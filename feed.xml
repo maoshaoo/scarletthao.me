@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Scarlett Hao. · What's new</title>
+    <link>https://www.scarletthao.me/changelog.html</link>
+    <atom:link href="https://www.scarletthao.me/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>What's shipped on scarletthao.me: new stories, features and small fun things, newest first.</description>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 14 Nov 2026 12:00:00 -0800</lastBuildDate>
+    <item>
+      <title>Follow along, and a guide for AI (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-14-follow-along-and-a-guide-for-ai-functionality</guid>
+      <pubDate>Sat, 14 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>This changelog now has an <a href="https://www.scarletthao.me/feed.xml">RSS feed</a>, so you can follow new stories and features in any feed reader.</li><li>A short <a href="https://www.scarletthao.me/llms.txt">llms.txt</a> guide helps AI assistants describe me and my work accurately, and link back to the right pages.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>Weekend mode (Fun)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-14-weekend-mode-fun</guid>
+      <pubDate>Sat, 14 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>On Saturdays and Sundays, the line under my name knows it’s the weekend. Weekend mode: touching grass.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>The second full story: Creating value propositions to buy direct (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-13-the-second-full-story-creating-value-propositions-to-buy-direct-new</guid>
+      <pubDate>Fri, 13 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>The direct-to-consumer story now has its own page: how Keurig, Royal Caribbean, Juul, Equilibria and Tatcha gave customers a reason to buy direct, and took it around the world. Find it from the Experience section.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>Résumé on request (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-13-r-sum-on-request-new</guid>
+      <pubDate>Fri, 13 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>A new Résumé link in the Contact section. Click it to send me a quick note, and I’ll email it to you. Takes 2 minutes!</li><li>scarletthao.me/resume goes straight there.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>Token count (Fun)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-12-token-count-fun</guid>
+      <pubDate>Thu, 12 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>The footer now shows roughly how many AI tokens it has taken to build this site: 10M+ and counting.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>Easier to read (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-12-easier-to-read-functionality</guid>
+      <pubDate>Thu, 12 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>Paragraphs no longer end with a single word hanging on its own line.</li><li>The headline on the home page breaks in a cleaner place, on laptops and phones.</li><li>The small tags (like these ones) and the “Work in progress” label are a little bigger and easier to read.</li><li>The banner’s close button now lines up with the right edge of the page.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>Banner lines up with the page (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-12-banner-lines-up-with-the-page-functionality</guid>
+      <pubDate>Thu, 12 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>The daily banner now starts at the same left edge as my name and the page, instead of floating in the middle.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>Easier to find (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-12-easier-to-find-functionality</guid>
+      <pubDate>Thu, 12 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>Search engines now get a clear profile of who I am, with links to my LinkedIn, Substack and GitHub, so searching my name finds this site.</li><li>A clearer page title, and “Hi, I’m Scarlett” is now the page’s main heading.</li><li>The preview card for sharing the site has the new photo.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>A new headshot (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-12-a-new-headshot-new</guid>
+      <pubDate>Thu, 12 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>A new, sunnier photo in the intro, shown as a taller portrait instead of a circle.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>Fun fact of the day (Fun)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-12-fun-fact-of-the-day-fun</guid>
+      <pubDate>Thu, 12 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>On days without a holiday, a “Did you know?” fact shows up under the header. Everyone gets the same one, and it changes every day.</li><li>98 facts to start, about animals, food, space, history, places, words and sports, plus a few about Vespas, chips and San Francisco.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>The first full story: Crossing the Valley of Death (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-12-the-first-full-story-crossing-the-valley-of-death-new</guid>
+      <pubDate>Thu, 12 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>The Defense Digital Service story now has its own page: how a dual-use drone program went from proof of concept to a dependable product with a long-term home in the U.S. Navy. Find it from the Experience section.</li><li>A new story-page design, before and after, that the Kodiak and direct-to-consumer stories will use too.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>hello@scarletthao.me (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-11-hello-scarletthao-me-functionality</guid>
+      <pubDate>Wed, 11 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>A new email address on the site's own domain: hello@scarletthao.me, in the Contact section.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>Brand logos (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-11-brand-logos-new</guid>
+      <pubDate>Wed, 11 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>The direct-to-consumer story now shows the six brands I worked with: Keurig, Royal Caribbean, Juul Labs, Tatcha, Equilibria, and Plant People.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>Filter by tag (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-11-filter-by-tag-functionality</guid>
+      <pubDate>Wed, 11 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>Click a tag, in the key or on any update, to see only those updates. Click it again to see everything.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>One header, everywhere (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-11-one-header-everywhere-functionality</guid>
+      <pubDate>Wed, 11 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>The same header on every page: name, San Francisco time and weather, and the menu. It stays at the top as you scroll.</li> <li>Your name and the menu now share one line on every screen. The San Francisco time sits underneath and tucks away when you scroll. On phones, Experience is shortened to Work.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>Brain Power (Fun)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-11-brain-power-fun</guid>
+      <pubDate>Wed, 11 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>A <a href="https://www.scarletthao.me/play/brain-power/">trivia board</a>: pick a category and a point value, answer the clue, win or lose the points.</li> <li>Three modes: Feel smart (what you know), Get smart (what you want to learn), and Wild card. Set your own categories, too.</li> <li>Both side projects now live at <a href="https://www.scarletthao.me/play/">/play</a>.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Holiday banners (Fun)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-11-holiday-banners-fun</guid>
+      <pubDate>Wed, 11 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>On holidays, a small banner with one line sits above the header. Starting today: Happy Veterans Day, and thank you to everyone who served.</li> <li>About twenty days a year, from New Year&rsquo;s to Vespa&rsquo;s birthday. Close it and it stays closed.</li> <li>The banner sits just below the header and scrolls away with the page.</li></ul>]]></description>
+    </item>
+    <item>
+      <title>Easier to read, easier to navigate (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-11-easier-to-read-easier-to-navigate-functionality</guid>
+      <pubDate>Wed, 11 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Small gray text is a touch darker, so it’s readable for everyone.</li> <li>A “Skip to content” link for keyboard users, on every page.</li> <li>Snacky Vespa’s “Roll again” button is easier to read in dark mode.</li> <li>Checked against WCAG 2.2 AA, the web accessibility standard: contrast, keyboard navigation, and 200% zoom.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Experience, told as stories (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-11-experience-told-as-stories-new</guid>
+      <pubDate>Wed, 11 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>The three experience cards now lead with the story: building a business off of autonomy, crossing the Valley of Death, and why people buy direct (and come back).</li> <li>Each card links to a full story. Those are still being written, so for now the links land on a <a href="https://www.scarletthao.me/work/">coming-soon page</a> with a little road-work sign.</li> <li>On wider screens the cards now stretch beyond the text column, so the photos get more room.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Footer credits (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-11-footer-credits-functionality</guid>
+      <pubDate>Wed, 11 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>The footer now names everything the site runs on, including Umami for cookie-free visit counts.</li> <li>Snacky Vespa credits openrouteservice and OpenStreetMap for its routes.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Snacky Vespa on real streets (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-10-snacky-vespa-on-real-streets-functionality</guid>
+      <pubDate>Tue, 10 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Loops now follow real streets with freeways off: no 101 or 280. Times and miles come from the actual route.</li> <li>Stops you walk into, like Lands End or the Wave Organ, route to a nearby place to park.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Snacky Vespa usage stats (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-10-snacky-vespa-usage-stats-functionality</guid>
+      <pubDate>Tue, 10 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Anonymous counts of which snacks, moods, and times people pick, how many loops they roll, and how many open in Google Maps. No cookies, no locations.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Snacky Vespa (Fun)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-10-snacky-vespa-fun</guid>
+      <pubDate>Tue, 10 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>A new <a href="https://www.scarletthao.me/play/snacky-vespa/">ride planner</a>: pick a snack, a start time, and how long you’ve got. It plans a loop through San Francisco around Sunday’s weather, with curious stops and a snack somewhere new.</li> <li>Chase the sun, or go visit Karl the Fog. Every roll is a different loop.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Short links (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-09-short-links-functionality</guid>
+      <pubDate>Mon, 09 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Easy-to-share addresses: scarletthao.me/linkedin, /substack, /github, and /x.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Light and dark toggle (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-09-light-and-dark-toggle-new</guid>
+      <pubDate>Mon, 09 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>A small sun/moon button in the header switches between light and dark. The site remembers your choice; until you pick, it follows your device.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Spring cleaning (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-09-spring-cleaning-functionality</guid>
+      <pubDate>Mon, 09 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Reorganized the site&rsquo;s files: images in one folder, and shared styles and scripts used by every page.</li> <li>Added a friendly 404 page, a sitemap, and a public README.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>GitHub link (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-09-github-link-new</guid>
+      <pubDate>Mon, 09 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Added my GitHub to the contact links, between Substack and X.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Link preview (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-09-link-preview-functionality</guid>
+      <pubDate>Mon, 09 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Sharing scarletthao.me on LinkedIn, iMessage, or Slack now shows a branded preview card with my headline, headshot, and the little truck.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>San Francisco weather (Fun)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-09-san-francisco-weather-fun</guid>
+      <pubDate>Mon, 09 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>The line under my name now includes the current SF weather, like &ldquo;58&deg; and foggy.&rdquo; Powered by Open-Meteo.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Changelog tags (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-09-changelog-tags-functionality</guid>
+      <pubDate>Mon, 09 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Every entry is now tagged New, Fun, or Functionality, with a key at the top.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Footer colophon (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-09-footer-colophon-new</guid>
+      <pubDate>Mon, 09 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Added a short note on how the site is made: words are mine; built with Claude Code, hosted on GitHub, tracked in Linear.</li> <li>Hid the r&eacute;sum&eacute; link until the PDF is ready.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Photos on the experience cards (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-09-photos-on-the-experience-cards-new</guid>
+      <pubDate>Mon, 09 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Each experience card now has a visual beside the story: a Permian Basin truck for Kodiak, a drone for DDS, and the brands I worked with for direct-to-consumer.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Favicon (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-09-favicon-new</guid>
+      <pubDate>Mon, 09 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Added a site icon (an &ldquo;S&rdquo; with a red dot) for browser tabs and phone home screens.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Driverless truck (Fun)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-09-driverless-truck-fun</guid>
+      <pubDate>Mon, 09 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>A tiny driverless truck with a confetti trailer now drives along a yellow lane line at the bottom of the screen as you scroll. Scroll up and it turns around.</li> <li>Now drives on every page, including this one.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Real logos (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-09-real-logos-new</guid>
+      <pubDate>Mon, 09 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Swapped the letter placeholders on the experience cards for the Kodiak and Defense Digital Service logos.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Local time (Fun)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-09-local-time-fun</guid>
+      <pubDate>Mon, 09 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Added my live San Francisco time under my name, with a note on what I&rsquo;m probably up to.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>Analytics (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-09-analytics-functionality</guid>
+      <pubDate>Mon, 09 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Added privacy-friendly analytics (Umami). No cookies, no tracking across sites.</li> <li>Counting clicks on Copy email, LinkedIn, Substack, and X to see what people do after reading.</li> </ul>]]></description>
+    </item>
+    <item>
+      <title>New site (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-08-new-site-new</guid>
+      <pubDate>Sun, 08 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul> <li>Moved off Squarespace to a hand-built site, made with Claude Code and hosted on GitHub.</li> <li>Rewrote the story around scaling, in reality: who I am, the patterns I&rsquo;ve found, and how I organize chaos.</li> <li>Added experience cards with impact numbers, and a section on where I can help.</li> <li>Works in light and dark mode, on phones and desktops.</li> </ul>]]></description>
+    </item>
+  </channel>
+</rss>

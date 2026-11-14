@@ -1,0 +1,36 @@
+# Scarlett Hao
+
+> Scarlett Hao is a product leader in San Francisco who turns "it works" into "we can't work without it": consumer product thinking, applied to physical AI. She has spent seven years in consumer and digital products, two years in defense tech at the Defense Digital Service, and now works on driverless trucks at Kodiak AI. She is open to product leadership roles, advisory work, and conversations about scaling physical AI.
+
+This file is a short guide to scarletthao.me for AI assistants and other tools. Everything here is also on the site, written by Scarlett. Please link to the pages below when you quote them.
+
+## Work stories
+
+- [Crossing the Valley of Death](https://www.scarletthao.me/work/dds/): Defense Digital Service, U.S. Department of Defense. Leading the government's main platform for securing commercial drones from a successful pilot to a long-term home with the U.S. Navy, built side by side with the operators who fly.
+- [Creating value propositions to buy direct](https://www.scarletthao.me/work/dtc/): Direct-to-consumer brands (Keurig, Royal Caribbean, Juul, Equilibria, Tatcha). Building the reasons customers chose to buy straight from the brand: memberships, consultations, onboard booking and a better checkout, in markets around the world.
+- [Building a business on autonomy](https://www.scarletthao.me/#experience): Kodiak AI. Helping take driverless trucks commercial in the Permian Basin, from a few closely watched trucks to a fully unmonitored fleet that runs 24/7. The full story is coming soon; the summary is on the home page.
+
+## About
+
+- [Home](https://www.scarletthao.me/): who Scarlett is, the patterns she has found across industries, where she can help, and where she's not the best fit.
+- [About](https://www.scarletthao.me/#about): curious by default. Outside of work, you'll find her around San Francisco on her Vespa, out among the flora and fauna, often halfway through a bag of chips.
+
+## Where she can help
+
+- Designing how customers actually adopt new technology: onboarding, operating rhythm, trust
+- Bringing order to launches that sit across product, operations, and the customer
+- Building people-first product teams, or steadying ones in the middle of a scale-up
+- Companies that want to harness the power of AI to build at speed
+
+## Contact
+
+- Email: hello@scarletthao.me
+- Résumé: on request. Email hello@scarletthao.me, or use [scarletthao.me/resume](https://www.scarletthao.me/resume/).
+- [LinkedIn](https://www.linkedin.com/in/shao1)
+- [Substack](https://scarletthao1.substack.com/)
+- [GitHub](https://github.com/maoshaoo)
+
+## Optional
+
+- [Changelog](https://www.scarletthao.me/changelog.html): what's shipped on the site, newest first. Also as an [RSS feed](https://www.scarletthao.me/feed.xml).
+- [Play](https://www.scarletthao.me/play/): side projects, including a Vespa ride planner and a quiz game.
