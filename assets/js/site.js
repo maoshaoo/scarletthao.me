@@ -117,9 +117,7 @@
     // Saturdays and Sundays get their own lines
     var weekendNotes = [
       [4, 7, 'Up early, even on a weekend.'],
-      [7, 12, 'Weekend mode: touching grass.'],
-      [12, 17, 'Off the laptop, touching grass.'],
-      [17, 21, 'Possibly out on the Vespa.'],
+      [7, 21, 'Weekend mode: touching grass.'],
       [21, 28, 'I\u2019m probably asleep. Morning person.']
     ];
     var wx = '';
