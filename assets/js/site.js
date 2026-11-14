@@ -114,14 +114,25 @@
       [17, 21, 'Possibly out on the Vespa.'],
       [21, 28, 'I\u2019m probably asleep. Morning person.']
     ];
+    // Saturdays and Sundays get their own lines
+    var weekendNotes = [
+      [4, 7, 'Up early, even on a weekend.'],
+      [7, 12, 'Weekend mode: touching grass.'],
+      [12, 17, 'Off the laptop, touching grass.'],
+      [17, 21, 'Possibly out on the Vespa.'],
+      [21, 28, 'I\u2019m probably asleep. Morning person.']
+    ];
     var wx = '';
     var renderTime = function () {
       var now = new Date();
       var time = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', minute: '2-digit' })
         .format(now).replace(' AM', 'am').replace(' PM', 'pm');
       var h = parseInt(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', hour12: false }).format(now), 10) % 24;
-      var x = h < 4 ? h + 24 : h, note = notes[0][2];
-      for (var i = 0; i < notes.length; i++) if (x >= notes[i][0] && x < notes[i][1]) note = notes[i][2];
+      // The day starts at 4am here, so a late Friday night still counts as Friday
+      var day = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', weekday: 'short' }).format(new Date(now.getTime() - 4 * 3600 * 1000));
+      var list = (day === 'Sat' || day === 'Sun') ? weekendNotes : notes;
+      var x = h < 4 ? h + 24 : h, note = list[0][2];
+      for (var i = 0; i < list.length; i++) if (x >= list[i][0] && x < list[i][1]) note = list[i][2];
       timeEl.textContent = 'It\u2019s ' + time + ' in San Francisco' + (wx ? ', ' + wx : '') + '. ' + note;
     };
     var describe = function (code) {
