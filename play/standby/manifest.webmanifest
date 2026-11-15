@@ -1,0 +1,16 @@
+{
+ "name": "Standby Radar",
+ "short_name": "Standby",
+ "start_url": "/play/standby/",
+ "scope": "/play/standby/",
+ "display": "standalone",
+ "background_color": "#F1F2EE",
+ "theme_color": "#F1F2EE",
+ "icons": [
+  {
+   "src": "/apple-touch-icon.png",
+   "sizes": "180x180",
+   "type": "image/png"
+  }
+ ]
+}
