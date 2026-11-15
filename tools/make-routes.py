@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build play/standby/data/routes.json: how full United's routes from the Bay Area run, by month.
 
-Source: U.S. DOT, Bureau of Transportation Statistics, T-100 Segment (All Carriers).
+Source: U.S. DOT, Bureau of Transportation Statistics, T-100 Segment (All Carriers), domestic and international.
 Public data, monthly totals per airline and route: seats and passengers. It runs a few months behind.
 
 For each United route touching SFO, OAK or SJC (both directions), this averages passengers / seats
@@ -27,8 +27,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "play" / "standby" / "data" / "routes.json"
-BASE = "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=FIM&QO_fu146_anzr=Nv4%25Pn44vr45"
-POST = "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=FIM&QO_fu146_anzr=Nv4+Pn44vr45"
+BASE = "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=FMG&QO_fu146_anzr=Nv4%25Pn44vr45"
+POST = "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=FMG&QO_fu146_anzr=Nv4+Pn44vr45"
 HOME = {"SFO", "OAK", "SJC"}
 CARRIER = "UA"
 FIELDS = ["DEPARTURES_PERFORMED", "SEATS", "PASSENGERS", "UNIQUE_CARRIER", "ORIGIN", "DEST",
