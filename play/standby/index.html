@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scarlett Hao.</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Standby Radar: plan standby trips, check real seats from a screenshot, and keep a log.">
+<link rel="canonical" href="https://www.scarletthao.me/play/standby/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
+<script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);var m=/[?&]me(=off)?(&|$)/.exec(location.search);if(m){if(m[1])localStorage.removeItem("umami.disabled");else localStorage.setItem("umami.disabled","1")}}catch(e){}</script>
+<link rel="stylesheet" href="/assets/css/base.css?v=9">
+<link rel="stylesheet" href="standby.css?v=1">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+</head>
+<body class="sr-body">
+<a class="skip" href="#app">Skip to content</a>
+
+<div class="sr-sky" aria-hidden="true">
+  <span class="sr-cloud" style="top:8%;width:9rem;--d:110s;--delay:-20s"></span>
+  <span class="sr-cloud" style="top:44%;width:7rem;--d:95s;--delay:-60s"></span>
+  <span class="sr-cloud" style="top:80%;width:11rem;--d:130s;--delay:-90s"></span>
+  <div class="sr-flight red" style="top:12%;--d:24s;--delay:-4s;--dy:-2rem;--tilt:-2deg"><span class="trail"></span><svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" transform="rotate(90 12 12)"/></svg></div>
+  <div class="sr-flight" style="top:52%;--d:34s;--delay:-18s;--dy:2rem;--tilt:2deg"><span class="trail"></span><svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" transform="rotate(90 12 12)"/></svg></div>
+  <div class="sr-flight" style="top:84%;--d:29s;--delay:-11s;--dy:-4rem;--tilt:-4deg"><span class="trail"></span><svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" transform="rotate(90 12 12)"/></svg></div>
+</div>
+
+<main class="sr-app" id="app" aria-live="polite">
+  <noscript><p>Standby Radar needs JavaScript.</p></noscript>
+</main>
+
+<p class="sr-foot"><a href="/play/">&larr; Play</a> · Forecasts are estimates, not seat counts. Your log and settings stay on this device.</p>
+
+<script src="standby.js?v=1" defer></script>
+</body>
+</html>

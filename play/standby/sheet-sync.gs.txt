@@ -1,0 +1,28 @@
+// Standby Radar → Google Sheet sync (paste into Extensions → Apps Script in the "Standby load log" sheet).
+// Deploy → New deployment → Web app → Execute as: Me → Who has access: Anyone → Deploy.
+// Copy the web app URL (https://script.google.com/macros/s/…/exec) into Standby Radar's settings.
+// The URL is the only key, so keep it private. It stays on your phone, never in the site's code.
+// It writes only the columns the app owns; the Day and Seats to spare columns keep their formulas.
+
+function doPost(e) {
+  var r = JSON.parse(e.postData.contents);
+  var sh = SpreadsheetApp.getActive().getSheetByName('Load log');
+  var ids = sh.getRange('Q2:Q').getValues().map(function (x) { return String(x[0]); });
+  var i = ids.indexOf(String(r.id));
+  var row = i >= 0 ? i + 2 : sh.getRange('A2:A').getValues().filter(function (x) { return x[0] !== ''; }).length + 2;
+  var result = { 'Made it': 'Yes', 'Bumped': 'No', "Didn't try": "Didn't try" }[r.result] || '';
+  var set = function (col, v) { sh.getRange(col + row).setValue(v); };
+  set('A', new Date(r.checked));
+  set('B', r.date);
+  set('D', r.from + '-' + r.to);
+  set('E', r.flight || '');
+  set('F', r.time || '');
+  set('I', r.open === '' ? '' : Number(r.open));
+  set('J', r.listed === '' ? '' : Number(r.listed));
+  set('K', r.position === '' ? '' : Number(r.position));
+  set('M', r.verdict === 'Good odds' ? 'Good' : r.verdict || '');
+  set('N', 'Scarlett');
+  set('O', result);
+  set('Q', String(r.id));
+  return ContentService.createTextOutput('ok');
+}
