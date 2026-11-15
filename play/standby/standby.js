@@ -217,7 +217,7 @@
     var d = state.draft || {}, v = verdictOf(d);
     settle(d);
     var h = bar(true) + '<h1 class="sr-h">Check real seats</h1>' +
-      (state.batchIdx != null ? '<button class="sr-link" data-act="to-batch">&larr; All ' + state.batch.length + ' screenshots</button>' : '') +
+      (state.batchIdx != null ? '<button class="sr-link" data-act="to-batch">&larr; All ' + state.batch.length + ' flights</button>' : '') +
       '<label class="sr-drop"><b>Upload screenshots</b>Seat counts and standby list from the airline app. Pick one or several.<input type="file" accept="image/*" multiple id="c-file"></label>' +
       (d.img ? '<img class="sr-thumb" src="' + d.img + '" alt="Your screenshot">' : '') +
       '<p class="sr-note" id="c-status"' + (d.status ? '' : ' hidden') + '>' + esc(d.status || '') + '</p>';
