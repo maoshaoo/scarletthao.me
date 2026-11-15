@@ -32,7 +32,7 @@ POST = "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=FMG&QO_fu146
 HOME = {"SFO", "OAK", "SJC"}
 CARRIER = "UA"
 FIELDS = ["DEPARTURES_PERFORMED", "SEATS", "PASSENGERS", "UNIQUE_CARRIER", "ORIGIN", "DEST",
-          "DEST_CITY_NAME", "ORIGIN_CITY_NAME", "YEAR", "MONTH"]
+          "DEST_CITY_NAME", "ORIGIN_CITY_NAME", "DEST_COUNTRY_NAME", "ORIGIN_COUNTRY_NAME", "YEAR", "MONTH"]
 
 opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(CookieJar()))
 opener.addheaders = [("User-Agent", "scarletthao.me route history (personal project)")]
@@ -63,7 +63,7 @@ def download(year):
 
 
 def main(years):
-    seats, pax, flights, names, yrs = {}, {}, {}, {}, {}
+    seats, pax, flights, names, yrs, countries = {}, {}, {}, {}, {}, {}
     got = []
     for y in years:
         try:
@@ -92,6 +92,10 @@ def main(years):
             yrs.setdefault(k, set()).add(y)
             names.setdefault(d, (row.get("DEST_CITY_NAME") or d).split(",")[0].strip())
             names.setdefault(o, (row.get("ORIGIN_CITY_NAME") or o).split(",")[0].strip())
+            if row.get("DEST_COUNTRY_NAME"):
+                countries.setdefault(d, row["DEST_COUNTRY_NAME"].strip())
+            if row.get("ORIGIN_COUNTRY_NAME"):
+                countries.setdefault(o, row["ORIGIN_COUNTRY_NAME"].strip())
             n += 1
         print(f"{y}: {n} United Bay Area rows")
         if n:
@@ -112,6 +116,7 @@ def main(years):
         "routes": dict(sorted(routes.items())),
         "flightsPerDay": dict(sorted(per_day.items())),
         "names": dict(sorted(names.items())),
+        "countries": dict(sorted(countries.items())),
     }, indent=1) + "\n")
     print(f"Wrote {OUT.relative_to(ROOT)}: {len(routes)} routes from {got}")
     return 0

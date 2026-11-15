@@ -17,6 +17,7 @@ function doPost(e) {
   set('D', r.from + '-' + r.to);
   set('E', r.flight || '');
   set('F', r.time || '');
+  set('H', r.cabin === 'Polaris' ? 'Polaris' : 'Any');
   set('I', r.open === '' ? '' : Number(r.open));
   set('J', r.listed === '' ? '' : Number(r.listed));
   set('K', r.position === '' ? '' : Number(r.position));
