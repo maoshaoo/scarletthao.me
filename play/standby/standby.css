@@ -89,7 +89,7 @@ button.sr-card:hover { border-color: var(--muted); }
 .sr-num b { display: block; font: 400 1.35rem/1.1 var(--display); font-variant-numeric: tabular-nums; }
 .sr-num span { font-size: .7rem; color: var(--muted); }
 .sr-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .45rem; }
-.sr-thumb { max-height: 9rem; border-radius: 10px; border: 1px solid var(--rule); justify-self: start; }
+.sr-thumb { display: block; width: auto; height: auto; max-width: 45%; max-height: 14rem; object-fit: contain; border-radius: 10px; border: 1px solid var(--rule); }
 .sr-claude { white-space: pre-wrap; font-size: .86rem; color: var(--soft); background: var(--card); border: 1px solid var(--rule); border-radius: 12px; padding: .7rem .8rem; margin: 0; }
 
 /* Log */

@@ -102,16 +102,24 @@
   }
 
   /* ---------- verdict from real seat counts ---------- */
-  var GOOD_SPARE = 5, TIGHT_SPARE = 1;
+  /* Seats left after everyone listed ahead of you, and after your whole party is seated.
+     Pass riders are usually last in line, so everyone already listed counts as ahead unless you enter your spot. */
+  var GOOD_MARGIN = 3;
+  function partyOf(r) { return Math.max(1, parseInt(r.party, 10) || 1); }
   function spareOf(r) {
     var open = +r.open || 0, pos = +r.position || 0, listed = +r.listed || 0;
     var ahead = pos ? pos - 1 : listed;
-    return open - ahead;
+    return open - ahead - partyOf(r);
   }
+  function bandSpare(s) { return s >= GOOD_MARGIN ? ['sr-good', 'Good odds', s] : s >= 0 ? ['sr-tight', 'Tight', s] : ['sr-no', 'Unlikely', s]; }
   function verdictOf(r) {
     if (r.open === '' || r.open == null) return null;
-    var s = spareOf(r);
-    return s >= GOOD_SPARE ? ['sr-good', 'Good odds', s] : s >= TIGHT_SPARE ? ['sr-tight', 'Tight', s] : ['sr-no', 'Unlikely', s];
+    return bandSpare(spareOf(r));
+  }
+  /* For international flights: will you get on the plane at all, in any cabin? */
+  function planeOf(r) {
+    if (r.openAll === '' || r.openAll == null) return null;
+    return bandSpare((+r.openAll || 0) - (+r.sbAll || 0) - partyOf(r));
   }
 
   /* International flights count Polaris (business) seats; domestic flights count every open seat. */
@@ -120,7 +128,13 @@
     var c = routeData && routeData.countries;
     return [d.from, d.to].some(function (x) { if (!x) return false; if (c && c[x]) return c[x] !== 'United States'; return NON_US.indexOf(x) >= 0; });
   }
-  function settle(d) { d.cabin = isIntl(d) ? 'Polaris' : 'All cabins'; d.open = d.cabin === 'Polaris' ? (d.openPolaris || '') : (d.openAll || ''); return d; }
+  function settle(d) {
+    var intl = isIntl(d);
+    d.cabin = intl ? 'Polaris' : 'All cabins';
+    d.open = intl ? (d.openPolaris || '') : (d.openAll || '');
+    d.listed = intl ? (d.sbPolaris || '') : (d.sbAll || '');
+    return d;
+  }
 
   /* ---------- screens ---------- */
   var state = { place: null, out: null, back: null, flex: true, draft: null, stack: [] };
@@ -215,22 +229,34 @@
       '<label class="sr-field">To<input id="f-to" value="' + esc(d.to) + '" maxlength="3"></label></div>' +
       '<div class="sr-row2"><label class="sr-field">Date<input type="date" id="f-date" value="' + esc(d.date || iso(today())) + '"></label><label class="sr-field">Departs<input id="f-time" value="' + esc(d.time) + '" placeholder="11:05 AM"></label></div>' +
       '<div class="sr-row2"><label class="sr-field">Polaris open<input inputmode="numeric" id="f-pol" value="' + esc(d.openPolaris) + '"></label>' +
-      '<label class="sr-field">All cabins open<input inputmode="numeric" id="f-all" value="' + esc(d.openAll) + '"></label></div>' +
+      '<label class="sr-field">Listed for Polaris<input inputmode="numeric" id="f-polsb" value="' + esc(d.sbPolaris) + '"></label></div>' +
+      '<div class="sr-row2"><label class="sr-field">All cabins open<input inputmode="numeric" id="f-all" value="' + esc(d.openAll) + '"></label>' +
+      '<label class="sr-field">All standby<input inputmode="numeric" id="f-allsb" value="' + esc(d.sbAll) + '"></label></div>' +
       '<p class="sr-sub" id="f-cabin">' + cabinNote(d) + '</p>' +
-      '<div class="sr-row2"><label class="sr-field">On the list<input inputmode="numeric" id="f-listed" value="' + esc(d.listed) + '"></label>' +
-      '<label class="sr-field">Your spot<input inputmode="numeric" id="f-position" value="' + esc(d.position) + '"></label></div>' +
+      '<div class="sr-row2"><label class="sr-field">Travelers<input inputmode="numeric" id="f-party" value="' + esc(d.party || 2) + '"></label>' +
+      '<label class="sr-field">Your spot, if listed<input inputmode="numeric" id="f-position" value="' + esc(d.position) + '"></label></div>' +
       '<div class="sr-row2"><button class="sr-btn" data-act="save">Save to log</button>' +
       '<button class="sr-btn ghost" data-act="claude"' + (settings.claudeKey ? '' : ' disabled title="Add your Claude key in settings"') + '>Read with Claude</button></div>' +
       (settings.claudeKey ? '' : '<button class="sr-link" data-go="settings">Turn on "Read with Claude"</button>');
     return h;
   };
-  function cabinNote(d) { return d.cabin === 'Polaris' ? 'International, so the verdict counts Polaris seats.' : 'Domestic, so the verdict counts every open seat.'; }
+  function cabinNote(d) { return d.cabin === 'Polaris' ? 'International, so the verdict counts Polaris seats and the people listed for Polaris.' : 'Domestic, so the verdict counts every open seat and everyone on standby.'; }
+  function whoFor(d) { var n = partyOf(d); return n === 1 ? 'you' : n === 2 ? 'both of you' : 'all ' + n + ' of you'; }
+  function summaryOf(d) {
+    var v = verdictOf(d); if (!v) return '';
+    var p = planeOf(d), parts = [];
+    parts.push((d.cabin === 'Polaris' ? 'Polaris: ' : '') + d.open + ' open, ' + (d.position ? 'you\u2019re #' + d.position : (d.listed || 0) + ' listed') + ', ' + v[2] + ' to spare after ' + whoFor(d));
+    if (d.cabin === 'Polaris' && p) parts.push('whole plane: ' + d.openAll + ' open, ' + (d.sbAll || 0) + ' on standby');
+    return parts.join(' · ');
+  }
   function verdictHtml(d) {
     var v = verdictOf(d); if (!v) return '';
+    var p = d.cabin === 'Polaris' ? planeOf(d) : null;
     return '<div class="sr-verdict ' + v[0] + '"><span class="flt">' + esc([d.flight, (d.from || '') + (d.to ? ' → ' + d.to : ''), d.date ? fmt(fromIso(d.date)) : '', d.time].filter(Boolean).join(' · ')) + '</span>' +
-      '<span class="big">' + v[1] + '</span><div class="sr-nums"><div class="sr-num"><b>' + esc(d.open) + '</b><span>' + (d.cabin === 'Polaris' ? 'Polaris open' : 'Open seats') + '</span></div>' +
-      '<div class="sr-num"><b>' + (d.position ? '#' + esc(d.position) : esc(d.listed || 0)) + '</b><span>' + (d.position ? 'Your spot' : 'On the list') + '</span></div>' +
-      '<div class="sr-num"><b>' + v[2] + '</b><span>To spare</span></div></div></div>';
+      '<span class="big">' + (d.cabin === 'Polaris' ? 'Polaris: ' : '') + v[1] + '</span><div class="sr-nums"><div class="sr-num"><b>' + esc(d.open) + '</b><span>' + (d.cabin === 'Polaris' ? 'Polaris open' : 'Open seats') + '</span></div>' +
+      '<div class="sr-num"><b>' + (d.position ? '#' + esc(d.position) : esc(d.listed || 0)) + '</b><span>' + (d.position ? 'Your spot' : d.cabin === 'Polaris' ? 'Listed for Polaris' : 'On standby') + '</span></div>' +
+      '<div class="sr-num"><b>' + v[2] + '</b><span>To spare after ' + whoFor(d) + '</span></div></div>' +
+      (p ? '<span class="flt">Getting on the plane at all: ' + p[1].toLowerCase() + ' (' + esc(d.openAll) + ' open, ' + esc(d.sbAll || 0) + ' on standby)</span>' : '') + '</div>';
   }
   function updateVerdict() {
     var box = document.getElementById('c-verdict'); if (box) box.innerHTML = verdictHtml(state.draft || {});
@@ -239,13 +265,13 @@
   }
   S.batch = function () {
     var b = state.batch || [], left = b.filter(function (d) { return !d.saved; }).length;
-    var h = bar(true) + '<h1 class="sr-h">' + b.length + ' screenshots</h1>' +
+    var h = bar(true) + '<h1 class="sr-h">' + (b.length === 1 ? '1 flight' : b.length + ' flights') + '</h1>' +
       '<p class="sr-note" id="b-status"' + (state.batchStatus ? '' : ' hidden') + '>' + esc(state.batchStatus || '') + '</p>';
     b.forEach(function (d, i) {
       settle(d); var v = verdictOf(d);
-      h += '<button class="sr-card" data-batch="' + i + '"><span class="t"><b>' + esc([d.flight, (d.from || '?') + ' → ' + (d.to || '?')].filter(Boolean).join(' · ')) + '</b>' + (d.saved ? '<span class="sr-pill sr-good">Saved</span>' : v ? pill(v) : '<span class="sr-pill sr-tight">' + (d.reading ? 'Reading…' : 'Needs numbers') + '</span>') + '</span>' +
+      h += '<button class="sr-card" data-batch="' + i + '"><span class="t"><b>' + esc([d.flight, (d.from || '?') + ' → ' + (d.to || '?')].filter(Boolean).join(' · ')) + '</b>' + (d.saved ? '<span class="sr-pill sr-good">Saved</span>' : v ? pill([v[0], (d.cabin === 'Polaris' ? 'Polaris: ' : '') + v[1]]) : '<span class="sr-pill sr-tight">' + (d.reading ? 'Reading…' : 'Needs numbers') + '</span>') + '</span>' +
         '<span class="sr-when">' + esc([d.date ? fmt(fromIso(d.date)) : '', d.time].filter(Boolean).join(' · ')) + '</span>' +
-        '<small>' + esc(v ? (d.open + (d.cabin === 'Polaris' ? ' Polaris' : '') + ' open · ' + (d.position ? '#' + d.position + ' on the list' : (d.listed || 0) + ' on the list') + ' · ' + v[2] + ' to spare') : 'Tap to check the numbers') + '</small></button>';
+        '<small>' + esc(v ? summaryOf(d) : 'Tap to check the numbers') + '</small></button>';
     });
     h += '<button class="sr-btn" data-act="save-all"' + (left ? '' : ' disabled') + '>Save ' + (left === b.length ? 'all' : 'the rest') + ' to log</button>';
     return h;
@@ -343,7 +369,7 @@
   function readForm() {
     var d = state.draft = state.draft || {};
     d.flight = val('f-flight').toUpperCase(); d.from = val('f-from').toUpperCase(); d.to = val('f-to').toUpperCase();
-    d.date = val('f-date'); d.time = val('f-time'); d.openPolaris = val('f-pol'); d.openAll = val('f-all'); d.listed = val('f-listed'); d.position = val('f-position');
+    d.date = val('f-date'); d.time = val('f-time'); d.openPolaris = val('f-pol'); d.sbPolaris = val('f-polsb'); d.openAll = val('f-all'); d.sbAll = val('f-allsb'); d.party = val('f-party'); d.position = val('f-position');
     settle(d);
   }
 
@@ -376,6 +402,39 @@
       return T.recognize(dataUrl, 'eng', { logger: function (m) { if (m.status === 'recognizing text') onStatus('Reading… ' + Math.round(m.progress * 100) + '%'); } });
     }).then(function (r) { return r.data.text || ''; });
   }
+  /* United's mobile flight list (one screenshot, one or more flights):
+       header  "Oneway · 2 Travelers · Nov 18" and "Wed, Nov 18"
+       each flight: departure time, "SFO - ICN", "UA 805", "Boeing 777-200",
+       "Available 37 (12/3/22)" and "Standby 10 (5/0/5)", where the brackets are Polaris / Premium Plus / Economy.
+     Text recognition reads the labels and the numbers as separate columns, so this collects each kind
+     in order and pairs them up by position. */
+  var MON = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+  function monthDay(mon, day) {
+    var t = today(), d = new Date(t.getFullYear(), MON[mon.slice(0, 3).toLowerCase()], +day, 12);
+    if (d < addDays(t, -60)) d = new Date(t.getFullYear() + 1, d.getMonth(), d.getDate(), 12);
+    return iso(d);
+  }
+  function parseShot(text) {
+    var t = text.replace(/[–—−]/g, '-'), res = { flights: [] }, m;
+    if ((m = t.match(/(\d+)\s*Travel+ers?/i))) res.party = m[1];
+    if ((m = t.match(/\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,?\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+(\d{1,2})\b/))) res.date = monthDay(m[1], m[2]);
+    else if ((m = t.match(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+(\d{1,2})\b/))) res.date = monthDay(m[1], m[2]);
+    var routes = [], nums = [], times = [], planes = [], flights = [], re;
+    re = /\b([A-Z]{3})\s*-\s*([A-Z]{3})\b/g; while ((m = re.exec(t))) routes.push([m[1], m[2]]);
+    re = /\bUA\s?(\d{1,4})\b/g; while ((m = re.exec(t))) flights.push('UA ' + m[1]);
+    re = /(-?\d{1,3})\s*\(\s*(-?\d{1,3})\s*\/\s*(-?\d{1,3})\s*\/\s*(-?\d{1,3})\s*\)/g; while ((m = re.exec(t))) nums.push([+m[1], +m[2], +m[3], +m[4]]);
+    re = /\b(?:Boeing|Airbus|Embraer|Bombardier)\s+[\w-]+/g; while ((m = re.exec(t))) planes.push(m[0]);
+    t.split(/\n+/).forEach(function (l) { var x = l.match(/\b(\d{1,2}:\d{2})\s?([ap])\.?m\b/i); if (x) times.push(x[1] + ' ' + x[2].toUpperCase() + 'M'); });
+    var n = Math.max(flights.length, Math.floor(nums.length / 2));
+    for (var i = 0; i < n; i++) {
+      var av = nums[2 * i], sb = nums[2 * i + 1], r = routes[i] || routes[0] || [];
+      var f = { flight: flights[i] || '', from: r[0] || '', to: r[1] || '', time: times[i] || '', aircraft: planes[i] || '' };
+      if (av) { f.openAll = String(av[0]); f.openPolaris = String(Math.max(0, av[1])); f.openPremium = String(av[2]); f.openEconomy = String(av[3]); }
+      if (sb) { f.sbAll = String(sb[0]); f.sbPolaris = String(sb[1]); f.sbPremium = String(sb[2]); f.sbEconomy = String(sb[3]); }
+      res.flights.push(f);
+    }
+    return res;
+  }
   /* Pull the numbers out of seat-count screenshot text. Layouts vary, so this looks for labels near numbers;
      anything it misses can be typed in below the verdict. */
   function parseSeats(text) {
@@ -394,6 +453,7 @@
     });
     if (listed == null) { var rows = lines.filter(function (l) { return /^\d{1,3}[.)]?\s+[A-Za-z]/.test(l); }); if (rows.length >= 2) listed = rows.length; }
     if (openMax != null) out.openAll = String(openMax);
+    if (listed != null) out.sbAll = String(listed);
     if (polaris != null) out.openPolaris = String(polaris);
     if (listed != null) out.listed = String(listed);
     if (pos != null) out.position = String(pos);
@@ -405,38 +465,48 @@
     track('standby-quick-check', { place: place ? place.name : '', count: files.length });
     readShots(files, { from: home, to: place ? place.codes[0] : '', date: date || iso(today()) });
   }
-  /* Read one screenshot into a draft. Values found in the image fill in or replace the starting ones. */
-  function readInto(d, file, onStatus) {
-    d.reading = true;
+  /* Read one screenshot. It can hold several flights; each becomes its own draft. */
+  function readFile(file, base, onStatus) {
     return fileToDataUrl(file, 1400).then(function (url) {
-      d.img = url; d.advice = '';
       return ocr(url, onStatus).then(function (text) {
-        var found = parseSeats(text), n = 0;
-        Object.keys(found).forEach(function (k) { if (found[k]) { d[k] = found[k]; n++; } });
-        settle(d); d.reading = false;
-        d.status = n ? 'Read ' + n + ' value' + (n > 1 ? 's' : '') + ' from your screenshot. Check them below.' : "Couldn't find the seat counts. Type them below" + (settings.claudeKey ? ', or tap Read with Claude.' : '.');
-        track('standby-check', { mode: 'phone', found: n });
+        var shot = parseShot(text), out = [];
+        shot.flights.forEach(function (f) {
+          var d = Object.assign({}, base, f, { img: url });
+          if (shot.date) d.date = shot.date;
+          if (shot.party) d.party = shot.party;
+          if (!d.from) d.from = base.from; if (!d.to) d.to = base.to;
+          d.status = 'Read from your screenshot. Check the numbers below.';
+          out.push(settle(d));
+        });
+        if (!out.length) {
+          var found = parseSeats(text), d = Object.assign({}, base, { img: url }), n = 0;
+          Object.keys(found).forEach(function (k) { if (found[k]) { d[k] = found[k]; n++; } });
+          d.status = n ? 'Read ' + n + ' value' + (n > 1 ? 's' : '') + ' from your screenshot. Check them below.' : "Couldn't find the seat counts. Type them below" + (settings.claudeKey ? ', or tap Read with Claude.' : '.');
+          out.push(settle(d));
+        }
+        track('standby-check', { mode: 'phone', flights: shot.flights.length });
+        return out;
       });
-    }).catch(function () { d.reading = false; d.status = "Couldn't read that image here. Type the numbers below" + (settings.claudeKey ? ', or tap Read with Claude.' : '.'); });
+    }).catch(function () {
+      return [settle(Object.assign({}, base, { status: "Couldn't read that image here. Type the numbers below" + (settings.claudeKey ? ', or tap Read with Claude.' : '.') }))];
+    });
   }
-  /* One screenshot opens the check. Several open a list, read one after another, each with its own verdict. */
+  /* Read every screenshot, one after another. One flight opens the check; several open a list. */
   function readShots(files, base) {
     files = Array.prototype.slice.call(files, 0, 12);
-    if (files.length === 1) {
-      state.batch = null; state.batchIdx = null; state.draft = Object.assign({}, base);
-      show('check'); status('c-status', 'Reading your screenshot on this phone…');
-      readInto(state.draft, files[0], function (s) { status('c-status', s); }).then(rerender);
-      return;
-    }
-    state.batch = files.map(function () { return Object.assign({ reading: true }, base); });
-    state.batchIdx = null; state.batchStatus = 'Reading ' + files.length + ' screenshots on this phone…';
+    state.batch = []; state.batchIdx = null; state.draft = null;
+    state.batchStatus = 'Reading ' + (files.length === 1 ? 'your screenshot' : files.length + ' screenshots') + ' on this phone…';
     show('batch');
     files.reduce(function (p, f, i) {
       return p.then(function () {
-        return readInto(state.batch[i], f, function (s) { state.batchStatus = 'Screenshot ' + (i + 1) + ' of ' + files.length + ': ' + s; status('b-status', state.batchStatus); })
-          .then(function () { if (cur === 'batch') rerender(); });
+        return readFile(f, base, function (s) { state.batchStatus = (files.length > 1 ? 'Screenshot ' + (i + 1) + ' of ' + files.length + ': ' : '') + s; status('b-status', state.batchStatus); })
+          .then(function (items) { state.batch = state.batch.concat(items); if (cur === 'batch') rerender(); });
       });
-    }, Promise.resolve()).then(function () { state.batchStatus = 'Done. Tap any screenshot to check or fix its numbers.'; if (cur === 'batch') rerender(); });
+    }, Promise.resolve()).then(function () {
+      if (state.batch.length === 1) { state.draft = state.batch[0]; state.batch = null; show('check', { noPush: true }); return; }
+      state.batchStatus = 'Found ' + state.batch.length + ' flights. Tap one to check or fix its numbers.';
+      if (cur === 'batch') rerender();
+    });
   }
   function readOpenList(file) {
     if (!diceDates()) return;
@@ -456,8 +526,10 @@
     if (!d.img) { state.draft = d; d.status = 'Upload a screenshot first.'; rerender(); return; }
     d.status = 'Reading with Claude…'; rerender();
     var prompt = 'This is a screenshot of standby seat information from an airline app. Reply with JSON only, no prose around it, using these keys: ' +
-      '"flight" (like "UA 837"), "from" and "to" (3-letter airport codes), "date" (YYYY-MM-DD if shown), "time" (departure time), "openPolaris" (open seats in Polaris or business class, a number), "openAll" (total open seats across all cabins, a number), ' +
-      '"listed" (people on the standby list, a number), "position" (the traveler\'s spot on the list if shown, a number), and "advice" (two short plain sentences: how the odds look and a Plan B). Use null for anything not shown.';
+      '"flight" (like "UA 837"), "from" and "to" (3-letter airport codes), "date" (YYYY-MM-DD if shown), "time" (departure time), "openAll" (total open seats), "openPolaris" (open Polaris or business seats), "sbAll" (total people on standby), "sbPolaris" (people on standby for Polaris), "party" (number of travelers), ' +
+      '"position" (the traveler\'s spot on the list if shown), and "advice" (two short plain sentences: how the odds look for ' + (d.party || 2) + ' travelers and a Plan B). ' +
+      'On United\'s app, "Available 37 (12/3/22)" means 37 open: 12 Polaris, 3 Premium Plus, 22 Economy; "Standby 10 (5/0/5)" is the same split for the standby list. ' +
+      (d.flight ? 'If several flights are shown, use ' + d.flight + '. ' : 'If several flights are shown, use the first. ') + 'Use null for anything not shown.';
     fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'content-type': 'application/json', 'x-api-key': settings.claudeKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
@@ -465,7 +537,7 @@
         { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: d.img.split(',')[1] } }, { type: 'text', text: prompt }] }] })
     }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (j) {
       var txt = (j.content || []).map(function (c) { return c.text || ''; }).join(''), m = txt.match(/\{[\s\S]*\}/), o = m ? JSON.parse(m[0]) : {};
-      ['flight', 'from', 'to', 'date', 'time', 'openPolaris', 'openAll', 'listed', 'position', 'advice'].forEach(function (k) { if (o[k] != null && o[k] !== '') d[k] = String(o[k]); });
+      ['flight', 'from', 'to', 'date', 'time', 'openPolaris', 'openAll', 'sbPolaris', 'sbAll', 'party', 'position', 'advice'].forEach(function (k) { if (o[k] != null && o[k] !== '') d[k] = String(o[k]); });
       settle(d);
       d.status = 'Read with Claude. Check the numbers below.'; track('standby-check', { mode: 'claude' }); rerender();
     }).catch(function (e) {
@@ -477,7 +549,8 @@
   function toRow(d) {
     settle(d);
     var r = { id: String(Date.now()) + Math.floor(Math.random() * 1000), checked: new Date().toISOString(), date: d.date, flight: d.flight || '', from: d.from, to: d.to, time: d.time || '',
-      cabin: d.cabin, openPolaris: d.openPolaris || '', openAll: d.openAll || '', open: d.open || '', listed: d.listed || '', position: d.position || '', result: '' };
+      cabin: d.cabin, aircraft: d.aircraft || '', party: d.party || '', openPolaris: d.openPolaris || '', openAll: d.openAll || '', sbPolaris: d.sbPolaris || '', sbAll: d.sbAll || '',
+      open: d.open || '', listed: d.listed || '', position: d.position || '', result: '' };
     var v = verdictOf(r); r.verdict = v ? v[1] : '';
     return r;
   }
@@ -503,7 +576,7 @@
     try { fetch(settings.sheetUrl, { method: 'POST', mode: 'no-cors', headers: { 'content-type': 'text/plain' }, body: JSON.stringify(r) }); } catch (e) {}
   }
   function csv() {
-    var cols = ['checked', 'date', 'flight', 'from', 'to', 'time', 'cabin', 'openPolaris', 'openAll', 'open', 'listed', 'position', 'verdict', 'result'];
+    var cols = ['checked', 'date', 'flight', 'from', 'to', 'time', 'aircraft', 'party', 'cabin', 'openPolaris', 'sbPolaris', 'openAll', 'sbAll', 'open', 'listed', 'position', 'verdict', 'result'];
     var rows = [cols.join(',')].concat(log.map(function (r) { return cols.map(function (c) { return '"' + String(r[c] == null ? '' : r[c]).replace(/"/g, '""') + '"'; }).join(','); }));
     var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([rows.join('\n')], { type: 'text/csv' })); a.download = 'standby-log.csv'; a.click();
   }
