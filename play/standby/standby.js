@@ -163,7 +163,7 @@
   S.dicelist = function () {
     var o = fromIso(state.out), b = fromIso(state.back);
     var list = (state.diceList || places.map(function (p) { return p; })).map(function (p, i) { var t = tripScore(p, o, b); return { p: p, t: t, i: i }; })
-      .sort(function (x, y) { return y.t.score - x.t.score; });
+      .sort(function (x, y) { return y.t.score - x.t.score; }).slice(0, 12);
     return bar(true) + '<h1 class="sr-h">' + fmt(o) + ' &ndash; ' + fmt(b) + '</h1><p class="sr-sub">Ranked by how open the trip looks, out and back.</p>' +
       list.map(function (x) {
         var bd = band(x.t.score), why = x.t.out.why.concat(x.t.back.why);
