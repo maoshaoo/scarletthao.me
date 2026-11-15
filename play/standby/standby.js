@@ -149,6 +149,8 @@
       '<div class="sr-chips"><button class="sr-chip" data-flex="1" aria-pressed="' + state.flex + '">&plusmn; 1 day is fine</button><button class="sr-chip" data-flex="0" aria-pressed="' + !state.flex + '">Exact dates</button></div>' +
       '<p class="sr-err" id="k-err" hidden></p>' +
       '<button class="sr-btn" data-act="know-go">Show flights</button>' +
+      '<p class="sr-or">or, if you already have the seat counts</p>' +
+      '<label class="sr-drop"><b>Upload the seat-count screenshot</b>For the day you\u2019re flying. It goes straight to the check.<input type="file" accept="image/*" id="k-file"></label>' +
       '<button class="sr-link" data-go="settings">Add or change places</button>';
   };
   S.dice = function () {
@@ -180,6 +182,7 @@
   S.flights = function () {
     var p = state.placeObj || places[state.place], o = fromIso(state.out), b = fromIso(state.back), h = '';
     h += bar(true) + '<h1 class="sr-h">' + esc(p.name) + ' · ' + fmt(o) + ' &ndash; ' + fmt(b) + '</h1>';
+    h += '<label class="sr-drop"><b>Upload a seat-count screenshot</b>Jump straight to the check for any of these days<input type="file" accept="image/*" id="fl-file"></label>';
     h += '<div class="sr-lbl">Going</div>';
     var outDays = state.flex ? [-1, 0, 1] : [0];
     p.codes.forEach(function (c) { outDays.forEach(function (k) { h += dayRow(k === 0 ? 'Planned' : k < 0 ? 'Day before' : 'Day after', home, c, addDays(o, k)); }); });
@@ -293,6 +296,14 @@
   app.addEventListener('change', function (e) {
     if (e.target.id === 'c-file' && e.target.files[0]) readShot(e.target.files[0]);
     if (e.target.id === 'd-file' && e.target.files[0]) readOpenList(e.target.files[0]);
+    if (e.target.id === 'k-file' && e.target.files[0]) {
+      var ko = val('k-out'), kp = places[+val('k-place')] || places[0];
+      state.placeObj = null; state.place = +val('k-place'); state.out = ko; state.back = val('k-back');
+      shotFromTrip(e.target.files[0], kp, ko);
+    }
+    if (e.target.id === 'fl-file' && e.target.files[0]) {
+      shotFromTrip(e.target.files[0], state.placeObj || places[state.place], state.out);
+    }
 
   });
   function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
@@ -353,6 +364,14 @@
     if (listed != null) out.listed = String(listed);
     if (pos != null) out.position = String(pos);
     return out;
+  }
+  /* Upload from a trip screen: start the check with the route and date already filled in,
+     then let the screenshot fill in (or correct) the rest. */
+  function shotFromTrip(file, place, date) {
+    state.draft = { from: home, to: place ? place.codes[0] : '', date: date || iso(today()) };
+    track('standby-quick-check', { place: place ? place.name : '' });
+    show('check');
+    readShot(file);
   }
   function readShot(file) {
     status('c-status', 'Reading your screenshot on this phone…');
