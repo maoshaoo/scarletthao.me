@@ -136,6 +136,57 @@
     return d;
   }
 
+  /* ---------- watching flights over time ----------
+     Every screenshot is saved as a snapshot. Snapshots of the same flight on the same date form a timeline,
+     which shows whether seats are filling up; across flights, they show a route's pattern. */
+  function keyOf(r) { return [r.flight || '?', r.date, r.from, r.to].join('|'); }
+  function checkedDay(r) { var d = new Date(r.checked); d.setHours(12, 0, 0, 0); return d; }
+  function daysOutOf(r) { return Math.round((fromIso(r.date) - checkedDay(r)) / DAY); }
+  function whenChecked(r) { var d = new Date(r.checked); return d.toLocaleDateString('en-US', { weekday: 'short' }) + ' ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); }
+  function timelines() {
+    var g = {};
+    log.forEach(function (r) { if (r.open === '' || r.open == null) return; (g[keyOf(r)] = g[keyOf(r)] || []).push(r); });
+    Object.keys(g).forEach(function (k) { g[k].sort(function (a, b) { return a.checked < b.checked ? -1 : 1; }); });
+    return g;
+  }
+  function trendOf(snaps) {
+    var a = snaps[0], z = snaps[snaps.length - 1], label = z.cabin === 'Polaris' ? 'Polaris' : 'Open seats';
+    if (snaps.length < 2) return label + ' ' + z.open + ', checked once (' + whenChecked(z) + ')';
+    var diff = (+z.open) - (+a.open);
+    return label + ' ' + snaps.map(function (x) { return x.open; }).join(' → ') + (diff < 0 ? ', filling up' : diff > 0 ? ', opening up' : ', holding steady') + ' since ' + whenChecked(a).split(' ')[0];
+  }
+  /* How seats move on a route as departure gets closer, from your own repeated checks. */
+  function routePattern(from, to, month) {
+    var g = timelines(), rates = [], same = [];
+    Object.keys(g).forEach(function (k) {
+      var sn = g[k]; if (sn.length < 2 || sn[0].from !== from || sn[0].to !== to) return;
+      var a = sn[0], z = sn[sn.length - 1], days = daysOutOf(a) - daysOutOf(z);
+      if (days <= 0) return;
+      var rate = ((+z.open) - (+a.open)) / days;
+      rates.push(rate); if (fromIso(a.date).getMonth() === month) same.push(rate);
+    });
+    var use = same.length >= 2 ? same : rates;
+    if (!use.length) return null;
+    var avg = use.reduce(function (x, y) { return x + y; }, 0) / use.length;
+    return { n: use.length, perDay: avg, sameMonth: use === same };
+  }
+  function patternNote(from, to, month) {
+    var p = routePattern(from, to, month); if (!p) return '';
+    var seats = Math.abs(p.perDay) < 0.5 ? null : Math.round(Math.abs(p.perDay) * 10) / 10;
+    var what = seats == null ? 'seats have held fairly steady as departure got closer' : p.perDay < 0 ? 'seats have dropped by about ' + seats + ' a day as departure got closer. They start open and fill up, so check early and often' : 'seats have opened up by about ' + seats + ' a day closer to departure';
+    return 'From your checks on ' + from + ' → ' + to + (p.sameMonth ? ' in ' + fromIso(iso(new Date(2026, month, 1))).toLocaleDateString('en-US', { month: 'long' }) : '') + ' (' + p.n + ' flight' + (p.n > 1 ? 's' : '') + '): ' + what + '.';
+  }
+  function watched() {
+    var g = timelines(), t = iso(today());
+    return Object.keys(g).map(function (k) { return g[k]; }).filter(function (sn) { return sn[0].date >= t; })
+      .sort(function (a, b) { var va = verdictOf(a[a.length - 1]), vb = verdictOf(b[b.length - 1]); var ga = va && va[0] === 'sr-good' ? 0 : 1, gb = vb && vb[0] === 'sr-good' ? 0 : 1; return ga - gb || (a[0].date < b[0].date ? -1 : 1); });
+  }
+  function watchCard(sn) {
+    var z = sn[sn.length - 1], v = verdictOf(z);
+    return '<button class="sr-card" data-recheck="' + esc(keyOf(z)) + '"><span class="t"><b>' + esc(z.flight || 'Flight') + ' · ' + esc(z.from) + ' &rarr; ' + esc(z.to) + '</b>' + (v ? pill([v[0], (z.cabin === 'Polaris' ? 'Polaris: ' : '') + v[1]]) : '') + '</span>' +
+      '<span class="sr-when">' + fmt(fromIso(z.date)) + (z.time ? ' · ' + esc(z.time) : '') + '</span><small>' + esc(trendOf(sn)) + '. Tap to check again.</small></button>';
+  }
+
   /* ---------- screens ---------- */
   var state = { place: null, out: null, back: null, flex: true, draft: null, stack: [] };
   function bar(back) {
@@ -149,6 +200,8 @@
     var t = bestTrip(p, today(), 42), b = band(t.score);
     var why = t.out.why.concat(t.back.why);
     var note = why.length ? why[0] : (t.out.score >= 62 ? 'Midweek trip, away from holiday peaks' : 'Forecast from day of week and holiday peaks');
+    var pat = p.codes.map(function (c) { return patternNote(home, c, t.outD.getMonth()); }).filter(Boolean)[0];
+    if (pat) note += '. ' + pat;
     return '<button class="sr-card" data-place="' + idx + '" data-out="' + iso(t.outD) + '" data-back-d="' + iso(t.backD) + '">' +
       '<span class="t"><b>' + esc(p.name) + ' <span class="r">' + home + ' &rarr; ' + p.codes.map(esc).join(', ') + '</span></b>' + pill(b) + '</span>' +
       '<span class="sr-when">Best: ' + fmt(t.outD) + ' out · ' + fmt(t.backD) + ' back</span><small>' + esc(note) + '</small></button>';
@@ -158,11 +211,18 @@
     return '<div class="sr-bar"><span></span><nav class="sr-tabs" aria-label="Standby Radar"><button class="sr-tab" data-go="log">Log</button><button class="sr-tab" data-go="settings" aria-label="Settings">&#9881;</button></nav></div>' +
       '<h1 class="sr-title">Standby Radar<span>.</span></h1>' +
       '<p class="sr-intro">We\u2019re lucky to have a great friend who shares their United standby travel with us. We\u2019ve used it, but not nearly enough. This is our nudge to take a trip once a month and see the world.</p>' +
+      watchedHtml() +
       '<div class="sr-lbl">Your places · next 6 weeks</div>' +
       places.map(placeCard).join('') +
       '<div class="sr-ctas"><button class="sr-cta" data-go="know"><i aria-hidden="true">&#8982;</i>I know where and when</button>' +
       '<button class="sr-cta alt" data-go="dice"><i aria-hidden="true">&#9860;</i>Roll the dice</button></div>';
   };
+  function watchedHtml() {
+    var w = watched(); if (!w.length) return '';
+    var good = w.filter(function (sn) { var v = verdictOf(sn[sn.length - 1]); return v && v[0] === 'sr-good'; }), rest = w.length - good.length;
+    return '<div class="sr-lbl">Good odds · flights you\u2019re watching</div>' + (good.length ? good.map(watchCard).join('') : '<p class="sr-sub">None of the flights you\u2019ve checked look good right now.</p>') +
+      (rest ? '<button class="sr-link" data-go="log">' + rest + ' more flight' + (rest > 1 ? 's' : '') + ' you\u2019ve checked</button>' : '');
+  }
   S.know = function () {
     var p = state.place != null ? state.place : 0, o = state.out || iso(addDays(today(), 7)), b = state.back || iso(addDays(today(), 7 + (places[p] ? places[p].days - 1 : 3)));
     return bar(true) + '<h1 class="sr-h">Where and when?</h1>' +
@@ -222,6 +282,8 @@
       (d.img ? '<img class="sr-thumb" src="' + d.img + '" alt="Your screenshot">' : '') +
       '<p class="sr-note" id="c-status"' + (d.status ? '' : ' hidden') + '>' + esc(d.status || '') + '</p>';
     h += '<div id="c-verdict">' + verdictHtml(d) + '</div>';
+    var pn = d.from && d.to && d.date ? patternNote(d.from, d.to, fromIso(d.date).getMonth()) : '';
+    if (pn) h += '<p class="sr-note">' + esc(pn) + '</p>';
     if (d.advice) h += '<p class="sr-claude">' + esc(d.advice) + '</p>';
     h += '<div class="sr-lbl">Check the numbers</div>' +
       '<div class="sr-grid"><label class="sr-field">Flight<input id="f-flight" value="' + esc(d.flight) + '" placeholder="UA 837"></label>' +
@@ -235,8 +297,9 @@
       '<p class="sr-sub" id="f-cabin">' + cabinNote(d) + '</p>' +
       '<div class="sr-row2"><label class="sr-field">Travelers<input inputmode="numeric" id="f-party" value="' + esc(d.party || 2) + '"></label>' +
       '<label class="sr-field">Your spot, if listed<input inputmode="numeric" id="f-position" value="' + esc(d.position) + '"></label></div>' +
-      '<div class="sr-row2"><button class="sr-btn" data-act="save">Save to log</button>' +
-      '<button class="sr-btn ghost" data-act="claude"' + (settings.claudeKey ? '' : ' disabled title="Add your Claude key in settings"') + '>Read with Claude</button></div>' +
+      (d.logId ? '<p class="sr-sub" id="c-saved">&check; Saved to your log. Changes save as you type.</p>' : '') +
+      '<div class="sr-row2">' + (d.logId ? '' : '<button class="sr-btn" data-act="save">Save to log</button>') +
+      '<button class="sr-btn ghost" data-act="claude"' + (d.logId ? ' style="grid-column:1/-1"' : '') + (settings.claudeKey ? '' : ' disabled title="Add your Claude key in settings"') + '>Read with Claude</button></div>' +
       (settings.claudeKey ? '' : '<button class="sr-link" data-go="settings">Turn on "Read with Claude"</button>');
     return h;
   };
@@ -273,7 +336,7 @@
         '<span class="sr-when">' + esc([d.date ? fmt(fromIso(d.date)) : '', d.time].filter(Boolean).join(' · ')) + '</span>' +
         '<small>' + esc(v ? summaryOf(d) : 'Tap to check the numbers') + '</small></button>';
     });
-    h += '<button class="sr-btn" data-act="save-all"' + (left ? '' : ' disabled') + '>Save ' + (left === b.length ? 'all' : 'the rest') + ' to log</button>';
+    if (left && !b.some(function (d) { return d.reading; })) h += '<button class="sr-btn" data-act="save-all">Save the rest to log</button>';
     return h;
   };
   S.log = function () {
@@ -283,12 +346,15 @@
     var bestDay = '–', bestAvg = -1e9; Object.keys(byDay).forEach(function (k) { var a = byDay[k].reduce(function (s, x) { return s + x; }, 0) / byDay[k].length; if (a > bestAvg) { bestAvg = a; bestDay = k; } });
     var h = bar(true) + '<h1 class="sr-h">Your log</h1>' +
       '<div class="sr-stats"><div class="sr-stat"><b>' + log.length + '</b><span>Checks</span></div><div class="sr-stat"><b>' + made + '/' + tried + '</b><span>Made it</span></div><div class="sr-stat"><b>' + bestDay + '</b><span>Best day</span></div></div>';
-    if (!log.length) h += '<p class="sr-empty">No checks yet. Check real seats with a screenshot and they show up here.</p>';
-    log.slice().reverse().forEach(function (r) {
-      var v = verdictOf(r);
-      h += '<div class="sr-card"><span class="t"><b>' + esc(r.from) + ' &rarr; ' + esc(r.to) + ' · ' + fmt(fromIso(r.date)) + '</b>' + (v ? pill(v) : '') + '</span>' +
-        '<small>' + esc([r.flight, r.open !== '' ? r.open + (r.cabin === 'Polaris' ? ' Polaris' : '') + ' open' : '', r.position ? '#' + r.position + ' on the list' : r.listed ? r.listed + ' on the list' : ''].filter(Boolean).join(' · ')) + '</small>' +
-        '<div class="sr-chips" role="group" aria-label="How did it go?">' + ['Made it', 'Bumped', "Didn't try"].map(function (x) { return '<button class="sr-chip" data-result="' + r.id + '" data-val="' + x + '" aria-pressed="' + (r.result === x) + '">' + x + '</button>'; }).join('') + '</div></div>';
+    if (!log.length) h += '<p class="sr-empty">No checks yet. Upload a screenshot and every flight on it is saved here.</p>';
+    var g = timelines();
+    Object.keys(g).map(function (k) { return g[k]; }).sort(function (a, b) { return a[0].date < b[0].date ? 1 : -1; }).forEach(function (sn) {
+      var z = sn[sn.length - 1], v = verdictOf(z);
+      h += '<div class="sr-card"><span class="t"><b>' + esc(z.flight || 'Flight') + ' · ' + esc(z.from) + ' &rarr; ' + esc(z.to) + '</b>' + (v ? pill([v[0], (z.cabin === 'Polaris' ? 'Polaris: ' : '') + v[1]]) : '') + '</span>' +
+        '<span class="sr-when">' + fmt(fromIso(z.date)) + (z.time ? ' · ' + esc(z.time) : '') + '</span>' +
+        '<small>' + esc(trendOf(sn)) + '</small>' +
+        sn.map(function (r) { return '<span class="sr-when">' + esc(whenChecked(r)) + ' · ' + daysOutOf(r) + 'd out · ' + esc(r.open) + (r.cabin === 'Polaris' ? ' Polaris' : '') + ' open, ' + esc(r.listed || 0) + ' listed' + (r.cabin === 'Polaris' && r.openAll !== '' ? ' · ' + esc(r.openAll) + ' open in all' : '') + '</span>'; }).join('') +
+        '<div class="sr-chips" role="group" aria-label="How did it go?">' + ['Made it', 'Bumped', "Didn't try"].map(function (x) { return '<button class="sr-chip" data-result="' + z.id + '" data-val="' + x + '" aria-pressed="' + (z.result === x) + '">' + x + '</button>'; }).join('') + '</div></div>';
     });
     h += '<p class="sr-note">' + (settings.sheetUrl ? 'Each check is also sent to your Google Sheet.' : 'Saved on this phone. Add your private sheet link in settings to sync it.') + '</p>' +
       '<button class="sr-btn ghost" data-act="csv"' + (log.length ? '' : ' disabled') + '>Download CSV</button>';
@@ -324,6 +390,7 @@
     if (t.dataset.place != null) { state.placeObj = null; state.place = +t.dataset.place; state.out = t.dataset.out; state.back = t.dataset.backD; track('standby-place', { place: places[state.place].name }); show('flights'); return; }
     if (t.dataset.dice != null) { var dp = (state.diceList || places)[+t.dataset.dice]; state.placeObj = { name: dp.name, codes: dp.codes, days: dp.days || 4 }; show('flights'); return; }
     if (t.dataset.check) { var bits = t.dataset.check.split('-'); state.draft = { from: bits[0], to: bits[1], date: bits.slice(2).join('-') }; show('check'); return; }
+    if (t.dataset.recheck) { var kb = t.dataset.recheck.split('|'); state.batch = null; state.batchIdx = null; state.draft = { flight: kb[0] === '?' ? '' : kb[0], date: kb[1], from: kb[2], to: kb[3], party: 2 }; show('check'); return; }
     if (t.dataset.batch != null) { state.batchIdx = +t.dataset.batch; state.draft = state.batch[state.batchIdx]; show('check'); return; }
     if (t.dataset.flex != null) { state.flex = t.dataset.flex === '1'; rerender(); return; }
     if (t.dataset.result) { var r = log.find(function (x) { return x.id === t.dataset.result; }); if (r) { r.result = r.result === t.dataset.val ? '' : t.dataset.val; save('log', log); sync(r); rerender(); } return; }
@@ -347,7 +414,7 @@
   });
   app.addEventListener('input', function (e) {
     if (cur !== 'check' || !/^f-/.test(e.target.id)) return;
-    readForm(); updateVerdict();
+    readForm(); updateVerdict(); persistSoon();
   });
   app.addEventListener('change', function (e) {
     if (e.target.id === 'c-file' && e.target.files.length) { var base = state.draft || {}; readShots(e.target.files, { from: base.from || home, to: base.to || '', date: base.date || iso(today()) }); }
@@ -500,11 +567,12 @@
     files.reduce(function (p, f, i) {
       return p.then(function () {
         return readFile(f, base, function (s) { state.batchStatus = (files.length > 1 ? 'Screenshot ' + (i + 1) + ' of ' + files.length + ': ' : '') + s; status('b-status', state.batchStatus); })
-          .then(function (items) { state.batch = state.batch.concat(items); if (cur === 'batch') rerender(); });
+          .then(function (items) { items.forEach(autoSave); state.batch = state.batch.concat(items); if (cur === 'batch') rerender(); });
       });
     }, Promise.resolve()).then(function () {
       if (state.batch.length === 1) { state.draft = state.batch[0]; state.batch = null; show('check', { noPush: true }); return; }
-      state.batchStatus = 'Found ' + state.batch.length + ' flights. Tap one to check or fix its numbers.';
+      var n = state.batch.filter(function (d) { return d.logId; }).length;
+      state.batchStatus = 'Found ' + state.batch.length + ' flights and saved ' + (n === state.batch.length ? 'them all' : n) + ' to your log. Tap one to check or fix its numbers.';
       if (cur === 'batch') rerender();
     });
   }
@@ -539,7 +607,9 @@
       var txt = (j.content || []).map(function (c) { return c.text || ''; }).join(''), m = txt.match(/\{[\s\S]*\}/), o = m ? JSON.parse(m[0]) : {};
       ['flight', 'from', 'to', 'date', 'time', 'openPolaris', 'openAll', 'sbPolaris', 'sbAll', 'party', 'position', 'advice'].forEach(function (k) { if (o[k] != null && o[k] !== '') d[k] = String(o[k]); });
       settle(d);
-      d.status = 'Read with Claude. Check the numbers below.'; track('standby-check', { mode: 'claude' }); rerender();
+      d.status = 'Read with Claude. Check the numbers below.'; track('standby-check', { mode: 'claude' });
+      if (d.logId) persistSoon(); else autoSave(d);
+      rerender();
     }).catch(function (e) {
       d.status = String(e.message) === '401' ? 'Claude rejected the key. Check it in settings.' : "Claude couldn't read it just now. Type the numbers below, or try again."; rerender();
     });
@@ -552,12 +622,29 @@
       cabin: d.cabin, aircraft: d.aircraft || '', party: d.party || '', openPolaris: d.openPolaris || '', openAll: d.openAll || '', sbPolaris: d.sbPolaris || '', sbAll: d.sbAll || '',
       open: d.open || '', listed: d.listed || '', position: d.position || '', result: '' };
     var v = verdictOf(r); r.verdict = v ? v[1] : '';
+    r.daysOut = d.date ? daysOutOf(r) : '';
     return r;
+  }
+  /* Save a flight read from a screenshot right away; later edits update that same entry. */
+  function autoSave(d) {
+    if (d.logId || !d.from || !d.to || !d.date || (d.openAll === '' && d.openPolaris === '') || (d.openAll == null && d.openPolaris == null)) return;
+    var r = toRow(d); d.logId = r.id; d.saved = true; log.push(r); save('log', log); sync(r);
+    track('standby-save', { auto: 1, verdict: r.verdict });
+  }
+  var persistTimer = null;
+  function persistSoon() {
+    var d = state.draft; if (!d || !d.logId) return;
+    clearTimeout(persistTimer);
+    persistTimer = setTimeout(function () {
+      var i = log.findIndex(function (r) { return r.id === d.logId; }); if (i < 0) return;
+      var r = toRow(d); r.id = log[i].id; r.checked = log[i].checked; r.result = log[i].result; r.daysOut = log[i].daysOut;
+      log[i] = r; save('log', log); sync(r);
+    }, 700);
   }
   function saveCheck() {
     readForm(); var d = state.draft;
     if (!d.from || !d.to || !d.date) { status('c-status', 'Add the route and date before saving.'); return; }
-    var r = toRow(d); log.push(r); save('log', log); sync(r); track('standby-save', { verdict: r.verdict });
+    var r = toRow(d); d.logId = r.id; log.push(r); save('log', log); sync(r); track('standby-save', { verdict: r.verdict });
     if (state.batchIdx != null) { d.saved = true; state.batchIdx = null; state.draft = null; show('batch', { noPush: true }); return; }
     state.draft = null; show('log');
   }
@@ -565,7 +652,7 @@
     var n = 0;
     (state.batch || []).forEach(function (d) {
       if (d.saved || !d.from || !d.to || !d.date) return;
-      var r = toRow(d); log.push(r); sync(r); d.saved = true; n++;
+      var r = toRow(d); d.logId = r.id; log.push(r); sync(r); d.saved = true; n++;
     });
     save('log', log); track('standby-save', { count: n });
     state.batchStatus = n ? 'Saved ' + n + ' to your log.' : 'Nothing new to save. Each one needs a route and a date.';
@@ -576,7 +663,7 @@
     try { fetch(settings.sheetUrl, { method: 'POST', mode: 'no-cors', headers: { 'content-type': 'text/plain' }, body: JSON.stringify(r) }); } catch (e) {}
   }
   function csv() {
-    var cols = ['checked', 'date', 'flight', 'from', 'to', 'time', 'aircraft', 'party', 'cabin', 'openPolaris', 'sbPolaris', 'openAll', 'sbAll', 'open', 'listed', 'position', 'verdict', 'result'];
+    var cols = ['checked', 'daysOut', 'date', 'flight', 'from', 'to', 'time', 'aircraft', 'party', 'cabin', 'openPolaris', 'sbPolaris', 'openAll', 'sbAll', 'open', 'listed', 'position', 'verdict', 'result'];
     var rows = [cols.join(',')].concat(log.map(function (r) { return cols.map(function (c) { return '"' + String(r[c] == null ? '' : r[c]).replace(/"/g, '""') + '"'; }).join(','); }));
     var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([rows.join('\n')], { type: 'text/csv' })); a.download = 'standby-log.csv'; a.click();
   }

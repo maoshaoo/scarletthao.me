@@ -14,6 +14,14 @@ We're lucky to have a great friend who shares their United standby travel with u
 
 To keep it on your phone's home screen, open the page in Safari, tap Share, then Add to Home Screen.
 
+## Watching flights over time
+
+Every flight read from a screenshot is saved to the log right away, as a snapshot with the date and time it was checked. Fixing a number updates that snapshot instead of adding a new one.
+
+- Snapshots of the same flight on the same date form a timeline, such as "Polaris 18 → 12, filling up".
+- Upcoming flights with good odds stay on the home screen.
+- Across your timelines for a route, the app works out how many seats tend to open or disappear each day before departure, preferring the same month. That note appears on the check screen and the place card, so a future trip to Seoul in November starts with what you saw this time.
+
 ## How the forecast works
 
 It's an estimate, never a seat count. Each travel day gets a score from:

@@ -3,6 +3,8 @@
 // Copy the web app URL (https://script.google.com/macros/s/…/exec) into Standby Radar's settings.
 // The URL is the only key, so keep it private. It stays on your phone, never in the site's code.
 // It writes only the columns the app owns; the Day and Seats to spare columns keep their formulas.
+// Every screenshot is saved as its own row (a snapshot), so repeat checks of one flight show how it fills up.
+// Columns R–W hold the detail: days before departure, Polaris open and listed, all-cabin open and listed, travelers.
 
 function doPost(e) {
   var r = JSON.parse(e.postData.contents);
@@ -25,5 +27,8 @@ function doPost(e) {
   set('N', 'Scarlett');
   set('O', result);
   set('Q', String(r.id));
+  var num = function (v) { return v === '' || v == null ? '' : Number(v); };
+  sh.getRange('R1:W1').setValues([['Days out', 'Polaris open', 'Polaris listed', 'All open', 'All listed', 'Travelers']]);
+  sh.getRange('R' + row + ':W' + row).setValues([[num(r.daysOut), num(r.openPolaris), num(r.sbPolaris), num(r.openAll), num(r.sbAll), num(r.party)]]);
   return ContentService.createTextOutput('ok');
 }
