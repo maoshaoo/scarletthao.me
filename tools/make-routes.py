@@ -63,7 +63,7 @@ def download(year):
 
 
 def main(years):
-    seats, pax, flights, names = {}, {}, {}, {}
+    seats, pax, flights, names, yrs = {}, {}, {}, {}, {}
     got = []
     for y in years:
         try:
@@ -89,6 +89,7 @@ def main(years):
             seats[k] = seats.get(k, 0) + s
             pax[k] = pax.get(k, 0) + p
             flights[k] = flights.get(k, 0) + dep
+            yrs.setdefault(k, set()).add(y)
             names.setdefault(d, (row.get("DEST_CITY_NAME") or d).split(",")[0].strip())
             names.setdefault(o, (row.get("ORIGIN_CITY_NAME") or o).split(",")[0].strip())
             n += 1
@@ -101,7 +102,7 @@ def main(years):
     routes, per_day = {}, {}
     for (route, m), s in seats.items():
         routes.setdefault(route, {})[str(m)] = round(min(pax[(route, m)] / s, 1.0), 3)
-        per_day.setdefault(route, {})[str(m)] = round(flights[(route, m)] / (30.4 * len(got)), 1)
+        per_day.setdefault(route, {})[str(m)] = round(flights[(route, m)] / (30.4 * len(yrs[(route, m)])), 1)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({
         "updated": date.today().isoformat(),
