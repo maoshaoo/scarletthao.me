@@ -20,7 +20,7 @@ PAGE = f"{SITE}/changelog.html"
 PT = timezone(timedelta(hours=-8))  # dates are San Francisco days; noon PT keeps them on the right day
 
 src = (ROOT / "changelog.html").read_text(encoding="utf-8")
-entries = re.findall(r'<article class="entry">(.*?)</article>', src, re.S)
+entries = re.findall(r'<article class="entry"[^>]*>(.*?)</article>', src, re.S)
 
 
 def text(fragment):
