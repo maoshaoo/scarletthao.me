@@ -8,6 +8,13 @@
     <language>en-us</language>
     <lastBuildDate>Sun, 15 Nov 2026 12:00:00 -0800</lastBuildDate>
     <item>
+      <title>A calendar for standby (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-15-a-calendar-for-standby-new</guid>
+      <pubDate>Sun, 15 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>Standby Radar has a six-week calendar. Days you’ve checked are green, yellow or red, days that look open are outlined, and tapping a day shows its flights.</li><li>With set dates, Roll the dice lays out each place a few days either side, so you can see where and when is most open.</li></ul>]]></description>
+    </item>
+    <item>
       <title>Standby Radar remembers every flight (Functionality)</title>
       <link>https://www.scarletthao.me/changelog.html</link>
       <guid isPermaLink="false">2026-11-15-standby-radar-remembers-every-flight-functionality</guid>

@@ -192,11 +192,48 @@
       '<span class="sr-when">' + fmt(fromIso(z.date)) + (z.time ? ' · ' + esc(z.time) : '') + '</span><small>' + esc(trendOf(sn)) + '. Tap to check again.</small></button>';
   }
 
+  /* ---------- calendar ----------
+     A day is solid when you've checked real seats for it (colored by its best flight),
+     dashed when it's only a forecast that looks open or tight, and blank otherwise. */
+  function latestFor(from, to, date) {
+    var g = timelines();
+    return Object.keys(g).map(function (k) { return g[k][g[k].length - 1]; })
+      .filter(function (z) { return z.date === date && (!from || z.from === from) && (!to || z.to === to); });
+  }
+  var RANK = { 'sr-good': 0, 'sr-tight': 1, 'sr-no': 2 };
+  function bestOf(snaps) {
+    var best = null;
+    snaps.forEach(function (z) { var v = verdictOf(z); if (v && (!best || RANK[v[0]] < RANK[best])) best = v[0]; });
+    return best;
+  }
+  function dayStatus(from, to, d) {
+    var snaps = latestFor(from, to, iso(d));
+    if (snaps.length) return { cls: bestOf(snaps) || '', solid: true, snaps: snaps };
+    var b = band(scoreDay(from, to, d).score)[0];
+    return { cls: b === 'sr-good' ? 'f-good' : b === 'sr-tight' ? 'f-tight' : '', solid: false, snaps: [] };
+  }
+  function calPlaces() { return state.calPlace == null || state.calPlace === 'all' ? places : [places[+state.calPlace]].filter(Boolean); }
+  function calDay(d) {
+    var ps = calPlaces(), codes = [], hits = [];
+    ps.forEach(function (p) { p.codes.forEach(function (c) { codes.push(c); }); });
+    var checked = latestFor(home, null, iso(d)).filter(function (z) { return !ps.length || codes.indexOf(z.to) >= 0 || state.calPlace == null || state.calPlace === 'all'; });
+    if (checked.length) {
+      var cls = bestOf(checked) || '';
+      var cs = checked.map(function (z) { return z.to; }).filter(function (c, i, a) { return a.indexOf(c) === i; });
+      return { cls: cls, label: cs[0] + (cs.length > 1 ? ' +' + (cs.length - 1) : ''), dots: checked.map(function (z) { var v = verdictOf(z); return v ? v[0] : ''; }), solid: true };
+    }
+    ps.forEach(function (p) { var hit = null; p.codes.forEach(function (c) { var st = dayStatus(home, c, d); if (st.cls === 'f-good' && !hit) hit = [c, st.cls]; }); if (hit) hits.push(hit); });
+    hits.sort(function (a, b) { return a[1] === b[1] ? 0 : a[1] === 'f-good' ? -1 : 1; });
+    hits = hits.filter(function (h) { return h[1] === 'f-good'; }); // the calendar only marks forecasts that look open
+    return { cls: hits.length ? 'f-good' : '', label: hits.length ? hits[0][0] + (hits.length > 1 ? ' +' + (hits.length - 1) : '') : '', dots: [], solid: false };
+  }
+
   /* ---------- screens ---------- */
   var state = { place: null, out: null, back: null, flex: true, draft: null, stack: [] };
   function bar(back) {
     return '<div class="sr-bar">' + (back ? '<button class="sr-back" data-back>&larr; Back</button>' : '<span></span>') +
       '<nav class="sr-tabs" aria-label="Standby Radar"><button class="sr-tab" data-go="home"' + (cur === 'home' ? ' aria-current="page"' : '') + '>Home</button>' +
+      '<button class="sr-tab" data-go="cal"' + (cur === 'cal' ? ' aria-current="page"' : '') + '>Calendar</button>' +
       '<button class="sr-tab" data-go="log"' + (cur === 'log' ? ' aria-current="page"' : '') + '>Log</button>' +
       '<button class="sr-tab" data-go="settings"' + (cur === 'settings' ? ' aria-current="page"' : '') + ' aria-label="Settings">&#9881;</button></nav></div>';
   }
@@ -213,7 +250,7 @@
   }
   var S = {};
   S.home = function () {
-    return '<div class="sr-bar"><span></span><nav class="sr-tabs" aria-label="Standby Radar"><button class="sr-tab" data-go="log">Log</button><button class="sr-tab" data-go="settings" aria-label="Settings">&#9881;</button></nav></div>' +
+    return '<div class="sr-bar"><span></span><nav class="sr-tabs" aria-label="Standby Radar"><button class="sr-tab" data-go="cal">Calendar</button><button class="sr-tab" data-go="log">Log</button><button class="sr-tab" data-go="settings" aria-label="Settings">&#9881;</button></nav></div>' +
       '<h1 class="sr-title">Standby Radar<span>.</span></h1>' +
       '<p class="sr-intro">We\u2019re lucky to have a great friend who shares their United standby travel with us. We\u2019ve used it, but not nearly enough. This is our nudge to take a trip once a month and see the world.</p>' +
       watchedHtml() +
@@ -226,7 +263,50 @@
     var w = watched(); if (!w.length) return '';
     var good = w.filter(function (sn) { var v = verdictOf(sn[sn.length - 1]); return v && v[0] === 'sr-good'; }), rest = w.length - good.length;
     return '<div class="sr-lbl">Good odds · flights you\u2019re watching</div>' + (good.length ? good.map(watchCard).join('') : '<p class="sr-sub">None of the flights you\u2019ve checked look good right now.</p>') +
-      (rest ? '<button class="sr-link" data-go="log">' + rest + ' more flight' + (rest > 1 ? 's' : '') + ' you\u2019ve checked</button>' : '');
+      '<button class="sr-link" data-go="cal">See every flight on the calendar' + (rest ? ' (' + rest + ' more checked)' : '') + '</button>';
+  }
+  S.cal = function () {
+    var t = today(), start = addDays(t, -t.getDay()), sel = state.calSel || iso(t), h = bar(true);
+    h += '<h1 class="sr-h">Flights</h1>';
+    if (places.length > 1) h += '<div class="sr-chips" role="group" aria-label="Show">' + [['all', 'All']].concat(places.map(function (p, i) { return [String(i), p.name]; })).map(function (x) {
+      return '<button class="sr-chip" data-calplace="' + x[0] + '" aria-pressed="' + (String(state.calPlace == null ? 'all' : state.calPlace) === x[0]) + '">' + esc(x[1]) + '</button>'; }).join('') + '</div>';
+    h += '<div class="sr-legend"><span><i class="sr-sw sr-good"></i>Checked: good</span><span><i class="sr-sw sr-tight"></i>Tight</span><span><i class="sr-sw sr-no"></i>Unlikely</span><span><i class="sr-sw f-good"></i>Forecast: likely open</span></div>';
+    h += '<div class="sr-cal" role="grid" aria-label="Next six weeks, flights from ' + home + '">' + ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(function (x) { return '<span class="sr-dow" aria-hidden="true">' + x + '</span>'; }).join('');
+    for (var i = 0; i < 42; i++) {
+      var d = addDays(start, i), past = d < t, c = past ? { cls: '', label: '', dots: [] } : calDay(d), mon = d.getDate() === 1 || i === 0;
+      h += '<button class="sr-day ' + c.cls + (past ? ' past' : '') + (iso(d) === sel ? ' sel' : '') + '" data-calday="' + iso(d) + '"' + (past ? ' disabled' : '') +
+        ' aria-label="' + esc(fmt(d) + (c.label ? ', ' + c.label : '') + (c.solid ? ', checked' : c.cls ? ', forecast' : '')) + '">' +
+        '<b>' + (mon ? '<span class="m">' + d.toLocaleDateString('en-US', { month: 'short' }) + '</span> ' : '') + d.getDate() + '</b>' +
+        (c.dots.length ? '<span class="dots">' + c.dots.map(function (x) { return '<span class="dot ' + x + '"></span>'; }).join('') + '</span>' : '') +
+        '<i>' + esc(c.label) + '</i></button>';
+    }
+    h += '</div>';
+    var sd = fromIso(sel), snaps = latestFor(home, null, sel);
+    h += '<div class="sr-lbl">' + fmt(sd) + (snaps.length ? ' · ' + snaps.length + ' flight' + (snaps.length > 1 ? 's' : '') + ' checked' : '') + '</div>';
+    var g = timelines();
+    snaps.forEach(function (z) { h += watchCard(g[keyOf(z)]); });
+    calPlaces().forEach(function (p) { p.codes.forEach(function (c) { if (!snaps.some(function (z) { return z.to === c; })) h += dayRow(p.name, home, c, sd); }); });
+    if (!places.length) h += '<button class="sr-card" data-go="settings"><b>Add places you\u2019d like to go</b><small>Then each day shows which of them look open.</small></button>';
+    return h;
+  };
+  /* Fixed dates, several places: one row per place, a few days either side of the plan. */
+  function strips(list, o, b) {
+    function grid(label, center, out) {
+      var days = [-2, -1, 0, 1, 2].map(function (k) { return addDays(center, k); });
+      var h = '<div class="sr-lbl">' + label + '</div><div class="sr-strip" style="--n:' + days.length + '"><span></span>' + days.map(function (d) {
+        return '<span class="sr-dow' + (iso(d) === iso(center) ? ' on' : '') + '">' + d.toLocaleDateString('en-US', { weekday: 'short' }).slice(0, 2) + '<br>' + d.getDate() + '</span>'; }).join('');
+      list.forEach(function (x) {
+        h += '<span class="sr-sname">' + esc(x.p.name) + '</span>';
+        days.forEach(function (d) {
+          var c = x.p.codes[0], st = out ? dayStatus(home, c, d) : dayStatus(c, home, d), past = d < today();
+          h += '<button class="sr-cell ' + (past ? 'past' : st.cls) + (iso(d) === iso(center) ? ' on' : '') + '" data-check="' + (out ? home + '-' + c : c + '-' + home) + '-' + iso(d) + '"' + (past ? ' disabled' : '') +
+            ' aria-label="' + esc(x.p.name + ', ' + (out ? 'going ' : 'back ') + fmt(d) + ', ' + (st.solid ? 'checked' : st.cls ? 'forecast ' + (st.cls === 'f-good' ? 'likely open' : 'tight') : 'unlikely')) + '">' + (st.solid ? st.snaps.length : '') + '</button>';
+        });
+      });
+      return h + '</div>';
+    }
+    return grid('Going · ' + fmt(o), o, true) + grid('Coming back · ' + fmt(b), b, false) +
+      '<div class="sr-legend"><span><i class="sr-sw sr-good"></i>Checked</span><span><i class="sr-sw f-good"></i>Likely open</span><span><i class="sr-sw f-tight"></i>Tight</span><span><i class="sr-sw"></i>Unlikely</span></div>';
   }
   S.know = function () {
     var p = state.place != null ? state.place : 0, o = state.out || iso(addDays(today(), 7)), b = state.back || iso(addDays(today(), 7 + (places[p] ? places[p].days - 1 : 3)));
@@ -255,7 +335,9 @@
     var o = fromIso(state.out), b = fromIso(state.back);
     var list = (state.diceList || places.map(function (p) { return p; })).map(function (p, i) { var t = tripScore(p, o, b); return { p: p, t: t, i: i }; })
       .sort(function (x, y) { return y.t.score - x.t.score; }).slice(0, 12);
-    return bar(true) + '<h1 class="sr-h">' + fmt(o) + ' &ndash; ' + fmt(b) + '</h1><p class="sr-sub">Ranked by how open the trip looks, out and back.</p>' +
+    return bar(true) + '<h1 class="sr-h">' + fmt(o) + ' &ndash; ' + fmt(b) + '</h1><p class="sr-sub">Each row is a place, two days either side of your dates. Tap a square to check real seats.</p>' +
+      strips(list.slice(0, 8), o, b) +
+      '<div class="sr-lbl">Ranked by how open the trip looks</div>' +
       list.map(function (x) {
         var bd = band(x.t.score), why = x.t.out.why.concat(x.t.back.why);
         return '<button class="sr-card" data-dice="' + x.i + '"><span class="t"><b>' + esc(x.p.name) + ' <span class="r">' + home + ' &rarr; ' + x.p.codes.map(esc).join(', ') + '</span></b>' + pill(bd) + '</span>' +
@@ -398,6 +480,8 @@
     if (t.dataset.check) { var bits = t.dataset.check.split('-'); state.draft = { from: bits[0], to: bits[1], date: bits.slice(2).join('-') }; show('check'); return; }
     if (t.dataset.recheck) { var kb = t.dataset.recheck.split('|'); state.batch = null; state.batchIdx = null; state.draft = { flight: kb[0] === '?' ? '' : kb[0], date: kb[1], from: kb[2], to: kb[3], party: 2 }; show('check'); return; }
     if (t.dataset.batch != null) { state.batchIdx = +t.dataset.batch; state.draft = state.batch[state.batchIdx]; show('check'); return; }
+    if (t.dataset.calplace != null) { state.calPlace = t.dataset.calplace; rerender(); return; }
+    if (t.dataset.calday) { state.calSel = t.dataset.calday; rerender(); var lb = app.querySelector('.sr-cal ~ .sr-lbl'); if (lb) lb.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
     if (t.dataset.flex != null) { state.flex = t.dataset.flex === '1'; rerender(); return; }
     if (t.dataset.result) { var r = log.find(function (x) { return x.id === t.dataset.result; }); if (r) { r.result = r.result === t.dataset.val ? '' : t.dataset.val; save('log', log); sync(r); rerender(); } return; }
     var act = t.dataset.act;
