@@ -512,16 +512,75 @@
     var r = scoreDay(a, b, d), bd = band(r.score);
     return '<button class="sr-card" data-check="' + a + '-' + b + '-' + iso(d) + '"><span class="t"><b>' + label + ' · ' + fmt(d) + ' <span class="r">' + a + ' &rarr; ' + b + '</span></b>' + pill(bd) + '</span><small>' + esc(r.why.join(' · ') || 'Day of week and holiday peaks') + '</small></button>';
   }
+  /* Place detail: three views of one destination from the base camp.
+     1. How full, week by week: the route's monthly average spread across weeks, holiday weeks flagged.
+     2. Flights a day from the base camp, per airport, this month and the next two.
+     3. Getting in and out: one square per day, top half going, bottom half coming back. */
+  function weekFull(p, ws) {
+    var tot = 0, n = 0, peak = null;
+    for (var k = 0; k < 7; k++) {
+      var d = addDays(ws, k), best = null;
+      p.codes.forEach(function (c) { var lg = leg(home, c, d.getMonth()); if (lg && (best == null || lg.full < best)) best = lg.full; });
+      if (best != null) { tot += best; n++; }
+      if (!peak) peak = peakFor(d);
+    }
+    return n ? { full: tot / n, peak: peak } : { full: null, peak: peak };
+  }
+  function fullChart(p, o, b) {
+    var t = today(), start = addDays(t, -t.getDay()), weeks = [];
+    for (var i = 0; i < 10; i++) { var ws = addDays(start, i * 7), w = weekFull(p, ws); w.ws = ws; w.trip = (o >= ws && o < addDays(ws, 7)) || (b >= ws && b < addDays(ws, 7)); weeks.push(w); }
+    var have = weeks.filter(function (w) { return w.full != null; });
+    if (!have.length) return '<p class="sr-sub">No route history for this place yet.</p>';
+    var lo = have.reduce(function (a, w) { return w.full < a.full ? w : a; });
+    var MIN = 0.5, y = function (f) { return Math.max(0, Math.min(100, (f - MIN) / (1 - MIN) * 100)); };
+    var pts = weeks.map(function (w, i) { return w.full == null ? null : [(i + 0.5) * 10, 100 - y(w.full)]; }).filter(Boolean);
+    var h = '<div class="sr-line" role="img" aria-label="' + esc('How full flights from ' + home + ' to ' + p.name + ' run, by week: ' + have.map(function (w) { return fmt(w.ws) + ' ' + Math.round(w.full * 100) + '%'; }).join(', ')) + '"><div class="plot">';
+    weeks.forEach(function (w, i) { if (w.peak) h += '<span class="band" style="left:' + i * 10 + '%" title="' + esc(w.peak) + '"></span>'; });
+    [60, 70, 80, 90].forEach(function (g) { h += '<span class="grid" style="bottom:' + y(g / 100) + '%"><i>' + g + '%</i></span>'; });
+    h += '<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="' + pts.map(function (q) { return q.join(','); }).join(' ') + '" /></svg>';
+    weeks.forEach(function (w, i) {
+      if (w.full == null) return;
+      var pct = Math.round(w.full * 100), show = w.trip || w === lo;
+      h += '<span class="dot' + (w.trip ? ' trip' : '') + '" style="left:' + ((i + 0.5) * 10) + '%;bottom:' + y(w.full) + '%" title="' + esc('Week of ' + fmt(w.ws) + ': ' + pct + '% full on average' + (w.peak ? ', ' + w.peak : '')) + '">' + (show ? '<i>' + pct + '%</i>' : '') + '</span>';
+    });
+    h += '</div><div class="xs">' + weeks.map(function (w, i) { return '<span>' + (i === 0 || w.ws.getDate() <= 7 ? '<b>' + MONTHS_SHORT[w.ws.getMonth()] + '</b>' : '') + w.ws.getDate() + '</span>'; }).join('') + '</div></div>';
+    return h + '<div class="sr-legend"><span><i class="sr-sw dotk"></i>% full, week of</span>' + (weeks.some(function (w) { return w.trip; }) ? '<span><i class="sr-sw dotk trip"></i>Your trip</span>' : '') + '<span><i class="sr-sw bandk"></i>Holiday week</span></div>' +
+      '<p class="sr-cap">Each month’s average from U.S. DOT data. Holiday weeks run fuller than the average shows.</p>';
+  }
+  function freqTable(p) {
+    var m0 = today().getMonth(), months = [m0, (m0 + 1) % 12, (m0 + 2) % 12];
+    var h = '<table class="sr-freq"><thead><tr><th scope="col">From ' + esc(home) + '</th>' + months.map(function (m) { return '<th scope="col">' + MONTHS_SHORT[m] + '</th>'; }).join('') + '</tr></thead><tbody>';
+    p.codes.forEach(function (c) {
+      h += '<tr><th scope="row">' + esc(c) + '</th>' + months.map(function (m) {
+        var lg = leg(home, c, m); if (!lg || !lg.perDay) return '<td class="none">none</td>';
+        var n = lg.perDay, txt = n >= 0.9 ? String(Math.round(n * 10) / 10).replace(/\.0$/, '') : Math.max(1, Math.round(n * 7)) + '/wk';
+        return '<td' + (n < 0.9 ? ' class="few"' : '') + '><b>' + txt + '</b>' + (n >= 0.9 ? '<span>a day</span>' : '') + (lg.via ? '<span>via ' + esc(lg.via) + '</span>' : '') + '</td>';
+      }).join('') + '</tr>';
+    });
+    return h + '</tbody></table>';
+  }
+  function easeGrid(p, o, b) {
+    var t = today(), start = addDays(t, -t.getDay()), h = '<div class="sr-ease" role="grid" aria-label="Getting in and out, next six weeks">';
+    h += ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(function (x) { return '<span class="sr-dow" aria-hidden="true">' + x + '</span>'; }).join('');
+    for (var i = 0; i < 42; i++) {
+      var d = addDays(start, i), past = d < t;
+      if (past) { h += '<span class="ed past"><b>' + d.getDate() + '</b></span>'; continue; }
+      var go = bestCode(p, d, true), back = bestCode(p, d, false), gb = band(go.score), bb = band(back.score), mark = iso(d) === iso(o) ? ' out' : iso(d) === iso(b) ? ' back' : '';
+      h += '<button class="ed' + mark + '" data-check="' + home + '-' + go.code + '-' + iso(d) + '" aria-label="' + esc(fmt(d) + ': going ' + gb[1].toLowerCase() + ', coming back ' + bb[1].toLowerCase()) + '" title="' + esc(fmt(d) + ' · going: ' + gb[1] + ' · coming back: ' + bb[1]) + '">' +
+        '<span class="hi ' + gb[0] + '"></span><span class="lo ' + bb[0] + '"></span><b>' + (d.getDate() === 1 || i === t.getDay() ? MONTHS_SHORT[d.getMonth()] + ' ' : '') + d.getDate() + '</b></button>';
+    }
+    return h + '</div><div class="sr-legend"><span><i class="sr-sw sr-good"></i>Likely open</span><span><i class="sr-sw sr-tight"></i>Tight</span><span><i class="sr-sw sr-no"></i>Unlikely</span><span><i class="sr-sw half"></i>Top: going · bottom: coming back</span></div>' +
+      '<p class="sr-cap">Look for a green top to leave on and a green bottom to come home on. Tap a day to check real seats.</p>';
+  }
   S.flights = function () {
     var p = state.placeObj || places[state.place], o = fromIso(state.out), b = fromIso(state.back), h = '';
-    h += bar(true) + '<h1 class="sr-h">' + esc(p.name) + ' · ' + fmt(o) + ' &ndash; ' + fmt(b) + '</h1>';
-    h += '<label class="sr-drop"><b>Upload a seat-count screenshot</b>Jump straight to the check for any of these days<input type="file" accept="image/*" multiple id="fl-file"></label>';
-    h += '<div class="sr-lbl">Going</div>';
-    var outDays = state.flex ? [-1, 0, 1] : [0];
-    p.codes.forEach(function (c) { outDays.forEach(function (k) { h += dayRow(k === 0 ? 'Planned' : k < 0 ? 'Day before' : 'Day after', home, c, addDays(o, k)); }); });
-    h += '<div class="sr-lbl">Coming back</div>';
-    p.codes.forEach(function (c) { outDays.forEach(function (k) { h += dayRow(k === 0 ? 'Planned' : k < 0 ? 'Day before' : 'Day after', c, home, addDays(b, k)); }); });
-    h += '<p class="sr-note">Specific flight times come with the schedule feed. For now, tap a day to check real seats with a screenshot on the day you fly.</p>';
+    var tv = tripScore(p, o, b);
+    h += bar(true) + '<h1 class="sr-h">' + esc(p.name) + ' <span class="sr-sub">from ' + esc(cityOf(home)) + '</span></h1>';
+    h += '<label class="sr-drop"><b>Upload a seat-count screenshot</b>For any of these days<input type="file" accept="image/*" multiple id="fl-file"></label>';
+    h += '<div class="sr-card"><span class="t"><b>' + fmt(o) + ' &ndash; ' + fmt(b) + '</b>' + pill(band(tv.score)) + '</span>' + dirsHtml(Object.assign(tv, { outD: o, backD: b }), p) + '</div>';
+    h += '<div class="sr-lbl">How full, week by week</div>' + fullChart(p, o, b);
+    h += '<div class="sr-lbl">Flights a day</div>' + freqTable(p);
+    h += '<div class="sr-lbl">Getting in and out</div>' + easeGrid(p, o, b);
     return h;
   };
   S.check = function () {
