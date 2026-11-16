@@ -22,6 +22,12 @@ Every flight read from a screenshot is saved to the log right away, as a snapsho
 - Upcoming flights with good odds stay on the home screen.
 - Across your timelines for a route, the app works out how many seats tend to open or disappear each day before departure, preferring the same month. That note appears on the check screen and the place card, so a future trip to Seoul in November starts with what you saw this time.
 
+## Base camps
+
+Settings take a home airport and, optionally, a second base camp with the months you're there. The home screen then shows a Base camp switch: either airport, or Auto, which picks by today's month. Open the app once with `?alt=XXX&altm=4-5` to set the second base camp on a phone. It's stored only on that device, never in the code.
+
+When there's no nonstop, the forecast uses the best connection through a United hub (EWR, IAD, ORD, IAH, DEN, LAX, SFO): as full as the fuller leg, as frequent as the rarer one, with a small penalty for the extra chance to be bumped.
+
 ## Good time to go
 
 `data/seasons.json` is a hand-written list of good times to visit places United flies to from SFO (weather and what's on). The app pairs it with the route history: a place is a pick for a month only if it's in season and its flights usually run 82% full or less that month. Rarely served routes rank lower, since a bump there means no backup flight.

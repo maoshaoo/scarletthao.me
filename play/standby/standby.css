@@ -130,3 +130,10 @@ button.sr-card:hover { border-color: var(--muted); }
 .sr-cell { height: 2rem; border-radius: 7px; border: 1px solid var(--rule); background: var(--card); font: 500 .72rem var(--body); color: var(--ink); }
 .sr-cell.on { box-shadow: inset 0 0 0 1px var(--ink); }
 .sr-cell.past { opacity: .35; cursor: default; }
+
+/* Base camp */
+.sr-base { display: grid; gap: .35rem; }
+.sr-seg { display: grid; grid-template-columns: 1fr 1fr auto; border: 1px solid var(--rule); border-radius: 999px; padding: 3px; background: var(--card); }
+.sr-seg button { border: 0; background: none; border-radius: 999px; padding: .5rem .8rem; font-weight: 500; font-size: .86rem; color: var(--soft); }
+.sr-seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.sr-base small { color: var(--muted); font-size: .78rem; }

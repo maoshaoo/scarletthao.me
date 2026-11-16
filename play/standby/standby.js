@@ -22,9 +22,27 @@
   var q = /[?&]me(=off)?(&|$)/.exec(location.search);
   if (q) { me = !q[1]; save('me', me); history.replaceState(null, '', location.pathname); }
   var places = load('places', me ? DEFAULT_PLACES : []);
-  var home = load('home', 'SFO');
+  /* Base camp: the airport trips start from. A second base camp can take over for some months of the year.
+     It lives only in this device's settings; open the app once with ?alt=XXX&altm=4-5 to set it. */
+  var homeMain = load('home', 'SFO');
+  var baseMode = load('base', 'auto'); // auto, main or alt
+  var home = homeMain;
   var log = load('log', []);
   var settings = load('settings', { sheetUrl: '', claudeKey: '', model: 'claude-sonnet-5-5' });
+  (function () {
+    var a = /[?&]alt=([A-Za-z]{3})/.exec(location.search), am = /[?&]altm=([\d,-]+)/.exec(location.search);
+    if (a) { settings.alt = a[1].toUpperCase(); settings.altMonths = am ? monthsOf(am[1]) : []; save('settings', settings); history.replaceState(null, '', location.pathname); }
+  })();
+  function monthsOf(t) {
+    var out = [];
+    String(t).split(',').forEach(function (part) { var r = part.split('-').map(Number); if (!r[0]) return; for (var i = r[0]; i <= (r[1] || r[0]); i++) if (i >= 1 && i <= 12 && out.indexOf(i) < 0) out.push(i); });
+    return out;
+  }
+  function monthsText(ms) { return ms.length ? MONTHS_SHORT[ms[0] - 1] + (ms.length > 1 ? '\u2013' + MONTHS_SHORT[ms[ms.length - 1] - 1] : '') : ''; }
+  var MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function autoBase() { return settings.alt && (settings.altMonths || []).indexOf(new Date().getMonth() + 1) >= 0 ? settings.alt : homeMain; }
+  function resolveBase() { home = !settings.alt ? homeMain : baseMode === 'main' ? homeMain : baseMode === 'alt' ? settings.alt : autoBase(); }
+  resolveBase();
   var seasonData = null; // good times to visit, from data/seasons.json
   var routeData = null; // monthly route history (filled from data/routes.json when available)
 
@@ -64,6 +82,25 @@
      and your own log for that route. It is an estimate, never a seat count. */
   var DOW = [-12, 0, 8, 8, 0, -12, 6]; // Sun..Sat
   function routeKey(a, b) { return a + '-' + b; }
+  /* How full a trip runs that month: the nonstop if United flies one, else the best connection through a hub,
+     where the trip is as full as its fuller leg and as frequent as its rarer one. */
+  var HUBS = ['EWR', 'IAD', 'ORD', 'IAH', 'DEN', 'LAX', 'SFO'];
+  function leg(a, b, month) {
+    if (!routeData || !routeData.routes) return null;
+    var m = String(month + 1), R = routeData.routes, F = routeData.flightsPerDay || {};
+    var r = R[routeKey(a, b)];
+    if (r && r[m]) return { full: r[m], perDay: (F[routeKey(a, b)] || {})[m] || 0, via: null };
+    var best = null;
+    HUBS.forEach(function (h) {
+      if (h === a || h === b) return;
+      var x = R[routeKey(a, h)], y = R[routeKey(h, b)];
+      if (!x || !y || !x[m] || !y[m]) return;
+      var c = { full: Math.max(x[m], y[m]), perDay: Math.min((F[routeKey(a, h)] || {})[m] || 0, (F[routeKey(h, b)] || {})[m] || 0), via: h };
+      if (!best || c.full < best.full) best = c;
+    });
+    return best;
+  }
+  function viaName(h) { return (routeData && routeData.names && routeData.names[h]) || h; }
   function myHistory(a, b, dow) {
     var rows = log.filter(function (r) { return r.from === a && r.to === b && r.open !== '' && r.open != null; });
     var same = rows.filter(function (r) { return dow == null || new Date(r.date + 'T12:00').getDay() === dow; });
@@ -79,10 +116,12 @@
     s += DOW[d.getDay()];
     var pk = peakFor(d);
     if (pk) { s -= 30; why.push(pk); }
-    var lf = routeData && routeData.routes && routeData.routes[routeKey(a, b)];
-    if (lf && lf[d.getMonth() + 1]) { var f = lf[d.getMonth() + 1]; s += Math.round((0.85 - f) * 120); why.push(Math.round(f * 100) + '% full on average that month'); }
-    var fpd = routeData && routeData.flightsPerDay && routeData.flightsPerDay[routeKey(a, b)];
-    if (fpd && fpd[d.getMonth() + 1]) { var n = fpd[d.getMonth() + 1]; s += Math.min(8, Math.round(n * 2)); why.push('about ' + (n >= 1 ? Math.round(n) : 'less than 1') + ' United flight' + (n >= 1.5 ? 's' : '') + ' a day'); }
+    var lg = leg(a, b, d.getMonth());
+    if (lg) {
+      s += Math.round((0.85 - lg.full) * 120); why.push(Math.round(lg.full * 100) + '% full on average that month' + (lg.via ? ', via ' + viaName(lg.via) : ''));
+      if (lg.via) s -= 6; // a connection is two chances to be bumped
+      if (lg.perDay) { var n = lg.perDay; s += Math.min(8, Math.round(n * 2)); why.push('about ' + (n >= 1 ? Math.round(n) : 'less than 1') + ' United flight' + (n >= 1.5 ? 's' : '') + ' a day' + (lg.via ? ' on the rarer leg' : '')); }
+    }
     var h = myHistory(a, b, d.getDay());
     if (h) { s += Math.max(-25, Math.min(25, Math.round(h.spare * 3))); why.push('your log: ' + h.n + ' check' + (h.n > 1 ? 's' : '') + ', ' + Math.round(h.spare) + ' seats to spare on average'); }
     return { score: Math.max(0, Math.min(100, s)), why: why };
@@ -235,13 +274,14 @@
   var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   function picks(month) {
     if (!seasonData || !routeData) return [];
-    var m = String(month + 1), by = {};
+    var by = {};
     Object.keys(seasonData.places).forEach(function (c) {
       var sp = seasonData.places[c], season = sp.seasons.filter(function (x) { return x.months.indexOf(month + 1) >= 0; })[0];
-      var lf = routeData.routes[routeKey(home, c)], fpd = routeData.flightsPerDay && routeData.flightsPerDay[routeKey(home, c)];
-      if (!season || !lf || !lf[m] || !fpd || !(fpd[m] > 0)) return;
-      if (lf[m] > 0.82) return; // in season but usually full: not a standby pick
-      var x = { name: sp.name, codes: [c], days: 5, full: lf[m], perDay: fpd[m], why: season.why, score: (0.85 - lf[m]) * 100 + Math.min(5, fpd[m] * 3) - (fpd[m] < 0.5 ? 20 : 0) }; // rare flights mean no backup if you're bumped
+      if (c === home || !season) return;
+      var lg = leg(home, c, month);
+      if (!lg || !(lg.perDay > 0) || lg.full > 0.82) return; // in season but usually full: not a standby pick
+      var x = { name: sp.name, codes: [c], days: 5, full: lg.full, perDay: lg.perDay, via: lg.via, why: season.why,
+        score: (0.85 - lg.full) * 100 + Math.min(5, lg.perDay * 3) - (lg.perDay < 0.5 ? 20 : 0) - (lg.via ? 5 : 0) }; // rare flights or a connection mean less backup if you're bumped
       var k = sp.name;
       if (by[k]) { by[k].codes.push(c); if (x.score > by[k].score) { x.codes = by[k].codes; by[k] = x; } } else by[k] = x;
     });
@@ -251,7 +291,7 @@
   function pickCard(x, month) {
     var bd = x.full <= 0.72 ? ['sr-good', Math.round(x.full * 100) + '% full'] : ['sr-tight', Math.round(x.full * 100) + '% full'];
     return '<button class="sr-card" data-pick="' + esc(x.codes.join(',')) + '" data-month="' + month + '" data-name="' + esc(x.name) + '"><span class="t"><b>' + esc(x.name) + ' <span class="r">' + home + ' &rarr; ' + x.codes.map(esc).join(', ') + '</span></b>' + pill(bd) + '</span>' +
-      '<small>' + esc(x.why) + ' · ' + freq(x.perDay) + (x.perDay < 0.9 ? ', so fewer backups' : '') + '</small></button>';
+      '<small>' + esc(x.why) + ' · ' + (x.via ? 'via ' + esc(viaName(x.via)) + ', ' : '') + freq(x.perDay) + (x.perDay < 0.9 ? ', so fewer backups' : '') + '</small></button>';
   }
   function pickMonth() { return addDays(today(), 21).getMonth(); }
   function picksHtml() {
@@ -285,6 +325,7 @@
   S.home = function () {
     return '<div class="sr-bar"><span></span><nav class="sr-tabs" aria-label="Standby Radar"><button class="sr-tab" data-go="cal">Calendar</button><button class="sr-tab" data-go="log">Log</button><button class="sr-tab" data-go="settings" aria-label="Settings">&#9881;</button></nav></div>' +
       '<h1 class="sr-title">Standby Radar<span>.</span></h1>' +
+      baseHtml() +
       '<p class="sr-intro">We\u2019re lucky to have a great friend who shares their United standby travel with us. We\u2019ve used it, but not nearly enough. This is our nudge to take a trip once a month and see the world.</p>' +
       watchedHtml() +
       picksHtml() +
@@ -293,6 +334,15 @@
       '<div class="sr-ctas"><button class="sr-cta" data-go="know"><i aria-hidden="true">&#8982;</i>I know where and when</button>' +
       '<button class="sr-cta alt" data-go="dice"><i aria-hidden="true">&#9860;</i>Roll the dice</button></div>';
   };
+  function cityOf(c) { return viaName(c); }
+  function baseHtml() {
+    if (!settings.alt) return '';
+    var auto = autoBase();
+    return '<div class="sr-base" role="group" aria-label="Base camp"><span class="sr-lbl">Base camp</span><div class="sr-seg">' +
+      [['main', cityOf(homeMain)], ['alt', cityOf(settings.alt)], ['auto', 'Auto']].map(function (x) {
+        return '<button data-base="' + x[0] + '" aria-pressed="' + (baseMode === x[0]) + '">' + esc(x[1]) + '</button>'; }).join('') + '</div>' +
+      '<small>' + (baseMode === 'auto' ? 'Auto: ' + esc(cityOf(settings.alt)) + ' in ' + esc(monthsText(settings.altMonths || [])) + ', ' + esc(cityOf(homeMain)) + ' the rest of the year. Now: ' + esc(cityOf(auto)) + '.' : 'Trips start from ' + esc(cityOf(home)) + ' (' + home + ').') + '</small></div>';
+  }
   function watchedHtml() {
     var w = watched(); if (!w.length) return '';
     var good = w.filter(function (sn) { var v = verdictOf(sn[sn.length - 1]); return v && v[0] === 'sr-good'; }), rest = w.length - good.length;
@@ -493,7 +543,9 @@
   };
   S.settings = function () {
     return bar(true) + '<h1 class="sr-h">Settings</h1><p class="sr-sub">Stored only on this device.</p>' +
-      '<label class="sr-field">Home airport<input id="s-home" value="' + esc(home) + '" maxlength="3"></label>' +
+      '<label class="sr-field">Home airport<input id="s-home" value="' + esc(homeMain) + '" maxlength="3"></label>' +
+      '<div class="sr-row2"><label class="sr-field">Second base camp<input id="s-alt" value="' + esc(settings.alt || '') + '" maxlength="3" placeholder="optional"></label>' +
+      '<label class="sr-field">Months there<input id="s-altm" value="' + esc((settings.altMonths || []).length ? settings.altMonths[0] + (settings.altMonths.length > 1 ? '-' + settings.altMonths[settings.altMonths.length - 1] : '') : '') + '" placeholder="like 4-5"></label></div>' +
       '<label class="sr-field">Your places, one per line: name, airport codes, trip length in days<textarea id="s-places">' + esc(places.map(function (p) { return p.name + ', ' + p.codes.join(' ') + ', ' + p.days; }).join('\n')) + '</textarea></label>' +
       '<label class="sr-field">Private Google Sheet link (Apps Script web app URL)<input id="s-sheet" type="url" value="' + esc(settings.sheetUrl) + '" placeholder="https://script.google.com/macros/s/…/exec"></label>' +
       '<label class="sr-field">Claude API key (for "Read with Claude")<input id="s-key" type="password" autocomplete="off" value="' + esc(settings.claudeKey) + '" placeholder="sk-ant-…"></label>' +
@@ -523,6 +575,7 @@
     if (t.dataset.check) { var bits = t.dataset.check.split('-'); state.draft = { from: bits[0], to: bits[1], date: bits.slice(2).join('-') }; show('check'); return; }
     if (t.dataset.recheck) { var kb = t.dataset.recheck.split('|'); state.batch = null; state.batchIdx = null; state.draft = { flight: kb[0] === '?' ? '' : kb[0], date: kb[1], from: kb[2], to: kb[3], party: 2 }; show('check'); return; }
     if (t.dataset.batch != null) { state.batchIdx = +t.dataset.batch; state.draft = state.batch[state.batchIdx]; show('check'); return; }
+    if (t.dataset.base) { baseMode = t.dataset.base; save('base', baseMode); resolveBase(); track('standby-base', { mode: baseMode }); rerender(); return; }
     if (t.dataset.pickmonth != null) { state.pickMonth = +t.dataset.pickmonth; rerender(); return; }
     if (t.dataset.pick) {
       var pm = +t.dataset.month, pp = { name: t.dataset.name, codes: t.dataset.pick.split(','), days: 5 }, y = today().getFullYear() + (pm < today().getMonth() ? 1 : 0);
@@ -821,8 +874,11 @@
     if (!/^[A-Z]{3}$/.test(hm)) { err('s-err', 'Home airport needs a 3-letter code, like SFO.'); return; }
     var sheet = val('s-sheet');
     if (sheet && !/^https:\/\/script\.google\.com\//.test(sheet)) { err('s-err', 'The sheet link should start with https://script.google.com/'); return; }
-    home = hm; places = out; settings.sheetUrl = sheet; settings.claudeKey = val('s-key');
-    save('home', home); save('places', places); save('settings', settings);
+    var alt = val('s-alt').toUpperCase();
+    if (alt && !/^[A-Z]{3}$/.test(alt)) { err('s-err', 'Second base camp needs a 3-letter code, like BOS.'); return; }
+    homeMain = hm; settings.alt = alt; settings.altMonths = alt ? monthsOf(val('s-altm')) : []; resolveBase();
+    places = out; settings.sheetUrl = sheet; settings.claudeKey = val('s-key');
+    save('home', homeMain); save('places', places); save('settings', settings);
     show('home', { noPush: true });
   }
 

@@ -4,7 +4,8 @@
 Source: U.S. DOT, Bureau of Transportation Statistics, T-100 Segment (All Carriers), domestic and international.
 Public data, monthly totals per airline and route: seats and passengers. It runs a few months behind.
 
-For each United route touching SFO, OAK or SJC (both directions), this averages passengers / seats
+For each United route touching a base camp (SFO, OAK, SJC, LAX, SEA, BOS, JFK, LGA), plus hub routes
+(EWR, IAD, ORD, IAH, DEN, LAX, SFO) to international or trip-worthy places for connections, this averages passengers / seats
 for each calendar month over the most recent years available. The Standby Radar app uses it as the
 starting point for its forecast. It is never a seat count for a single flight.
 
@@ -29,7 +30,9 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "play" / "standby" / "data" / "routes.json"
 BASE = "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=FMG&QO_fu146_anzr=Nv4%25Pn44vr45"
 POST = "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=FMG&QO_fu146_anzr=Nv4+Pn44vr45"
-HOME = {"SFO", "OAK", "SJC"}
+HOME = {"SFO", "OAK", "SJC", "LAX", "SEA", "BOS", "JFK", "LGA"}  # base camps: every United route touching these
+HUBS = {"EWR", "IAD", "ORD", "IAH", "DEN", "LAX", "SFO"}  # connections: kept when the far end is a trip-worthy place
+SEASONS = ROOT / "play" / "standby" / "data" / "seasons.json"
 CARRIER = "UA"
 FIELDS = ["DEPARTURES_PERFORMED", "SEATS", "PASSENGERS", "UNIQUE_CARRIER", "ORIGIN", "DEST",
           "DEST_CITY_NAME", "ORIGIN_CITY_NAME", "DEST_COUNTRY_NAME", "ORIGIN_COUNTRY_NAME", "YEAR", "MONTH"]
@@ -63,6 +66,10 @@ def download(year):
 
 
 def main(years):
+    try:
+        trip = set(json.loads(SEASONS.read_text())["places"])
+    except (OSError, ValueError, KeyError):
+        trip = set()
     seats, pax, flights, names, yrs, countries = {}, {}, {}, {}, {}, {}
     got = []
     for y in years:
@@ -77,7 +84,10 @@ def main(years):
                 continue
             o, d = row.get("ORIGIN"), row.get("DEST")
             if o not in HOME and d not in HOME:
-                continue
+                far_o = (row.get("ORIGIN_COUNTRY_NAME") or "") != "United States" or o in trip
+                far_d = (row.get("DEST_COUNTRY_NAME") or "") != "United States" or d in trip
+                if not ((o in HUBS and far_d) or (d in HUBS and far_o)):
+                    continue
             try:
                 s, p, m = float(row["SEATS"]), float(row["PASSENGERS"]), int(float(row["MONTH"]))
                 dep = float(row.get("DEPARTURES_PERFORMED") or 0)
@@ -97,7 +107,7 @@ def main(years):
             if row.get("ORIGIN_COUNTRY_NAME"):
                 countries.setdefault(o, row["ORIGIN_COUNTRY_NAME"].strip())
             n += 1
-        print(f"{y}: {n} United Bay Area rows")
+        print(f"{y}: {n} United rows")
         if n:
             got.append(y)
     if not got:
@@ -117,7 +127,7 @@ def main(years):
         "flightsPerDay": dict(sorted(per_day.items())),
         "names": dict(sorted(names.items())),
         "countries": dict(sorted(countries.items())),
-    }, indent=1) + "\n")
+    }, separators=(",", ":")) + "\n")
     print(f"Wrote {OUT.relative_to(ROOT)}: {len(routes)} routes from {got}")
     return 0
 
