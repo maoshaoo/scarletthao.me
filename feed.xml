@@ -8,6 +8,13 @@
     <language>en-us</language>
     <lastBuildDate>Sun, 15 Nov 2026 12:00:00 -0800</lastBuildDate>
     <item>
+      <title>Getting home counts (Functionality)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-15-getting-home-counts-functionality</guid>
+      <pubDate>Sun, 15 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>Standby Radar only calls a trip a go if you can get back. Each flight out gets a round-trip verdict: Go, Go with a backup, Hold, or Check your way home.</li><li>Places show their odds going and coming back, and how many flights home there are. Good time to go now needs room both ways.</li><li>Two days before you fly home, the trip reminds you to screenshot your flight home.</li></ul>]]></description>
+    </item>
+    <item>
       <title>Base camps (Functionality)</title>
       <link>https://www.scarletthao.me/changelog.html</link>
       <guid isPermaLink="false">2026-11-15-base-camps-functionality</guid>

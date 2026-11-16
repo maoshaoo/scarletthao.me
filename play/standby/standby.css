@@ -149,3 +149,14 @@ button.sr-card:hover { border-color: var(--muted); }
 .sr-seats.sr-good b, .sr-seats.sr-good span { color: var(--sr-good); }
 .sr-seats.sr-tight b, .sr-seats.sr-tight span { color: var(--sr-tight); }
 .sr-seats.sr-no b, .sr-seats.sr-no span { color: var(--sr-no); }
+
+/* Round trip */
+.sr-trip { border-radius: 14px; padding: .8rem .9rem; display: grid; gap: .3rem; font-size: .86rem; }
+.sr-trip b { font: 400 1.4rem/1.1 var(--display); }
+.sr-trip.sr-good b { color: var(--sr-good); } .sr-trip.sr-tight b { color: var(--sr-tight); } .sr-trip.sr-no b { color: var(--sr-no); }
+.sr-dirs { display: flex; flex-wrap: wrap; gap: .3rem .8rem; font-size: .76rem; color: var(--muted); }
+.sr-dirs > span { display: inline-flex; align-items: center; gap: .3rem; }
+.sr-dirs .sr-pill { font-size: .66rem; padding: .25rem .45rem; }
+.sr-card small.sr-warn { color: var(--sr-no); }
+.sr-remind { display: block; color: var(--scarlet); font-weight: 500; margin-bottom: .2rem; }
+.sr-fmain small .sr-pill { font-size: .66rem; padding: .25rem .45rem; margin-right: .2rem; }

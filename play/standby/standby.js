@@ -224,7 +224,7 @@
   }
   function watched() {
     var g = timelines(), t = iso(today());
-    return Object.keys(g).map(function (k) { return g[k]; }).filter(function (sn) { return sn[0].date >= t; })
+    return Object.keys(g).map(function (k) { return g[k]; }).filter(function (sn) { var z = sn[sn.length - 1]; return z.date >= t || (z.back && z.back >= t); })
       .sort(function (a, b) { var va = verdictOf(a[a.length - 1]), vb = verdictOf(b[b.length - 1]); var ga = va && va[0] === 'sr-good' ? 0 : 1, gb = vb && vb[0] === 'sr-good' ? 0 : 1; return ga - gb || (a[0].date < b[0].date ? -1 : 1); });
   }
   /* The number that matters most: Polaris seats open on international flights, all open seats on domestic. */
@@ -242,8 +242,55 @@
   }
   function watchCard(sn) {
     var z = sn[sn.length - 1];
+    var tv = tripVerdict(z), note = esc(trendOf(sn)) + '. Tap to check again.';
+    if (tv) note = '<span class="sr-pill ' + tv.cls + '">Round trip: ' + esc(tv.label) + '</span> ' + note;
+    if (z.back) {
+      var until = Math.round((fromIso(z.back) - today()) / DAY), homeChecks = latestFor(z.to, z.from, z.back).concat(latestFor(z.to, z.from, iso(addDays(fromIso(z.back), 1))));
+      var fresh = homeChecks.some(function (r) { return Date.now() - new Date(r.checked).getTime() < DAY; });
+      if (until >= 0 && until <= 2 && !fresh) note = '<b class="sr-remind">Time to screenshot your flight home (' + fmt(fromIso(z.back)) + ').</b> ' + note;
+    }
     return flightCard('data-recheck="' + esc(keyOf(z)) + '"', z, esc(z.flight || 'Flight') + ' · ' + esc(z.from) + ' &rarr; ' + esc(z.to),
-      fmt(fromIso(z.date)) + (z.time ? ' · ' + esc(z.time) : ''), esc(trendOf(sn)) + '. Tap to check again.');
+      fmt(fromIso(z.date)) + (z.time ? ' · ' + esc(z.time) : '') + (z.back ? ' · back ' + fmt(fromIso(z.back)) : ''), note);
+  }
+
+  /* ---------- getting home ----------
+     A trip is only a go if you can get back. Coming home is judged on real seats when you've checked a flight home,
+     otherwise on the forecast, and on how many flights home there are (more flights, more chances).
+     settings.flexHome: true when you can stay an extra day if needed (the default). */
+  function flexHome() { return settings.flexHome !== false; }
+  function waysHome(dest, origin, backD) {
+    var lg = leg(dest, origin, backD.getMonth()); if (!lg || !lg.perDay) return null;
+    var days = flexHome() ? 2 : 1, n = lg.perDay * days;
+    return { n: n, via: lg.via, text: (n >= 1.5 ? 'about ' + Math.round(n) + ' flights home' : n >= 0.9 ? 'about 1 flight home' : 'less than 1 flight home') + (days === 2 ? ' over 2 days' : ' that day') + (lg.via ? ' via ' + viaName(lg.via) : '') };
+  }
+  function homeDay(dest, origin, d) {
+    var snaps = latestFor(dest, origin, iso(d));
+    if (snaps.length) return { cls: bestOf(snaps) || 'sr-tight', checked: true, d: d };
+    return { cls: band(scoreDay(dest, origin, d).score)[0], checked: false, d: d };
+  }
+  var WORSE = function (a, b) { return RANK[a] >= RANK[b] ? a : b; };
+  function tripVerdict(d) {
+    if (!d || !d.from || !d.to || d.from !== home || d.to === home) return null;
+    var out = verdictOf(d), outCls = out ? out[0] : 'sr-good', dest = d.to;
+    if (out && out[0] === 'sr-no') return { cls: 'sr-no', label: 'Hold', why: 'Getting there looks unlikely on this flight.' };
+    if (!d.back) return { cls: 'sr-tight', label: 'Check your way home', why: 'Add the day you\u2019d come back to see if you can get home.' };
+    var bd = fromIso(d.back), a = homeDay(dest, home, bd), w = waysHome(dest, home, bd), few = w && w.n < 2;
+    var src = a.checked ? 'Your flight home on ' + fmt(bd) : 'Flights home on ' + fmt(bd);
+    var tail = (w ? ' ' + w.text.charAt(0).toUpperCase() + w.text.slice(1) + (few ? ', so few ways home.' : '.') : '') + (a.checked ? '' : ' Screenshot your flight home to confirm.');
+    var r;
+    if (a.cls === 'sr-good') r = { cls: 'sr-good', label: 'Go', why: src + (a.checked ? ' has room too.' : ' look open.') + tail };
+    else if (flexHome()) {
+      var b2 = homeDay(dest, home, addDays(bd, 1));
+      if (b2.cls === 'sr-good' || (a.cls === 'sr-tight' && w && w.n >= 2)) r = { cls: 'sr-good', label: 'Go, with a backup', why: src + ' look' + (a.checked ? 's' : '') + ' ' + (a.cls === 'sr-tight' ? 'tight' : 'unlikely') + '. Backup: ' + fmt(addDays(bd, 1)) + (b2.cls === 'sr-good' ? ', which looks open.' : '.') + tail };
+      else r = { cls: a.cls === 'sr-tight' ? 'sr-tight' : 'sr-no', label: 'Hold', why: src + ' and the day after look ' + (a.cls === 'sr-tight' ? 'tight' : 'unlikely') + '.' + tail };
+    } else r = { cls: a.cls === 'sr-tight' ? 'sr-tight' : 'sr-no', label: 'Hold', why: src + ' look' + (a.checked ? 's' : '') + ' ' + (a.cls === 'sr-tight' ? 'tight' : 'unlikely') + ', and you need to be back that day.' + tail };
+    if (few && r.cls === 'sr-good') { r.cls = 'sr-tight'; }
+    if (outCls === 'sr-tight') { r.cls = WORSE(r.cls, 'sr-tight'); r.why = 'Getting there is tight. ' + r.why; }
+    return r;
+  }
+  function tripHtml(d) {
+    var t = tripVerdict(d); if (!t) return '';
+    return '<div class="sr-trip ' + t.cls + '"><span class="sr-lbl">Round trip</span><b>' + esc(t.label) + '</b><span>' + esc(t.why) + '</span></div>';
   }
 
   /* ---------- calendar ----------
@@ -292,9 +339,11 @@
     Object.keys(seasonData.places).forEach(function (c) {
       var sp = seasonData.places[c], season = sp.seasons.filter(function (x) { return x.months.indexOf(month + 1) >= 0; })[0];
       if (c === home || !season) return;
-      var lg = leg(home, c, month);
-      if (!lg || !(lg.perDay > 0) || lg.full > 0.82) return; // in season but usually full: not a standby pick
-      var x = { name: sp.name, codes: [c], days: 5, full: lg.full, perDay: lg.perDay, via: lg.via, why: season.why,
+      var go = leg(home, c, month), back = leg(c, home, month);
+      if (!go || !back || !(go.perDay > 0) || !(back.perDay > 0)) return;
+      var lg = { full: Math.max(go.full, back.full), perDay: Math.min(go.perDay, back.perDay), via: go.via || back.via, goFull: go.full, backFull: back.full };
+      if (lg.full > 0.82) return; // in season but full one way or the other: not a standby pick
+      var x = { name: sp.name, codes: [c], days: 5, full: lg.full, goFull: lg.goFull, backFull: lg.backFull, perDay: lg.perDay, via: lg.via, why: season.why,
         score: (0.85 - lg.full) * 100 + Math.min(5, lg.perDay * 3) - (lg.perDay < 0.5 ? 20 : 0) - (lg.via ? 5 : 0) }; // rare flights or a connection mean less backup if you're bumped
       var k = sp.name;
       if (by[k]) { by[k].codes.push(c); if (x.score > by[k].score) { x.codes = by[k].codes; by[k] = x; } } else by[k] = x;
@@ -303,8 +352,9 @@
   }
   function freq(n) { return n >= 1.5 ? 'about ' + Math.round(n) + ' flights a day' : n >= 0.9 ? 'about 1 flight a day' : (Math.round(n * 7) <= 1 ? 'about 1 flight a week' : 'about ' + Math.round(n * 7) + ' flights a week'); }
   function pickCard(x, month) {
-    var bd = x.full <= 0.72 ? ['sr-good', Math.round(x.full * 100) + '% full'] : ['sr-tight', Math.round(x.full * 100) + '% full'];
+    var bd = x.full <= 0.72 ? ['sr-good', 'Room both ways'] : ['sr-tight', 'Some room'];
     return '<button class="sr-card" data-pick="' + esc(x.codes.join(',')) + '" data-month="' + month + '" data-name="' + esc(x.name) + '"><span class="t"><b>' + esc(x.name) + ' <span class="r">' + home + ' &rarr; ' + x.codes.map(esc).join(', ') + '</span></b>' + pill(bd) + '</span>' +
+      '<span class="sr-when">Going ' + Math.round(x.goFull * 100) + '% full · coming back ' + Math.round(x.backFull * 100) + '% full</span>' +
       '<small>' + esc(x.why) + ' · ' + (x.via ? 'via ' + esc(viaName(x.via)) + ', ' : '') + freq(x.perDay) + (x.perDay < 0.9 ? ', so fewer backups' : '') + '</small></button>';
   }
   function pickMonth() { return addDays(today(), 21).getMonth(); }
@@ -333,7 +383,12 @@
     if (pat) note += '. ' + pat;
     return '<button class="sr-card" data-place="' + idx + '" data-out="' + iso(t.outD) + '" data-back-d="' + iso(t.backD) + '">' +
       '<span class="t"><b>' + esc(p.name) + ' <span class="r">' + home + ' &rarr; ' + p.codes.map(esc).join(', ') + '</span></b>' + pill(b) + '</span>' +
-      '<span class="sr-when">Best: ' + fmt(t.outD) + ' out · ' + fmt(t.backD) + ' back</span><small>' + esc(note) + '</small></button>';
+      '<span class="sr-when">Best: ' + fmt(t.outD) + ' out · ' + fmt(t.backD) + ' back</span>' + dirsHtml(t, p) + '<small>' + esc(note) + '</small></button>';
+  }
+  function dirsHtml(t, p) {
+    var o = band(t.out.score), b = band(t.back.score), w = waysHome(t.back.code, home, t.backD);
+    return '<span class="sr-dirs"><span>Going ' + pill(o) + '</span><span>Coming back ' + pill(b) + '</span></span>' +
+      (w ? '<small' + (w.n < 2 ? ' class="sr-warn"' : '') + '>' + esc(w.text.charAt(0).toUpperCase() + w.text.slice(1)) + (w.n < 2 ? ': few ways home' : '') + '</small>' : '');
   }
   var S = {};
   S.home = function () {
@@ -449,6 +504,7 @@
         return '<button class="sr-card" data-dice="' + x.i + '"><span class="t"><b>' + esc(x.p.name) + ' <span class="r">' + home + ' &rarr; ' + x.p.codes.map(esc).join(', ') + '</span></b>' + pill(bd) + '</span>' +
           (x.p.seen ? '<span class="sr-when">From your screenshot: ' + esc(x.p.seen) + '</span>' : '') +
           (x.p.note ? '<span class="sr-when">' + esc(x.p.note) + '</span>' : '') +
+          (function () { x.t.outD = o; x.t.backD = b; return dirsHtml(x.t, x.p); })() +
           '<small>' + esc(why[0] || 'Day of week and holiday peaks') + '</small></button>';
       }).join('') || '<p class="sr-empty">Nothing found. Try another screenshot, or rank your places.</p>';
   };
@@ -476,7 +532,7 @@
       '<label class="sr-drop"><b>Upload screenshots</b>Seat counts and standby list from the airline app. Pick one or several.<input type="file" accept="image/*" multiple id="c-file"></label>' +
       (d.img ? '<img class="sr-thumb" src="' + d.img + '" alt="Your screenshot">' : '') +
       '<p class="sr-note" id="c-status"' + (d.status ? '' : ' hidden') + '>' + esc(d.status || '') + '</p>';
-    h += '<div id="c-verdict">' + verdictHtml(d) + '</div>';
+    h += '<div id="c-verdict">' + verdictHtml(d) + '</div><div id="c-trip">' + tripHtml(d) + '</div>';
     var pn = d.from && d.to && d.date ? patternNote(d.from, d.to, fromIso(d.date).getMonth()) : '';
     if (pn) h += '<p class="sr-note">' + esc(pn) + '</p>';
     if (d.advice) h += '<p class="sr-claude">' + esc(d.advice) + '</p>';
@@ -490,6 +546,8 @@
       '<div class="sr-row2"><label class="sr-field">All cabins open<input inputmode="numeric" id="f-all" value="' + esc(d.openAll) + '"></label>' +
       '<label class="sr-field">All standby<input inputmode="numeric" id="f-allsb" value="' + esc(d.sbAll) + '"></label></div>' +
       '<p class="sr-sub" id="f-cabin">' + cabinNote(d) + '</p>' +
+      '<div class="sr-row2"><label class="sr-field">Coming back<input type="date" id="f-back" value="' + esc(d.back || '') + '"></label>' +
+      '<div class="sr-field">If coming home is tight<div class="sr-chips"><button class="sr-chip" data-flexhome="1" aria-pressed="' + flexHome() + '">Can stay a day</button><button class="sr-chip" data-flexhome="0" aria-pressed="' + !flexHome() + '">Need to be back</button></div></div></div>' +
       '<div class="sr-row2"><label class="sr-field">Travelers<input inputmode="numeric" id="f-party" value="' + esc(d.party || 2) + '"></label>' +
       '<label class="sr-field">Your spot, if listed<input inputmode="numeric" id="f-position" value="' + esc(d.position) + '"></label></div>' +
       (d.logId ? '<p class="sr-sub" id="c-saved">&check; Saved to your log. Changes save as you type.</p>' : '') +
@@ -518,6 +576,7 @@
   }
   function updateVerdict() {
     var box = document.getElementById('c-verdict'); if (box) box.innerHTML = verdictHtml(state.draft || {});
+    var tb = document.getElementById('c-trip'); if (tb) tb.innerHTML = tripHtml(state.draft || {});
     var cn = document.getElementById('f-cabin'); if (cn) cn.textContent = cabinNote(state.draft || {});
     var v = verdictOf(state.draft || {}); document.body.classList.toggle('fast', !!v && v[0] === 'sr-good');
   }
@@ -588,9 +647,10 @@
     if (t.dataset.place != null) { state.placeObj = null; state.place = +t.dataset.place; state.out = t.dataset.out; state.back = t.dataset.backD; track('standby-place', { place: places[state.place].name }); show('flights'); return; }
     if (t.dataset.dice != null) { var dp = (state.diceList || places)[+t.dataset.dice]; state.placeObj = { name: dp.name, codes: dp.codes, days: dp.days || 4 }; show('flights'); return; }
     if (t.dataset.check) { var bits = t.dataset.check.split('-'); state.draft = { from: bits[0], to: bits[1], date: bits.slice(2).join('-') }; show('check'); return; }
-    if (t.dataset.recheck) { var kb = t.dataset.recheck.split('|'); state.batch = null; state.batchIdx = null; state.draft = { flight: kb[0] === '?' ? '' : kb[0], date: kb[1], from: kb[2], to: kb[3], party: 2 }; show('check'); return; }
+    if (t.dataset.recheck) { var kb = t.dataset.recheck.split('|'); state.batch = null; state.batchIdx = null; var prev = log.filter(function (r) { return keyOf(r) === t.dataset.recheck; }).pop() || {}; state.draft = { flight: kb[0] === '?' ? '' : kb[0], date: kb[1], from: kb[2], to: kb[3], party: prev.party || 2, back: prev.back || '' }; show('check'); return; }
     if (t.dataset.batch != null) { state.batchIdx = +t.dataset.batch; state.draft = state.batch[state.batchIdx]; show('check'); return; }
     if (t.dataset.base) { baseMode = t.dataset.base; save('base', baseMode); resolveBase(); track('standby-base', { mode: baseMode }); rerender(); return; }
+    if (t.dataset.flexhome != null) { settings.flexHome = t.dataset.flexhome === '1'; save('settings', settings); if (cur === 'check') readForm(); rerender(); return; }
     if (t.dataset.pickmonth != null) { state.pickMonth = +t.dataset.pickmonth; rerender(); return; }
     if (t.dataset.pick) {
       var pm = +t.dataset.month, pp = { name: t.dataset.name, codes: t.dataset.pick.split(','), days: 5 }, y = today().getFullYear() + (pm < today().getMonth() ? 1 : 0);
@@ -628,7 +688,7 @@
     readForm(); updateVerdict(); persistSoon();
   });
   app.addEventListener('change', function (e) {
-    if (e.target.id === 'c-file' && e.target.files.length) { var base = state.draft || {}; readShots(e.target.files, { from: base.from || home, to: base.to || '', date: base.date || iso(today()) }); }
+    if (e.target.id === 'c-file' && e.target.files.length) { var base = state.draft || {}; readShots(e.target.files, { from: base.from || home, to: base.to || '', date: base.date || iso(today()), back: base.back || '' }); }
     if (e.target.id === 'd-file' && e.target.files[0]) readOpenList(e.target.files[0]);
     if (e.target.id === 'k-file' && e.target.files[0]) {
       var ko = val('k-out'), kp = places[+val('k-place')] || places[0];
@@ -647,7 +707,7 @@
   function readForm() {
     var d = state.draft = state.draft || {};
     d.flight = val('f-flight').toUpperCase(); d.from = val('f-from').toUpperCase(); d.to = val('f-to').toUpperCase();
-    d.date = val('f-date'); d.time = val('f-time'); d.openPolaris = val('f-pol'); d.sbPolaris = val('f-polsb'); d.openAll = val('f-all'); d.sbAll = val('f-allsb'); d.party = val('f-party'); d.position = val('f-position');
+    d.date = val('f-date'); d.time = val('f-time'); d.openPolaris = val('f-pol'); d.sbPolaris = val('f-polsb'); d.openAll = val('f-all'); d.sbAll = val('f-allsb'); d.party = val('f-party'); d.position = val('f-position'); d.back = val('f-back');
     settle(d);
   }
 
@@ -741,7 +801,7 @@
      then let the screenshot fill in (or correct) the rest. */
   function shotFromTrip(files, place, date) {
     track('standby-quick-check', { place: place ? place.name : '', count: files.length });
-    readShots(files, { from: home, to: place ? place.codes[0] : '', date: date || iso(today()) });
+    readShots(files, { from: home, to: place ? place.codes[0] : '', date: date || iso(today()), back: state.back && state.back > (date || '') ? state.back : '' });
   }
   /* Read one screenshot. It can hold several flights; each becomes its own draft. */
   function readFile(file, base, onStatus) {
@@ -831,7 +891,7 @@
     settle(d);
     var r = { id: String(Date.now()) + Math.floor(Math.random() * 1000), checked: new Date().toISOString(), date: d.date, flight: d.flight || '', from: d.from, to: d.to, time: d.time || '',
       cabin: d.cabin, aircraft: d.aircraft || '', party: d.party || '', openPolaris: d.openPolaris || '', openAll: d.openAll || '', sbPolaris: d.sbPolaris || '', sbAll: d.sbAll || '',
-      open: d.open || '', listed: d.listed || '', position: d.position || '', result: '' };
+      open: d.open || '', listed: d.listed || '', position: d.position || '', back: d.back || '', result: '' };
     var v = verdictOf(r); r.verdict = v ? v[1] : '';
     r.daysOut = d.date ? daysOutOf(r) : '';
     return r;

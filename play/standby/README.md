@@ -22,6 +22,17 @@ Every flight read from a screenshot is saved to the log right away, as a snapsho
 - Upcoming flights with good odds stay on the home screen.
 - Across your timelines for a route, the app works out how many seats tend to open or disappear each day before departure, preferring the same month. That note appears on the check screen and the place card, so a future trip to Seoul in November starts with what you saw this time.
 
+## Getting home
+
+A trip is only a go if you can get back. When you check a flight out and add the day you'd come back, the app gives a round-trip verdict:
+
+- **Go:** your flight home (checked seats, or the forecast if you haven't checked) looks open.
+- **Go, with a backup:** coming home looks tight, but the day after looks open or there are at least two flights home over the two days. Only when you can stay an extra day.
+- **Hold:** getting there or getting home looks unlikely, or it's tight and you need to be back that day.
+- **Check your way home:** no return date yet.
+
+Places and picks also show the odds going and coming back, and roughly how many flights home there are. Good time to go needs room in both directions. Two days before a return date, the trip card reminds you to screenshot your flight home.
+
 ## Base camps
 
 Settings take a home airport and, optionally, a second base camp with the months you're there. The home screen then shows a Base camp switch: either airport, or Auto, which picks by today's month. Open the app once with `?alt=XXX&altm=4-5` to set the second base camp on a phone. It's stored only on that device, never in the code.
