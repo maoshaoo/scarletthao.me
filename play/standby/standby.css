@@ -3,7 +3,7 @@
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --sr-good-bg:#1D2E1C; --sr-good:#9FD39A; --sr-tight-bg:#2E2712; --sr-tight:#F3D68C; --sr-no-bg:#331B1A; --sr-no:#F2A19C; --sr-note-bg:#172636; --sr-note:#A9CBEE; --sr-page:#0E1110; } }
 :root[data-theme="dark"] { --sr-good-bg:#1D2E1C; --sr-good:#9FD39A; --sr-tight-bg:#2E2712; --sr-tight:#F3D68C; --sr-no-bg:#331B1A; --sr-no:#F2A19C; --sr-note-bg:#172636; --sr-note:#A9CBEE; --sr-page:#0E1110; }
 
-.sr-body { background: var(--sr-page); position: relative; overflow-x: hidden; min-height: 100vh; padding-bottom: 0; }
+.sr-body { background: var(--sr-page); position: relative; overflow-x: hidden; min-height: 100vh; }
 :where(.sr-body) button { font: inherit; color: inherit; cursor: pointer; }
 .sr-body button:focus-visible, .sr-body input:focus-visible, .sr-body select:focus-visible, .sr-body a:focus-visible { outline: 2px solid var(--scarlet); outline-offset: 2px; }
 
@@ -160,3 +160,4 @@ button.sr-card:hover { border-color: var(--muted); }
 .sr-card small.sr-warn { color: var(--sr-no); }
 .sr-remind { display: block; color: var(--scarlet); font-weight: 500; margin-bottom: .2rem; }
 .sr-fmain small .sr-pill { font-size: .66rem; padding: .25rem .45rem; margin-right: .2rem; }
+.sr-body .site-hdr { background: var(--sr-page); }

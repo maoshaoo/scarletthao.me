@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
 <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);var m=/[?&]me(=off)?(&|$)/.exec(location.search);if(m){if(m[1])localStorage.removeItem("umami.disabled");else localStorage.setItem("umami.disabled","1")}}catch(e){}</script>
-<link rel="stylesheet" href="/assets/css/base.css?v=9">
+<link rel="stylesheet" href="/assets/css/base.css?v=10">
 <link rel="stylesheet" href="/assets/css/changelog.css?v=4">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -24,10 +24,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>
 /* Play: a short list of side projects, one card each. */
-.back-top { display: flex; justify-content: flex-end; font-size: .9rem; }
-.back-top a { color: var(--soft); text-decoration: none; }
-.back-top a:hover { color: var(--ink); }
-.play { display: grid; gap: 1.2rem; padding-block: 1.5rem 4rem; }
+.play { display: grid; gap: 1.2rem; padding-block: 0 1rem; }
 .play h1 { margin: 0; }
 .play .lede { margin: 0; color: var(--soft); max-width: 72ch; }
 .proj .wip { display: inline-flex; align-items: center; gap: .35rem; font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--cheer-ink); background: var(--cheer-bg); border: 1px solid var(--lane); border-radius: 999px; padding: .1rem .55rem; vertical-align: 1px; }
@@ -45,8 +42,22 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
+<header class="site-hdr" style="--hdr-w: 44rem">
+  <div class="wrap">
+    <div class="who-hdr">
+      <a class="mark" href="/">Scarlett Hao<span>.</span></a>
+      <div class="sf-time"><span class="dot" aria-hidden="true"></span><span id="sf-time">San Francisco</span></div>
+    </div>
+    <nav aria-label="Main">
+      <a href="/#experience"><span class="nav-long">Experience</span><span class="nav-short">Work</span></a>
+      <a href="/#about">About</a>
+      <a href="/play/" data-umami-event="click-nav-play" aria-current="page">Play</a>
+      <a href="/#contact">Contact</a>
+      <span class="theme-slot"></span>
+    </nav>
+  </div>
+</header>
 <div class="page">
-  <nav class="back-top" aria-label="Site"><a href="/" data-umami-event="click-play-back">Back to the site &rarr;</a></nav>
   <main class="play" id="main">
     <h1>Play</h1>
     <p class="lede">Small things I build for fun.</p>
@@ -57,6 +68,12 @@
     </ul>
   </main>
 </div>
+<footer class="site-foot" style="--foot-w: 44rem">
+  <div class="fw">
+    <div class="fb-top"><span>© 2026 Scarlett Hao</span><span><a href="/changelog.html">Changelog</a> · <a href="/feed.xml">RSS</a> · San Francisco</span></div>
+    <p class="fb-note">Words are mine. Built with <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a> (10M+ tokens so far), hosted on <a href="https://github.com/maoshaoo/scarletthao.me" target="_blank" rel="noopener">GitHub</a>, tracked in <a href="https://linear.app" target="_blank" rel="noopener">Linear</a>, and counted (no cookies) by <a href="https://umami.is" target="_blank" rel="noopener">Umami</a>.</p>
+  </div>
+</footer>
 <script src="/assets/js/site.js?v=6" defer></script>
 <script src="/assets/js/holidays.js?v=5" defer></script>
 </body>
