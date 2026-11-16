@@ -341,10 +341,10 @@
       '<h1 class="sr-title">Standby Radar<span>.</span></h1>' +
       baseHtml() +
       '<p class="sr-intro">We\u2019re lucky to have a great friend who shares their United standby travel with us. We\u2019ve used it, but not nearly enough. This is our nudge to take a trip once a month and see the world.</p>' +
+      picksHtml() +
+      watchedHtml() +
       '<div class="sr-lbl">Your places · next 6 weeks</div>' +
       (places.length ? places.map(placeCard).join('') : '<button class="sr-card" data-go="settings"><b>Add places you\u2019d like to go</b><small>Pick a few destinations in settings and this shows when each looks open.</small></button>') +
-      watchedHtml() +
-      picksHtml() +
       '<div class="sr-ctas"><button class="sr-cta" data-go="know"><i aria-hidden="true">&#8982;</i>I know where and when</button>' +
       '<button class="sr-cta alt" data-go="dice"><i aria-hidden="true">&#9860;</i>Roll the dice</button></div>';
   };
