@@ -199,3 +199,36 @@
   window.addEventListener('resize', update);
   update();
 })();
+
+/* Recent changes on each Play project: the "How it's built" card lists the newest three changelog entries
+   tagged with that project (data-project on the card and on each changelog entry), so each change is written once. */
+(function () {
+  var box = document.querySelector('.built[data-project]');
+  if (!box || !window.fetch || !window.DOMParser) return;
+  var proj = box.getAttribute('data-project'), dl = box.querySelector('dl');
+  var HASH = { standby: 'standby-radar', 'brain-power': 'brain-power', 'snacky-vespa': 'snacky-vespa' };
+  fetch('/changelog.html').then(function (r) { return r.ok ? r.text() : ''; }).then(function (html) {
+    if (!html || !dl) return;
+    var doc = new DOMParser().parseFromString(html, 'text/html'), items = [];
+    doc.querySelectorAll('article.entry').forEach(function (a) {
+      if ((' ' + (a.getAttribute('data-project') || '') + ' ').indexOf(' ' + proj + ' ') < 0 || items.length >= 3) return;
+      var h = a.querySelector('h2'), d = a.querySelector('.date');
+      if (!h || !d) return;
+      var t = h.cloneNode(true); t.querySelectorAll('.tag').forEach(function (x) { x.remove(); });
+      items.push([d.textContent.trim(), t.textContent.trim()]);
+    });
+    if (!items.length) return;
+    var row = document.createElement('div'), dt = document.createElement('dt'), dd = document.createElement('dd'), ul = document.createElement('ul');
+    dt.textContent = 'Recent changes';
+    ul.className = 'built-log';
+    items.forEach(function (it) {
+      var li = document.createElement('li'), tm = document.createElement('time');
+      var p = it[0].split('-'); tm.dateTime = it[0];
+      tm.textContent = new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      li.appendChild(tm); li.appendChild(document.createTextNode(' ' + it[1])); ul.appendChild(li);
+    });
+    var more = document.createElement('a'); more.href = '/changelog.html#' + (HASH[proj] || proj); more.textContent = 'All changes';
+    dd.appendChild(ul); dd.appendChild(more); row.appendChild(dt); row.appendChild(dd);
+    var last = dl.lastElementChild; dl.insertBefore(row, last);
+  }).catch(function () {});
+})();

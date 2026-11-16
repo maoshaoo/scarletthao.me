@@ -15,8 +15,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
 
 <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);var m=/[?&]me(=off)?(&|$)/.exec(location.search);if(m){if(m[1])localStorage.removeItem("umami.disabled");else localStorage.setItem("umami.disabled","1")}}catch(e){}</script>
-<link rel="stylesheet" href="assets/css/base.css?v=11">
-<link rel="stylesheet" href="assets/css/changelog.css?v=4">
+<link rel="stylesheet" href="assets/css/base.css?v=12">
+<link rel="stylesheet" href="assets/css/changelog.css?v=5">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="Scarlett Hao. · What’s new" href="/feed.xml">
@@ -47,26 +47,27 @@
     <h1>Changelog</h1>
     <p class="intro">This site is a product too. Here&rsquo;s what&rsquo;s shipped, newest first.</p>
     <div class="legend" role="group" aria-label="Filter by tag"><button type="button" class="flt" data-tag="new" aria-pressed="false"><span class="tag tag-new">New</span>new sections and content</button><button type="button" class="flt" data-tag="fun" aria-pressed="false"><span class="tag tag-fun">Fun</span>personality and whimsy</button><button type="button" class="flt" data-tag="func" aria-pressed="false"><span class="tag tag-func">Functionality</span>how the site works</button></div>
+    <div class="legend projects" role="group" aria-label="Filter by project"><span class="lg-k">Projects</span><button type="button" class="flt pflt" data-project="site" aria-pressed="false">The site</button><button type="button" class="flt pflt" data-project="standby" aria-pressed="false">Standby Radar</button><button type="button" class="flt pflt" data-project="brain-power" aria-pressed="false">Brain Power</button><button type="button" class="flt pflt" data-project="snacky-vespa" aria-pressed="false">Snacky Vespa</button></div>
     <p class="flt-status" id="flt-status" role="status" hidden><span></span> <button type="button" id="flt-all">Show all</button></p>
 
-    <article class="entry"><div class="date">2026-11-15</div><div><h2>How it’s built <span class="tag tag-new">New</span></h2><ul><li>Every <a href="/play/">Play</a> project now has a short note above the footer on how it works: where the data comes from, what stays in your browser, and a link to the source.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-15</div><div><h2>Same header and footer everywhere <span class="tag tag-func">Functionality</span></h2><ul><li>Every page now has the site header, the daily banner and the footer, including Play, Standby Radar, the work stories and the 404 page.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-15</div><div><h2>Standby Radar <span class="tag tag-new">New</span></h2><ul><li>A new trip planner under <a href="/play/standby/">Play</a>, our nudge to fly standby once a month. It shows which of our favorite places look open and when, using public route history.</li><li>Good time to go: places that are in season and whose flights usually have room both ways, like ski season in Jackson Hole or whale season in Cabo. Somewhere empty only because it’s off season never makes the list.</li><li>Upload a screenshot of the seat counts and it tells you your odds, leading with Polaris seats open. Every flight in it saves to the log on its own.</li><li>Check the same flight a few times and it learns the route’s pattern, like seats that start open and fill up the week of departure.</li><li>A trip is only a go if you can get home. Each flight out gets a round-trip verdict, and a reminder to check your flight home two days before.</li><li>A six-week calendar of what looks open, and a row per place when your dates are set.</li><li>Plan from a second home airport for part of the year, counting connections through United hubs when there’s no nonstop.</li><li>Places and tracked flights stay on the phone that added them.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-14</div><div><h2>Follow along, and a guide for AI <span class="tag tag-func">Functionality</span></h2><ul><li>This changelog now has an <a href="/feed.xml">RSS feed</a>, so you can follow new stories and features in any feed reader.</li><li>A short <a href="/llms.txt">llms.txt</a> guide helps AI assistants describe me and my work accurately, and link back to the right pages.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-14</div><div><h2>Weekend mode <span class="tag tag-fun">Fun</span></h2><ul><li>On Saturdays and Sundays, the line under my name knows it’s the weekend. Weekend mode: touching grass.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-13</div><div><h2>The second full story: Creating value propositions to buy direct <span class="tag tag-new">New</span></h2><ul><li>The direct-to-consumer story now has its own page: how Keurig, Royal Caribbean, Juul, Equilibria and Tatcha gave customers a reason to buy direct, and took it around the world. Find it from the Experience section.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-13</div><div><h2>Résumé on request <span class="tag tag-new">New</span></h2><ul><li>A new Résumé link in the Contact section. Click it to send me a quick note, and I’ll email it to you. Takes 2 minutes!</li><li>scarletthao.me/resume goes straight there.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-12</div><div><h2>Token count <span class="tag tag-fun">Fun</span></h2><ul><li>The footer now shows roughly how many AI tokens it has taken to build this site: 10M+ and counting.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-12</div><div><h2>Easier to read <span class="tag tag-func">Functionality</span></h2><ul><li>Paragraphs no longer end with a single word hanging on its own line.</li><li>The headline on the home page breaks in a cleaner place, on laptops and phones.</li><li>The small tags (like these ones) and the “Work in progress” label are a little bigger and easier to read.</li><li>The banner’s close button now lines up with the right edge of the page.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-12</div><div><h2>Banner lines up with the page <span class="tag tag-func">Functionality</span></h2><ul><li>The daily banner now starts at the same left edge as my name and the page, instead of floating in the middle.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-12</div><div><h2>Easier to find <span class="tag tag-func">Functionality</span></h2><ul><li>Search engines now get a clear profile of who I am, with links to my LinkedIn, Substack and GitHub, so searching my name finds this site.</li><li>A clearer page title, and “Hi, I’m Scarlett” is now the page’s main heading.</li><li>The preview card for sharing the site has the new photo.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-12</div><div><h2>A new headshot <span class="tag tag-new">New</span></h2><ul><li>A new, sunnier photo in the intro, shown as a taller portrait instead of a circle.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-12</div><div><h2>Fun fact of the day <span class="tag tag-fun">Fun</span></h2><ul><li>On days without a holiday, a “Did you know?” fact shows up under the header. Everyone gets the same one, and it changes every day.</li><li>98 facts to start, about animals, food, space, history, places, words and sports, plus a few about Vespas, chips and San Francisco.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-12</div><div><h2>The first full story: Crossing the Valley of Death <span class="tag tag-new">New</span></h2><ul><li>The Defense Digital Service story now has its own page: how a dual-use drone program went from proof of concept to a dependable product with a long-term home in the U.S. Navy. Find it from the Experience section.</li><li>A new story-page design, before and after, that the Kodiak and direct-to-consumer stories will use too.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-11</div><div><h2>hello@scarletthao.me <span class="tag tag-func">Functionality</span></h2><ul><li>A new email address on the site's own domain: hello@scarletthao.me, in the Contact section.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-11</div><div><h2>Brand logos <span class="tag tag-new">New</span></h2><ul><li>The direct-to-consumer story now shows the six brands I worked with: Keurig, Royal Caribbean, Juul Labs, Tatcha, Equilibria, and Plant People.</li></ul></div></article>
-    <article class="entry"><div class="date">2026-11-11</div><div><h2>Filter by tag <span class="tag tag-func">Functionality</span></h2><ul><li>Click a tag, in the key or on any update, to see only those updates. Click it again to see everything.</li></ul></div></article>
-    <article class="entry">
+    <article class="entry" data-project="standby brain-power snacky-vespa"><div class="date">2026-11-15</div><div><h2>How it’s built <span class="tag tag-new">New</span></h2><ul><li>Every <a href="/play/">Play</a> project now has a short note above the footer on how it works: where the data comes from, what stays in your browser, and a link to the source.</li><li>Each note lists that project’s latest changes, and this changelog can now be filtered by project.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-15</div><div><h2>Same header and footer everywhere <span class="tag tag-func">Functionality</span></h2><ul><li>Every page now has the site header, the daily banner and the footer, including Play, Standby Radar, the work stories and the 404 page.</li></ul></div></article>
+    <article class="entry" data-project="standby"><div class="date">2026-11-15</div><div><h2>Standby Radar <span class="tag tag-new">New</span></h2><ul><li>A new trip planner under <a href="/play/standby/">Play</a>, our nudge to fly standby once a month. It shows which of our favorite places look open and when, using public route history.</li><li>Good time to go: places that are in season and whose flights usually have room both ways, like ski season in Jackson Hole or whale season in Cabo. Somewhere empty only because it’s off season never makes the list.</li><li>Upload a screenshot of the seat counts and it tells you your odds, leading with Polaris seats open. Every flight in it saves to the log on its own.</li><li>Check the same flight a few times and it learns the route’s pattern, like seats that start open and fill up the week of departure.</li><li>A trip is only a go if you can get home. Each flight out gets a round-trip verdict, and a reminder to check your flight home two days before.</li><li>A six-week calendar of what looks open, and a row per place when your dates are set.</li><li>Plan from a second home airport for part of the year, counting connections through United hubs when there’s no nonstop.</li><li>Places and tracked flights stay on the phone that added them.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-14</div><div><h2>Follow along, and a guide for AI <span class="tag tag-func">Functionality</span></h2><ul><li>This changelog now has an <a href="/feed.xml">RSS feed</a>, so you can follow new stories and features in any feed reader.</li><li>A short <a href="/llms.txt">llms.txt</a> guide helps AI assistants describe me and my work accurately, and link back to the right pages.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-14</div><div><h2>Weekend mode <span class="tag tag-fun">Fun</span></h2><ul><li>On Saturdays and Sundays, the line under my name knows it’s the weekend. Weekend mode: touching grass.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-13</div><div><h2>The second full story: Creating value propositions to buy direct <span class="tag tag-new">New</span></h2><ul><li>The direct-to-consumer story now has its own page: how Keurig, Royal Caribbean, Juul, Equilibria and Tatcha gave customers a reason to buy direct, and took it around the world. Find it from the Experience section.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-13</div><div><h2>Résumé on request <span class="tag tag-new">New</span></h2><ul><li>A new Résumé link in the Contact section. Click it to send me a quick note, and I’ll email it to you. Takes 2 minutes!</li><li>scarletthao.me/resume goes straight there.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-12</div><div><h2>Token count <span class="tag tag-fun">Fun</span></h2><ul><li>The footer now shows roughly how many AI tokens it has taken to build this site: 10M+ and counting.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-12</div><div><h2>Easier to read <span class="tag tag-func">Functionality</span></h2><ul><li>Paragraphs no longer end with a single word hanging on its own line.</li><li>The headline on the home page breaks in a cleaner place, on laptops and phones.</li><li>The small tags (like these ones) and the “Work in progress” label are a little bigger and easier to read.</li><li>The banner’s close button now lines up with the right edge of the page.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-12</div><div><h2>Banner lines up with the page <span class="tag tag-func">Functionality</span></h2><ul><li>The daily banner now starts at the same left edge as my name and the page, instead of floating in the middle.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-12</div><div><h2>Easier to find <span class="tag tag-func">Functionality</span></h2><ul><li>Search engines now get a clear profile of who I am, with links to my LinkedIn, Substack and GitHub, so searching my name finds this site.</li><li>A clearer page title, and “Hi, I’m Scarlett” is now the page’s main heading.</li><li>The preview card for sharing the site has the new photo.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-12</div><div><h2>A new headshot <span class="tag tag-new">New</span></h2><ul><li>A new, sunnier photo in the intro, shown as a taller portrait instead of a circle.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-12</div><div><h2>Fun fact of the day <span class="tag tag-fun">Fun</span></h2><ul><li>On days without a holiday, a “Did you know?” fact shows up under the header. Everyone gets the same one, and it changes every day.</li><li>98 facts to start, about animals, food, space, history, places, words and sports, plus a few about Vespas, chips and San Francisco.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-12</div><div><h2>The first full story: Crossing the Valley of Death <span class="tag tag-new">New</span></h2><ul><li>The Defense Digital Service story now has its own page: how a dual-use drone program went from proof of concept to a dependable product with a long-term home in the U.S. Navy. Find it from the Experience section.</li><li>A new story-page design, before and after, that the Kodiak and direct-to-consumer stories will use too.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-11</div><div><h2>hello@scarletthao.me <span class="tag tag-func">Functionality</span></h2><ul><li>A new email address on the site's own domain: hello@scarletthao.me, in the Contact section.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-11</div><div><h2>Brand logos <span class="tag tag-new">New</span></h2><ul><li>The direct-to-consumer story now shows the six brands I worked with: Keurig, Royal Caribbean, Juul Labs, Tatcha, Equilibria, and Plant People.</li></ul></div></article>
+    <article class="entry" data-project="site"><div class="date">2026-11-11</div><div><h2>Filter by tag <span class="tag tag-func">Functionality</span></h2><ul><li>Click a tag, in the key or on any update, to see only those updates. Click it again to see everything.</li></ul></div></article>
+    <article class="entry" data-project="site">
       <div class="date">2026-11-11</div>
       <div>
         <h2>One header, everywhere <span class="tag tag-func">Functionality</span></h2>
@@ -76,7 +77,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="brain-power">
       <div class="date">2026-11-11</div>
       <div>
         <h2>Brain Power <span class="tag tag-fun">Fun</span></h2>
@@ -88,7 +89,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-11</div>
       <div>
         <h2>Holiday banners <span class="tag tag-fun">Fun</span></h2>
@@ -99,7 +100,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-11</div>
       <div>
         <h2>Easier to read, easier to navigate <span class="tag tag-func">Functionality</span></h2>
@@ -112,7 +113,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-11</div>
       <div>
         <h2>Experience, told as stories <span class="tag tag-new">New</span></h2>
@@ -124,7 +125,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-11</div>
       <div>
         <h2>Footer credits <span class="tag tag-func">Functionality</span></h2>
@@ -135,7 +136,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="snacky-vespa">
       <div class="date">2026-11-10</div>
       <div>
         <h2>Snacky Vespa on real streets <span class="tag tag-func">Functionality</span></h2>
@@ -146,7 +147,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="snacky-vespa">
       <div class="date">2026-11-10</div>
       <div>
         <h2>Snacky Vespa usage stats <span class="tag tag-func">Functionality</span></h2>
@@ -156,7 +157,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="snacky-vespa">
       <div class="date">2026-11-10</div>
       <div>
         <h2>Snacky Vespa <span class="tag tag-fun">Fun</span></h2>
@@ -167,7 +168,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-09</div>
       <div>
         <h2>Short links <span class="tag tag-func">Functionality</span></h2>
@@ -177,7 +178,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-09</div>
       <div>
         <h2>Light and dark toggle <span class="tag tag-new">New</span></h2>
@@ -187,7 +188,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-09</div>
       <div>
         <h2>Spring cleaning <span class="tag tag-func">Functionality</span></h2>
@@ -198,7 +199,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-09</div>
       <div>
         <h2>GitHub link <span class="tag tag-new">New</span></h2>
@@ -208,7 +209,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-09</div>
       <div>
         <h2>Link preview <span class="tag tag-func">Functionality</span></h2>
@@ -218,7 +219,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-09</div>
       <div>
         <h2>San Francisco weather <span class="tag tag-fun">Fun</span></h2>
@@ -228,7 +229,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-09</div>
       <div>
         <h2>Changelog tags <span class="tag tag-func">Functionality</span></h2>
@@ -238,7 +239,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-09</div>
       <div>
         <h2>Footer colophon <span class="tag tag-new">New</span></h2>
@@ -249,7 +250,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-09</div>
       <div>
         <h2>Photos on the experience cards <span class="tag tag-new">New</span></h2>
@@ -259,7 +260,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-09</div>
       <div>
         <h2>Favicon <span class="tag tag-new">New</span></h2>
@@ -269,7 +270,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-09</div>
       <div>
         <h2>Driverless truck <span class="tag tag-fun">Fun</span></h2>
@@ -280,7 +281,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-09</div>
       <div>
         <h2>Real logos <span class="tag tag-new">New</span></h2>
@@ -290,7 +291,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-09</div>
       <div>
         <h2>Local time <span class="tag tag-fun">Fun</span></h2>
@@ -300,7 +301,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-09</div>
       <div>
         <h2>Analytics <span class="tag tag-func">Functionality</span></h2>
@@ -311,7 +312,7 @@
       </div>
     </article>
 
-    <article class="entry">
+    <article class="entry" data-project="site">
       <div class="date">2026-11-08</div>
       <div>
         <h2>New site <span class="tag tag-new">New</span></h2>
@@ -330,8 +331,8 @@
     <p class="fb-note">Words are mine. Built with <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a> (10M+ tokens so far), hosted on <a href="https://github.com/maoshaoo/scarletthao.me" target="_blank" rel="noopener">GitHub</a>, tracked in <a href="https://linear.app" target="_blank" rel="noopener">Linear</a>, and counted (no cookies) by <a href="https://umami.is" target="_blank" rel="noopener">Umami</a>.</p>
   </footer>
 </div>
-<script src="assets/js/site.js?v=6" defer></script>
+<script src="assets/js/site.js?v=7" defer></script>
 <script src="assets/js/holidays.js?v=5" defer></script>
-<script src="assets/js/changelog.js?v=1" defer></script>
+<script src="assets/js/changelog.js?v=2" defer></script>
 </body>
 </html>

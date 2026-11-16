@@ -27,3 +27,6 @@ h1 { font-family: var(--display); font-weight: 300; font-size: clamp(2rem, 5vw, 
 .entry .tag:hover { background: var(--card); }
 .flt-status { margin: -1.5rem 0 2rem; font-size: .88rem; color: var(--soft); }
 #flt-all { font: inherit; color: var(--scarlet); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.legend.projects { margin-top: -1.9rem; }
+.legend .lg-k { font-family: var(--mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-right: .25rem; }
+.pflt { padding: .2rem .7rem; border-color: var(--rule); }
