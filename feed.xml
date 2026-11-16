@@ -12,7 +12,7 @@
       <link>https://www.scarletthao.me/changelog.html</link>
       <guid isPermaLink="false">2026-11-15-standby-radar-remembers-every-flight-functionality</guid>
       <pubDate>Sun, 15 Nov 2026 12:00:00 -0800</pubDate>
-      <description><![CDATA[<ul><li>Every flight in a screenshot now saves to the log on its own, and fixes save as you type.</li><li>Flights with good odds stay on the <a href="https://www.scarletthao.me/play/standby/">home screen</a>, with how their seats have moved since the first check.</li><li>Check the same flight a few times and it learns the route’s pattern, like seats that start open and fill up the week of departure.</li></ul>]]></description>
+      <description><![CDATA[<ul><li>Every flight in a screenshot now saves to the log on its own, and fixes save as you type.</li><li>Flights with good odds stay on the <a href="https://www.scarletthao.me/play/standby/">home screen</a>, with how their seats have moved since the first check.</li><li>Check the same flight a few times and it learns the route’s pattern, like seats that start open and fill up the week of departure.</li><li>Everyone starts with a blank slate: places and tracked flights stay on the phone that added them.</li></ul>]]></description>
     </item>
     <item>
       <title>Standby Radar (New)</title>

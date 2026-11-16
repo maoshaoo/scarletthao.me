@@ -16,7 +16,12 @@
     { name: 'Seoul', codes: ['ICN'], days: 5 },
     { name: 'Cabo', codes: ['SJD'], days: 3 }
   ];
-  var places = load('places', DEFAULT_PLACES);
+  /* Scarlett view: open the app once with ?me on her phone and it remembers that device.
+     Everyone else starts with no places. Tracked flights never leave the device either way. */
+  var me = load('me', false);
+  var q = /[?&]me(=off)?(&|$)/.exec(location.search);
+  if (q) { me = !q[1]; save('me', me); history.replaceState(null, '', location.pathname); }
+  var places = load('places', me ? DEFAULT_PLACES : []);
   var home = load('home', 'SFO');
   var log = load('log', []);
   var settings = load('settings', { sheetUrl: '', claudeKey: '', model: 'claude-sonnet-5-5' });
@@ -213,7 +218,7 @@
       '<p class="sr-intro">We\u2019re lucky to have a great friend who shares their United standby travel with us. We\u2019ve used it, but not nearly enough. This is our nudge to take a trip once a month and see the world.</p>' +
       watchedHtml() +
       '<div class="sr-lbl">Your places · next 6 weeks</div>' +
-      places.map(placeCard).join('') +
+      (places.length ? places.map(placeCard).join('') : '<button class="sr-card" data-go="settings"><b>Add places you\u2019d like to go</b><small>Pick a few destinations in settings and this shows when each looks open.</small></button>') +
       '<div class="sr-ctas"><button class="sr-cta" data-go="know"><i aria-hidden="true">&#8982;</i>I know where and when</button>' +
       '<button class="sr-cta alt" data-go="dice"><i aria-hidden="true">&#9860;</i>Roll the dice</button></div>';
   };
@@ -226,11 +231,12 @@
   S.know = function () {
     var p = state.place != null ? state.place : 0, o = state.out || iso(addDays(today(), 7)), b = state.back || iso(addDays(today(), 7 + (places[p] ? places[p].days - 1 : 3)));
     return bar(true) + '<h1 class="sr-h">Where and when?</h1>' +
+      (places.length ? '' : '<p class="sr-note">Add a place first, then come back to see its flights.</p>') +
       '<label class="sr-field">Where<select id="k-place">' + places.map(function (pl, i) { return '<option value="' + i + '"' + (i === +p ? ' selected' : '') + '>' + esc(pl.name) + ' (' + pl.codes.join(', ') + ')</option>'; }).join('') + '</select></label>' +
       '<div class="sr-row2"><label class="sr-field">Leave<input type="date" id="k-out" value="' + o + '"></label><label class="sr-field">Back<input type="date" id="k-back" value="' + b + '"></label></div>' +
       '<div class="sr-chips"><button class="sr-chip" data-flex="1" aria-pressed="' + state.flex + '">&plusmn; 1 day is fine</button><button class="sr-chip" data-flex="0" aria-pressed="' + !state.flex + '">Exact dates</button></div>' +
       '<p class="sr-err" id="k-err" hidden></p>' +
-      '<button class="sr-btn" data-act="know-go">Show flights</button>' +
+      '<button class="sr-btn" data-act="know-go"' + (places.length ? '' : ' disabled') + '>Show flights</button>' +
       '<p class="sr-or">or, if you already have the seat counts</p>' +
       '<label class="sr-drop"><b>Upload seat-count screenshots</b>One or several, for the flights you\u2019re thinking about.<input type="file" accept="image/*" multiple id="k-file"></label>' +
       '<button class="sr-link" data-go="settings">Add or change places</button>';

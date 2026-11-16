@@ -35,6 +35,8 @@ A round trip scores as its weaker leg, since getting home matters as much as get
 
 ## Privacy
 
+Visitors start with no places. Opening the app once with `?me` marks that phone as Scarlett's, which turns on her starter places (Japan, Seoul, Cabo); `?me=off` turns it back off. The log of tracked flights always stays on the phone that saved it.
+
 - No account, no airline login, and no airline branding.
 - The log, our places, the Google Sheet link and the Claude key are stored only in the phone's browser. None of them are in this repository.
 - Screenshots are read on the phone. They only leave it when "Read with Claude" is tapped, and then they go straight to Claude with our own key.
