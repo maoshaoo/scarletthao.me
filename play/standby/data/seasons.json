@@ -1,0 +1,1026 @@
+{
+ "about": "Good times to visit places United flies to from SFO, by weather and what's on. Hand-written; Standby Radar pairs it with how full each route runs that month.",
+ "places": {
+  "NRT": {
+   "name": "Tokyo",
+   "seasons": [
+    {
+     "months": [
+      3,
+      4
+     ],
+     "why": "Cherry blossoms"
+    },
+    {
+     "months": [
+      5
+     ],
+     "why": "Warm spring days before the rainy season"
+    },
+    {
+     "months": [
+      10,
+      11
+     ],
+     "why": "Fall leaves and crisp, clear days"
+    },
+    {
+     "months": [
+      12,
+      1,
+      2
+     ],
+     "why": "Clear winter skies, illuminations, onsen and ski trips"
+    }
+   ]
+  },
+  "HND": {
+   "name": "Tokyo",
+   "seasons": [
+    {
+     "months": [
+      3,
+      4
+     ],
+     "why": "Cherry blossoms"
+    },
+    {
+     "months": [
+      5
+     ],
+     "why": "Warm spring days before the rainy season"
+    },
+    {
+     "months": [
+      10,
+      11
+     ],
+     "why": "Fall leaves and crisp, clear days"
+    },
+    {
+     "months": [
+      12,
+      1,
+      2
+     ],
+     "why": "Clear winter skies, illuminations, onsen and ski trips"
+    }
+   ]
+  },
+  "KIX": {
+   "name": "Osaka and Kyoto",
+   "seasons": [
+    {
+     "months": [
+      3,
+      4
+     ],
+     "why": "Cherry blossoms in Kyoto"
+    },
+    {
+     "months": [
+      5
+     ],
+     "why": "Mild spring"
+    },
+    {
+     "months": [
+      10,
+      11
+     ],
+     "why": "Kyoto's fall leaves, peaking late November"
+    },
+    {
+     "months": [
+      12
+     ],
+     "why": "Last of the fall leaves, then quiet winter temples"
+    },
+    {
+     "months": [
+      1,
+      2
+     ],
+     "why": "Quiet temples and snow in the mountains"
+    }
+   ]
+  },
+  "ICN": {
+   "name": "Seoul",
+   "seasons": [
+    {
+     "months": [
+      4,
+      5
+     ],
+     "why": "Spring blossoms and mild days"
+    },
+    {
+     "months": [
+      9,
+      10,
+      11
+     ],
+     "why": "Fall leaves and clear skies"
+    },
+    {
+     "months": [
+      12,
+      1,
+      2
+     ],
+     "why": "Cold and dry: ski resorts, markets and hot food"
+    }
+   ]
+  },
+  "TPE": {
+   "name": "Taipei",
+   "seasons": [
+    {
+     "months": [
+      10,
+      11,
+      12,
+      1,
+      2,
+      3,
+      4
+     ],
+     "why": "Cool, dry season between typhoons: hiking and hot springs"
+    }
+   ]
+  },
+  "HKG": {
+   "name": "Hong Kong",
+   "seasons": [
+    {
+     "months": [
+      10,
+      11,
+      12
+     ],
+     "why": "Dry, sunny and mild"
+    },
+    {
+     "months": [
+      1,
+      2,
+      3
+     ],
+     "why": "Cool and clear, Lunar New Year"
+    }
+   ]
+  },
+  "SIN": {
+   "name": "Singapore",
+   "seasons": [
+    {
+     "months": [
+      2,
+      3,
+      4
+     ],
+     "why": "Drier stretch of the year"
+    },
+    {
+     "months": [
+      7,
+      8
+     ],
+     "why": "Festival season and drier days"
+    }
+   ]
+  },
+  "MNL": {
+   "name": "Manila and the islands",
+   "seasons": [
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3,
+      4
+     ],
+     "why": "Dry season for the beaches"
+    }
+   ]
+  },
+  "PVG": {
+   "name": "Shanghai",
+   "seasons": [
+    {
+     "months": [
+      4,
+      5
+     ],
+     "why": "Mild spring"
+    },
+    {
+     "months": [
+      10,
+      11
+     ],
+     "why": "Clear, comfortable fall"
+    }
+   ]
+  },
+  "PEK": {
+   "name": "Beijing",
+   "seasons": [
+    {
+     "months": [
+      4,
+      5
+     ],
+     "why": "Spring before the heat"
+    },
+    {
+     "months": [
+      9,
+      10
+     ],
+     "why": "Golden fall, best for the Great Wall"
+    }
+   ]
+  },
+  "SYD": {
+   "name": "Sydney",
+   "seasons": [
+    {
+     "months": [
+      10,
+      11
+     ],
+     "why": "Spring warmth"
+    },
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3
+     ],
+     "why": "Summer beaches"
+    },
+    {
+     "months": [
+      4
+     ],
+     "why": "Mild autumn"
+    }
+   ]
+  },
+  "MEL": {
+   "name": "Melbourne",
+   "seasons": [
+    {
+     "months": [
+      11,
+      12,
+      1,
+      2,
+      3
+     ],
+     "why": "Summer: beaches, wineries and the Great Ocean Road"
+    }
+   ]
+  },
+  "BNE": {
+   "name": "Brisbane",
+   "seasons": [
+    {
+     "months": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+     ],
+     "why": "Dry, warm winter: Great Barrier Reef season"
+    }
+   ]
+  },
+  "AKL": {
+   "name": "Auckland",
+   "seasons": [
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3,
+      4
+     ],
+     "why": "New Zealand summer into early autumn"
+    }
+   ]
+  },
+  "CHC": {
+   "name": "Christchurch",
+   "seasons": [
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3
+     ],
+     "why": "South Island summer: hiking and road trips"
+    }
+   ]
+  },
+  "PPT": {
+   "name": "Tahiti",
+   "seasons": [
+    {
+     "months": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+     ],
+     "why": "Dry season, calm water"
+    },
+    {
+     "months": [
+      11
+     ],
+     "why": "Before the rainy season"
+    }
+   ]
+  },
+  "LHR": {
+   "name": "London",
+   "seasons": [
+    {
+     "months": [
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "why": "Long days and the best weather"
+    },
+    {
+     "months": [
+      12
+     ],
+     "why": "Christmas markets and lights"
+    }
+   ]
+  },
+  "CDG": {
+   "name": "Paris",
+   "seasons": [
+    {
+     "months": [
+      4,
+      5,
+      6
+     ],
+     "why": "Spring in Paris"
+    },
+    {
+     "months": [
+      9,
+      10
+     ],
+     "why": "Warm fall, fewer crowds"
+    },
+    {
+     "months": [
+      12
+     ],
+     "why": "Holiday lights"
+    }
+   ]
+  },
+  "FRA": {
+   "name": "Frankfurt and the Rhine",
+   "seasons": [
+    {
+     "months": [
+      5,
+      6,
+      9
+     ],
+     "why": "Rhine valley and wine country"
+    },
+    {
+     "months": [
+      12
+     ],
+     "why": "Christmas markets"
+    }
+   ]
+  },
+  "MUC": {
+   "name": "Munich and the Alps",
+   "seasons": [
+    {
+     "months": [
+      5,
+      6,
+      7,
+      8
+     ],
+     "why": "Beer gardens and Alpine hikes"
+    },
+    {
+     "months": [
+      9,
+      10
+     ],
+     "why": "Oktoberfest and fall colors"
+    },
+    {
+     "months": [
+      12
+     ],
+     "why": "Christmas markets"
+    }
+   ]
+  },
+  "FCO": {
+   "name": "Rome",
+   "seasons": [
+    {
+     "months": [
+      4,
+      5,
+      6
+     ],
+     "why": "Warm spring"
+    },
+    {
+     "months": [
+      9,
+      10
+     ],
+     "why": "Warm fall after the summer crowds"
+    }
+   ]
+  },
+  "BCN": {
+   "name": "Barcelona",
+   "seasons": [
+    {
+     "months": [
+      5,
+      6
+     ],
+     "why": "Beach season starts"
+    },
+    {
+     "months": [
+      9,
+      10
+     ],
+     "why": "Warm sea, fewer crowds"
+    }
+   ]
+  },
+  "AMS": {
+   "name": "Amsterdam",
+   "seasons": [
+    {
+     "months": [
+      4,
+      5
+     ],
+     "why": "Tulip season"
+    },
+    {
+     "months": [
+      6,
+      9
+     ],
+     "why": "Long, mild days"
+    }
+   ]
+  },
+  "ZRH": {
+   "name": "Zurich and the Alps",
+   "seasons": [
+    {
+     "months": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "why": "Alpine hiking and lakes"
+    }
+   ]
+  },
+  "KEF": {
+   "name": "Iceland",
+   "seasons": [
+    {
+     "months": [
+      6,
+      7,
+      8
+     ],
+     "why": "Midnight sun and open highland roads"
+    }
+   ]
+  },
+  "CUN": {
+   "name": "Cancun and Tulum",
+   "seasons": [
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3,
+      4
+     ],
+     "why": "Dry season: beaches and cenotes"
+    }
+   ]
+  },
+  "SJD": {
+   "name": "Cabo",
+   "seasons": [
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3
+     ],
+     "why": "Whale season and dry, sunny days"
+    },
+    {
+     "months": [
+      11,
+      4
+     ],
+     "why": "Warm water, before and after peak"
+    }
+   ]
+  },
+  "PVR": {
+   "name": "Puerto Vallarta",
+   "seasons": [
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3
+     ],
+     "why": "Humpback whales in the bay"
+    },
+    {
+     "months": [
+      11,
+      4
+     ],
+     "why": "Dry and warm"
+    }
+   ]
+  },
+  "MEX": {
+   "name": "Mexico City",
+   "seasons": [
+    {
+     "months": [
+      3,
+      4,
+      5
+     ],
+     "why": "Jacaranda season"
+    },
+    {
+     "months": [
+      10,
+      11
+     ],
+     "why": "Día de Muertos and dry fall days"
+    }
+   ]
+  },
+  "LIR": {
+   "name": "Guanacaste, Costa Rica",
+   "seasons": [
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3,
+      4
+     ],
+     "why": "Dry season on the Pacific beaches"
+    }
+   ]
+  },
+  "SJO": {
+   "name": "Costa Rica",
+   "seasons": [
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3,
+      4
+     ],
+     "why": "Dry season: volcanoes, cloud forest and beaches"
+    }
+   ]
+  },
+  "BZE": {
+   "name": "Belize",
+   "seasons": [
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3,
+      4
+     ],
+     "why": "Dry season for reefs and ruins"
+    }
+   ]
+  },
+  "PTY": {
+   "name": "Panama",
+   "seasons": [
+    {
+     "months": [
+      1,
+      2,
+      3
+     ],
+     "why": "Dry season: islands and the canal"
+    }
+   ]
+  },
+  "HNL": {
+   "name": "Honolulu",
+   "seasons": [
+    {
+     "months": [
+      4,
+      5,
+      9,
+      10
+     ],
+     "why": "Shoulder season: warm water, fewer crowds"
+    },
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3
+     ],
+     "why": "Big surf on the North Shore"
+    }
+   ]
+  },
+  "OGG": {
+   "name": "Maui",
+   "seasons": [
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3
+     ],
+     "why": "Humpback whale season"
+    },
+    {
+     "months": [
+      4,
+      5,
+      9,
+      10
+     ],
+     "why": "Shoulder season: warm water, fewer crowds"
+    }
+   ]
+  },
+  "KOA": {
+   "name": "Kona, Big Island",
+   "seasons": [
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3
+     ],
+     "why": "Whale season and clear volcano views"
+    },
+    {
+     "months": [
+      4,
+      5,
+      9,
+      10
+     ],
+     "why": "Calm snorkeling season"
+    }
+   ]
+  },
+  "LIH": {
+   "name": "Kauai",
+   "seasons": [
+    {
+     "months": [
+      4,
+      5,
+      6,
+      9,
+      10
+     ],
+     "why": "Drier months: Na Pali and Waimea Canyon"
+    }
+   ]
+  },
+  "BZN": {
+   "name": "Bozeman and Yellowstone",
+   "seasons": [
+    {
+     "months": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "why": "Yellowstone and Big Sky summer"
+    },
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3
+     ],
+     "why": "Ski season at Big Sky"
+    }
+   ]
+  },
+  "JAC": {
+   "name": "Jackson Hole",
+   "seasons": [
+    {
+     "months": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "why": "Tetons hiking and wildlife"
+    },
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3
+     ],
+     "why": "Ski season"
+    }
+   ]
+  },
+  "ANC": {
+   "name": "Anchorage",
+   "seasons": [
+    {
+     "months": [
+      6,
+      7,
+      8
+     ],
+     "why": "Long summer days: glaciers, wildlife and hiking"
+    }
+   ]
+  },
+  "MSY": {
+   "name": "New Orleans",
+   "seasons": [
+    {
+     "months": [
+      3,
+      4,
+      5
+     ],
+     "why": "Festival season and Jazz Fest"
+    },
+    {
+     "months": [
+      10,
+      11
+     ],
+     "why": "Mild fall"
+    }
+   ]
+  },
+  "BOS": {
+   "name": "Boston and New England",
+   "seasons": [
+    {
+     "months": [
+      5,
+      6,
+      7,
+      8
+     ],
+     "why": "Summer on the coast and the Cape"
+    },
+    {
+     "months": [
+      9,
+      10
+     ],
+     "why": "Fall foliage"
+    }
+   ]
+  },
+  "YVR": {
+   "name": "Vancouver",
+   "seasons": [
+    {
+     "months": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "why": "Sunny summer by the water"
+    },
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3
+     ],
+     "why": "Whistler ski season"
+    }
+   ]
+  },
+  "YUL": {
+   "name": "Montreal",
+   "seasons": [
+    {
+     "months": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "why": "Festival summer"
+    }
+   ]
+  },
+  "AUS": {
+   "name": "Austin",
+   "seasons": [
+    {
+     "months": [
+      3,
+      4,
+      5
+     ],
+     "why": "Spring, wildflowers and SXSW"
+    },
+    {
+     "months": [
+      10,
+      11
+     ],
+     "why": "Mild fall"
+    }
+   ]
+  },
+  "BNA": {
+   "name": "Nashville",
+   "seasons": [
+    {
+     "months": [
+      4,
+      5
+     ],
+     "why": "Spring"
+    },
+    {
+     "months": [
+      9,
+      10
+     ],
+     "why": "Mild fall"
+    }
+   ]
+  },
+  "MIA": {
+   "name": "Miami",
+   "seasons": [
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3,
+      4
+     ],
+     "why": "Dry, warm winter"
+    }
+   ]
+  },
+  "FLL": {
+   "name": "Fort Lauderdale",
+   "seasons": [
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3,
+      4
+     ],
+     "why": "Dry, warm winter"
+    }
+   ]
+  },
+  "LAS": {
+   "name": "Las Vegas",
+   "seasons": [
+    {
+     "months": [
+      3,
+      4,
+      5,
+      10,
+      11
+     ],
+     "why": "Desert weather that isn't too hot"
+    }
+   ]
+  },
+  "DEN": {
+   "name": "Denver and the Rockies",
+   "seasons": [
+    {
+     "months": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "why": "Mountain summer"
+    },
+    {
+     "months": [
+      12,
+      1,
+      2,
+      3
+     ],
+     "why": "Ski season"
+    }
+   ]
+  },
+  "PDX": {
+   "name": "Portland",
+   "seasons": [
+    {
+     "months": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "why": "Dry summer: coast, gorge and wine country"
+    }
+   ]
+  },
+  "SEA": {
+   "name": "Seattle",
+   "seasons": [
+    {
+     "months": [
+      6,
+      7,
+      8,
+      9
+     ],
+     "why": "Dry summer: mountains and islands"
+    }
+   ]
+  }
+ }
+}

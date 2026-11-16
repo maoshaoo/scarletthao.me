@@ -22,6 +22,10 @@ Every flight read from a screenshot is saved to the log right away, as a snapsho
 - Upcoming flights with good odds stay on the home screen.
 - Across your timelines for a route, the app works out how many seats tend to open or disappear each day before departure, preferring the same month. That note appears on the check screen and the place card, so a future trip to Seoul in November starts with what you saw this time.
 
+## Good time to go
+
+`data/seasons.json` is a hand-written list of good times to visit places United flies to from SFO (weather and what's on). The app pairs it with the route history: a place is a pick for a month only if it's in season and its flights usually run 82% full or less that month. Rarely served routes rank lower, since a bump there means no backup flight.
+
 ## How the forecast works
 
 It's an estimate, never a seat count. Each travel day gets a score from:

@@ -25,6 +25,7 @@
   var home = load('home', 'SFO');
   var log = load('log', []);
   var settings = load('settings', { sheetUrl: '', claudeKey: '', model: 'claude-sonnet-5-5' });
+  var seasonData = null; // good times to visit, from data/seasons.json
   var routeData = null; // monthly route history (filled from data/routes.json when available)
 
   /* ---------- dates ---------- */
@@ -228,6 +229,38 @@
     return { cls: hits.length ? 'f-good' : '', label: hits.length ? hits[0][0] + (hits.length > 1 ? ' +' + (hits.length - 1) : '') : '', dots: [], solid: false };
   }
 
+  /* ---------- good time to go ----------
+     Places that are in season that month (good weather or something on) AND whose flights run emptier than usual.
+     Somewhere empty only because it's off season (Alaska in December) never makes the list. */
+  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  function picks(month) {
+    if (!seasonData || !routeData) return [];
+    var m = String(month + 1), by = {};
+    Object.keys(seasonData.places).forEach(function (c) {
+      var sp = seasonData.places[c], season = sp.seasons.filter(function (x) { return x.months.indexOf(month + 1) >= 0; })[0];
+      var lf = routeData.routes[routeKey(home, c)], fpd = routeData.flightsPerDay && routeData.flightsPerDay[routeKey(home, c)];
+      if (!season || !lf || !lf[m] || !fpd || !(fpd[m] > 0)) return;
+      if (lf[m] > 0.82) return; // in season but usually full: not a standby pick
+      var x = { name: sp.name, codes: [c], days: 5, full: lf[m], perDay: fpd[m], why: season.why, score: (0.85 - lf[m]) * 100 + Math.min(5, fpd[m] * 3) - (fpd[m] < 0.5 ? 20 : 0) }; // rare flights mean no backup if you're bumped
+      var k = sp.name;
+      if (by[k]) { by[k].codes.push(c); if (x.score > by[k].score) { x.codes = by[k].codes; by[k] = x; } } else by[k] = x;
+    });
+    return Object.keys(by).map(function (k) { return by[k]; }).sort(function (a, b) { return b.score - a.score; });
+  }
+  function freq(n) { return n >= 1.5 ? 'about ' + Math.round(n) + ' flights a day' : n >= 0.9 ? 'about 1 flight a day' : (Math.round(n * 7) <= 1 ? 'about 1 flight a week' : 'about ' + Math.round(n * 7) + ' flights a week'); }
+  function pickCard(x, month) {
+    var bd = x.full <= 0.72 ? ['sr-good', Math.round(x.full * 100) + '% full'] : ['sr-tight', Math.round(x.full * 100) + '% full'];
+    return '<button class="sr-card" data-pick="' + esc(x.codes.join(',')) + '" data-month="' + month + '" data-name="' + esc(x.name) + '"><span class="t"><b>' + esc(x.name) + ' <span class="r">' + home + ' &rarr; ' + x.codes.map(esc).join(', ') + '</span></b>' + pill(bd) + '</span>' +
+      '<small>' + esc(x.why) + ' · ' + freq(x.perDay) + (x.perDay < 0.9 ? ', so fewer backups' : '') + '</small></button>';
+  }
+  function pickMonth() { return addDays(today(), 21).getMonth(); }
+  function picksHtml() {
+    var m = pickMonth(), list = picks(m).slice(0, 3);
+    if (!list.length) return '';
+    return '<div class="sr-lbl">Good time to go · ' + MONTHS[m] + '</div>' + list.map(function (x) { return pickCard(x, m); }).join('') +
+      '<button class="sr-link" data-go="picks">More picks, by month</button>';
+  }
+
   /* ---------- screens ---------- */
   var state = { place: null, out: null, back: null, flex: true, draft: null, stack: [] };
   function bar(back) {
@@ -254,6 +287,7 @@
       '<h1 class="sr-title">Standby Radar<span>.</span></h1>' +
       '<p class="sr-intro">We\u2019re lucky to have a great friend who shares their United standby travel with us. We\u2019ve used it, but not nearly enough. This is our nudge to take a trip once a month and see the world.</p>' +
       watchedHtml() +
+      picksHtml() +
       '<div class="sr-lbl">Your places · next 6 weeks</div>' +
       (places.length ? places.map(placeCard).join('') : '<button class="sr-card" data-go="settings"><b>Add places you\u2019d like to go</b><small>Pick a few destinations in settings and this shows when each looks open.</small></button>') +
       '<div class="sr-ctas"><button class="sr-cta" data-go="know"><i aria-hidden="true">&#8982;</i>I know where and when</button>' +
@@ -308,6 +342,13 @@
     return grid('Going · ' + fmt(o), o, true) + grid('Coming back · ' + fmt(b), b, false) +
       '<div class="sr-legend"><span><i class="sr-sw sr-good"></i>Checked</span><span><i class="sr-sw f-good"></i>Likely open</span><span><i class="sr-sw f-tight"></i>Tight</span><span><i class="sr-sw"></i>Unlikely</span></div>';
   }
+  S.picks = function () {
+    var m = state.pickMonth != null ? state.pickMonth : pickMonth(), t = today().getMonth(), list = picks(m);
+    return bar(true) + '<h1 class="sr-h">Good time to go</h1><p class="sr-sub">In season, and flights from ' + home + ' usually run emptier than most. Percent full is the route\u2019s average for the month.</p>' +
+      '<div class="sr-chips" role="group" aria-label="Month">' + [0, 1, 2, 3].map(function (k) { var mm = (t + k) % 12; return '<button class="sr-chip" data-pickmonth="' + mm + '" aria-pressed="' + (mm === m) + '">' + MONTHS[mm].slice(0, 3) + '</button>'; }).join('') + '</div>' +
+      (list.length ? list.slice(0, 10).map(function (x) { return pickCard(x, m); }).join('') : '<p class="sr-empty">Nothing in season with room to spare that month.</p>') +
+      '<p class="sr-note">Seasons are hand-picked for weather and what\u2019s on. Seat history is public U.S. DOT data, so it\u2019s a monthly average, not a promise for any one flight.</p>';
+  };
   S.know = function () {
     var p = state.place != null ? state.place : 0, o = state.out || iso(addDays(today(), 7)), b = state.back || iso(addDays(today(), 7 + (places[p] ? places[p].days - 1 : 3)));
     return bar(true) + '<h1 class="sr-h">Where and when?</h1>' +
@@ -329,6 +370,7 @@
       '<p class="sr-note" id="d-status" hidden></p>' +
       '<p class="sr-or">or</p>' +
       '<button class="sr-btn ghost" data-act="dice-places">Rank my places for these dates</button>' +
+      (seasonData && routeData ? '<button class="sr-btn ghost" data-act="dice-season">Places in season with room</button>' : '') +
       (routeData ? '<button class="sr-btn ghost" data-act="dice-all">Rank everywhere United flies from ' + home + '</button>' : '<p class="sr-sub">"Everywhere United flies" turns on once route history is loaded.</p>');
   };
   S.dicelist = function () {
@@ -342,6 +384,7 @@
         var bd = band(x.t.score), why = x.t.out.why.concat(x.t.back.why);
         return '<button class="sr-card" data-dice="' + x.i + '"><span class="t"><b>' + esc(x.p.name) + ' <span class="r">' + home + ' &rarr; ' + x.p.codes.map(esc).join(', ') + '</span></b>' + pill(bd) + '</span>' +
           (x.p.seen ? '<span class="sr-when">From your screenshot: ' + esc(x.p.seen) + '</span>' : '') +
+          (x.p.note ? '<span class="sr-when">' + esc(x.p.note) + '</span>' : '') +
           '<small>' + esc(why[0] || 'Day of week and holiday peaks') + '</small></button>';
       }).join('') || '<p class="sr-empty">Nothing found. Try another screenshot, or rank your places.</p>';
   };
@@ -480,6 +523,13 @@
     if (t.dataset.check) { var bits = t.dataset.check.split('-'); state.draft = { from: bits[0], to: bits[1], date: bits.slice(2).join('-') }; show('check'); return; }
     if (t.dataset.recheck) { var kb = t.dataset.recheck.split('|'); state.batch = null; state.batchIdx = null; state.draft = { flight: kb[0] === '?' ? '' : kb[0], date: kb[1], from: kb[2], to: kb[3], party: 2 }; show('check'); return; }
     if (t.dataset.batch != null) { state.batchIdx = +t.dataset.batch; state.draft = state.batch[state.batchIdx]; show('check'); return; }
+    if (t.dataset.pickmonth != null) { state.pickMonth = +t.dataset.pickmonth; rerender(); return; }
+    if (t.dataset.pick) {
+      var pm = +t.dataset.month, pp = { name: t.dataset.name, codes: t.dataset.pick.split(','), days: 5 }, y = today().getFullYear() + (pm < today().getMonth() ? 1 : 0);
+      var first = new Date(y, pm, 1, 12), startD = first < today() ? today() : addDays(first, -1), end = new Date(y, pm + 1, 0, 12);
+      var bt = bestTrip(pp, startD, Math.max(1, Math.round((end - startD) / DAY) - pp.days + 1));
+      state.placeObj = pp; state.out = iso(bt.outD); state.back = iso(bt.backD); track('standby-pick', { place: pp.name }); show('flights'); return;
+    }
     if (t.dataset.calplace != null) { state.calPlace = t.dataset.calplace; rerender(); return; }
     if (t.dataset.calday) { state.calSel = t.dataset.calday; rerender(); var lb = app.querySelector('.sr-cal ~ .sr-lbl'); if (lb) lb.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
     if (t.dataset.flex != null) { state.flex = t.dataset.flex === '1'; rerender(); return; }
@@ -491,6 +541,9 @@
       state.placeObj = null; state.place = +val('k-place'); state.out = o; state.back = b; track('standby-know', { place: places[state.place].name }); show('flights');
     } else if (act === 'dice-places') {
       if (!diceDates()) return; state.diceList = null; track('standby-dice', { mode: 'places' }); show('dicelist');
+    } else if (act === 'dice-season') {
+      if (!diceDates()) return; state.diceList = picks(fromIso(state.out).getMonth()).slice(0, 10).map(function (x) { return { name: x.name, codes: x.codes, days: 5, note: 'In season: ' + x.why }; });
+      track('standby-dice', { mode: 'season' }); show('dicelist');
     } else if (act === 'dice-all') {
       if (!diceDates()) return; state.diceList = Object.keys(routeData.routes).filter(function (k) { return k.indexOf(home + '-') === 0; }).map(function (k) { var c = k.split('-')[1]; return { name: (routeData.names && routeData.names[c]) || c, codes: [c] }; });
       track('standby-dice', { mode: 'all' }); show('dicelist');
@@ -774,6 +827,7 @@
   }
 
   /* ---------- start ---------- */
+  fetch('data/seasons.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { if (j && j.places) { seasonData = j; if (cur === 'home') rerender(); } }).catch(function () {});
   fetch('data/routes.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { if (j && j.routes) { routeData = j; if (cur === 'home') rerender(); } }).catch(function () {});
   show('home', { noPush: true, focus: false });
 })();
