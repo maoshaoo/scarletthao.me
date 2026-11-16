@@ -161,3 +161,4 @@ button.sr-card:hover { border-color: var(--muted); }
 .sr-remind { display: block; color: var(--scarlet); font-weight: 500; margin-bottom: .2rem; }
 .sr-fmain small .sr-pill { font-size: .66rem; padding: .25rem .45rem; margin-right: .2rem; }
 .sr-body .site-hdr { background: var(--sr-page); }
+

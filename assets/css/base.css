@@ -118,3 +118,18 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 @media (max-width: 380px) { .site-hdr nav { gap: .55rem; font-size: .78rem; } .site-hdr .mark { font-size: .92rem; } .site-hdr .wrap { column-gap: .4rem; } }
 /* Very narrow phones (320px): the theme toggle steps aside so the name and links fit; the site follows the phone's light/dark setting. */
 @media (max-width: 350px) { .site-hdr .theme-slot { display: none; } }
+
+/* How it's built: a closed card above the footer on each Play project */
+.built { position: relative; z-index: 1; max-width: var(--built-w, 44rem); margin: 0 auto 1.25rem; padding: 0 max(20px, env(safe-area-inset-right, 0px)) 0 max(20px, env(safe-area-inset-left, 0px)); }
+@media (max-width: 600px) { .built { padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); } }
+.built details { border: 1px solid var(--rule); background: var(--card); border-radius: 14px; padding: .8rem .95rem; }
+.built summary { cursor: pointer; list-style: none; display: grid; gap: .3rem; }
+.built summary::-webkit-details-marker { display: none; }
+.built .bl { display: flex; justify-content: space-between; font: 400 .68rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.built .bl::after { content: "+"; font-size: .9rem; color: var(--soft); }
+.built details[open] .bl::after { content: "\2212"; }
+.built .bs { font-size: .88rem; color: var(--soft); }
+.built dl { margin: .8rem 0 0; display: grid; gap: .7rem; }
+.built dl div { display: grid; gap: .15rem; border-top: 1px solid var(--rule); padding-top: .6rem; }
+.built dt { font-weight: 500; font-size: .88rem; }
+.built dd { margin: 0; font-size: .85rem; color: var(--soft); line-height: 1.5; }

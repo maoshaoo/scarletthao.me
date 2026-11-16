@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
 <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);var m=/[?&]me(=off)?(&|$)/.exec(location.search);if(m){if(m[1])localStorage.removeItem("umami.disabled");else localStorage.setItem("umami.disabled","1")}}catch(e){}</script>
-<link rel="stylesheet" href="/assets/css/base.css?v=10">
+<link rel="stylesheet" href="/assets/css/base.css?v=11">
 <link rel="stylesheet" href="brain-power.css?v=2">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -86,6 +86,18 @@
   <p><a href="/">scarletthao.me</a> · <a href="/play/">Play</a> · <a href="/changelog.html">Changelog</a></p>
 </footer>
 
+<section class="built" style="--built-w: 64rem" aria-label="How it&rsquo;s built">
+  <details>
+    <summary><span class="bl">How it&rsquo;s built</span><span class="bs">A hand-written quiz board in one web page.</span></summary>
+    <dl>
+      <div><dt>The app</dt><dd>One page of plain HTML, CSS and JavaScript. No framework, no server, no account.</dd></div>
+      <div><dt>The clues</dt><dd>Written by hand: 11 categories, five clues each, from 200 for the easiest to 1000 for the hardest. Every answer comes with a one-line why.</dd></div>
+      <div><dt>The modes</dt><dd>Feel smart deals from categories you know. Get smart deals from the ones you want to learn, and brings back clues you miss. Wild card mixes everything.</dd></div>
+      <div><dt>Your data</dt><dd>Your category picks stay in this browser. Anonymous counts of which modes and categories people pick go to <a href="https://umami.is" target="_blank" rel="noopener">Umami</a>, with no cookies.</dd></div>
+      <div><dt>Made with</dt><dd><a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a>. <a href="https://github.com/maoshaoo/scarletthao.me/tree/main/play/brain-power" target="_blank" rel="noopener">Source on GitHub</a>.</dd></div>
+    </dl>
+  </details>
+</section>
 <footer class="site-foot" style="--foot-w: 64rem">
   <div class="fw">
     <div class="fb-top"><span>© 2026 Scarlett Hao</span><span><a href="/changelog.html">Changelog</a> · <a href="/feed.xml">RSS</a> · San Francisco</span></div>

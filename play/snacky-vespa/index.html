@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
 <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);var m=/[?&]me(=off)?(&|$)/.exec(location.search);if(m){if(m[1])localStorage.removeItem("umami.disabled");else localStorage.setItem("umami.disabled","1")}}catch(e){}</script>
-<link rel="stylesheet" href="/assets/css/base.css?v=10">
+<link rel="stylesheet" href="/assets/css/base.css?v=11">
 <link rel="stylesheet" href="snacky-vespa.css?v=6">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -101,6 +101,19 @@
   <p><a href="/">scarletthao.me</a> · <a href="/changelog.html">Changelog</a></p>
 </footer>
 
+<section class="built" style="--built-w: 64rem" aria-label="How it&rsquo;s built">
+  <details>
+    <summary><span class="bl">How it&rsquo;s built</span><span class="bs">A snack, a forecast and a loop around San Francisco, in one web page.</span></summary>
+    <dl>
+      <div><dt>The app</dt><dd>One page of plain HTML, CSS and JavaScript. No framework, no server, no account.</dd></div>
+      <div><dt>The snacks</dt><dd>A hand-picked list of San Francisco bakeries, dumpling spots, coffee, chips and pizza, with a few of my favorites marked.</dd></div>
+      <div><dt>The weather</dt><dd>The hourly forecast from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> for four parts of the city. Each part is scored as sun, patchy fog, fog or rain, so the loop can chase the sun or visit Karl the Fog.</dd></div>
+      <div><dt>The route</dt><dd>Street routes from <a href="https://openrouteservice.org" target="_blank" rel="noopener">openrouteservice</a>, drawn on a map made in the page. Google Maps takes over for turn-by-turn.</dd></div>
+      <div><dt>Your data</dt><dd>Starts are neighborhoods, never addresses. &ldquo;I&rsquo;ve been here&rdquo; stays in this browser.</dd></div>
+      <div><dt>Made with</dt><dd><a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a>. <a href="https://github.com/maoshaoo/scarletthao.me/tree/main/play/snacky-vespa" target="_blank" rel="noopener">Source on GitHub</a>.</dd></div>
+    </dl>
+  </details>
+</section>
 <footer class="site-foot" style="--foot-w: 64rem">
   <div class="fw">
     <div class="fb-top"><span>© 2026 Scarlett Hao</span><span><a href="/changelog.html">Changelog</a> · <a href="/feed.xml">RSS</a> · San Francisco</span></div>

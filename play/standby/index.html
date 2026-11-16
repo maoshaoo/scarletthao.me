@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
 <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);var m=/[?&]me(=off)?(&|$)/.exec(location.search);if(m){if(m[1])localStorage.removeItem("umami.disabled");else localStorage.setItem("umami.disabled","1")}}catch(e){}</script>
-<link rel="stylesheet" href="/assets/css/base.css?v=10">
-<link rel="stylesheet" href="standby.css?v=8">
+<link rel="stylesheet" href="/assets/css/base.css?v=11">
+<link rel="stylesheet" href="standby.css?v=10">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
@@ -52,6 +52,21 @@
 <main class="sr-app" id="app" aria-live="polite">
   <noscript><p>Standby Radar needs JavaScript.</p></noscript>
 </main>
+
+<section class="built" style="--built-w: 26rem" aria-label="How it&rsquo;s built">
+  <details>
+    <summary><span class="bl">How it&rsquo;s built</span><span class="bs">One web page, public data and a phone that reads screenshots.</span></summary>
+    <dl>
+      <div><dt>The app</dt><dd>One page of plain HTML, CSS and JavaScript. No framework, no server, no account. It can be added to a phone&rsquo;s home screen like an app.</dd></div>
+      <div><dt>Reading screenshots</dt><dd>Text recognition runs on the phone with <a href="https://tesseract.projectnaptha.com/" target="_blank" rel="noopener">Tesseract.js</a>, then a parser picks out each flight, its Polaris seats and the standby list. Optionally, Claude reads it instead, with your own API key.</dd></div>
+      <div><dt>How full flights run</dt><dd>Public U.S. DOT data (<a href="https://www.transtats.bts.gov/" target="_blank" rel="noopener">BTS T-100</a>): seats and passengers on United&rsquo;s routes, by month. A GitHub Action refreshes it on the 3rd of each month.</dd></div>
+      <div><dt>The forecast</dt><dd>Day of week, holiday peaks, how full the route runs, how many flights there are, and your own past checks. A trip counts only as good as its weaker direction.</dd></div>
+      <div><dt>Good time to go</dt><dd>A hand-written list of when 52 places are at their best, matched against months when their flights have room both ways.</dd></div>
+      <div><dt>Your data</dt><dd>Your log, places and settings stay in this browser. You can sync to your own private Google Sheet.</dd></div>
+      <div><dt>Made with</dt><dd><a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a>, over a weekend. <a href="https://github.com/maoshaoo/scarletthao.me/tree/main/play/standby" target="_blank" rel="noopener">Source on GitHub</a>.</dd></div>
+    </dl>
+  </details>
+</section>
 
 <p class="sr-foot"><a href="/play/">&larr; Play</a> · Forecasts are estimates, not seat counts. Your log and settings stay on this device.</p>
 

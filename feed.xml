@@ -8,6 +8,13 @@
     <language>en-us</language>
     <lastBuildDate>Sun, 15 Nov 2026 12:00:00 -0800</lastBuildDate>
     <item>
+      <title>How it’s built (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-15-how-it-s-built-new</guid>
+      <pubDate>Sun, 15 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>Every <a href="https://www.scarletthao.me/play/">Play</a> project now has a short note above the footer on how it works: where the data comes from, what stays in your browser, and a link to the source.</li></ul>]]></description>
+    </item>
+    <item>
       <title>Same header and footer everywhere (Functionality)</title>
       <link>https://www.scarletthao.me/changelog.html</link>
       <guid isPermaLink="false">2026-11-15-same-header-and-footer-everywhere-functionality</guid>
