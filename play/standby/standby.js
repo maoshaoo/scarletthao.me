@@ -18,8 +18,9 @@
   ];
   /* Scarlett view: open the app once with ?me on her phone and it remembers that device.
      Everyone else starts with no places. Tracked flights never leave the device either way. */
+  var QS = location.search; // read once: both setup links below clean the address bar
   var me = load('me', false);
-  var q = /[?&]me(=off)?(&|$)/.exec(location.search);
+  var q = /[?&]me(=off)?(&|$)/.exec(QS);
   if (q) { me = !q[1]; save('me', me); history.replaceState(null, '', location.pathname); }
   var places = load('places', me ? DEFAULT_PLACES : []);
   /* Base camp: the airport trips start from. A second base camp can take over for some months of the year.
@@ -30,7 +31,7 @@
   var log = load('log', []);
   var settings = load('settings', { sheetUrl: '', claudeKey: '', model: 'claude-sonnet-5-5' });
   (function () {
-    var a = /[?&]alt=([A-Za-z]{3})/.exec(location.search), am = /[?&]altm=([\d,-]+)/.exec(location.search);
+    var a = /[?&]alt=([A-Za-z]{3})/.exec(QS), am = /[?&]altm=([\d,-]+)/.exec(QS);
     if (a) { settings.alt = a[1].toUpperCase(); settings.altMonths = am ? monthsOf(am[1]) : []; save('settings', settings); history.replaceState(null, '', location.pathname); }
   })();
   function monthsOf(t) {
