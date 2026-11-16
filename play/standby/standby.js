@@ -227,10 +227,23 @@
     return Object.keys(g).map(function (k) { return g[k]; }).filter(function (sn) { return sn[0].date >= t; })
       .sort(function (a, b) { var va = verdictOf(a[a.length - 1]), vb = verdictOf(b[b.length - 1]); var ga = va && va[0] === 'sr-good' ? 0 : 1, gb = vb && vb[0] === 'sr-good' ? 0 : 1; return ga - gb || (a[0].date < b[0].date ? -1 : 1); });
   }
+  /* The number that matters most: Polaris seats open on international flights, all open seats on domestic. */
+  function seatBadge(r) {
+    var pol = r.cabin === 'Polaris', n = pol ? r.openPolaris : r.openAll, l = pol ? r.sbPolaris : r.sbAll;
+    if (n === '' || n == null) { n = r.open; l = r.listed; }
+    if (n === '' || n == null) return '';
+    var v = verdictOf(r);
+    return '<span class="sr-seats ' + (v ? v[0] : '') + '" aria-label="' + esc(n + (pol ? ' Polaris seats open' : ' seats open') + ', ' + (l || 0) + ' listed') + '"><b>' + esc(n) + '</b><span>' + (pol ? 'Polaris' : 'seats') + ' open</span><em>' + esc(l || 0) + ' listed</em></span>';
+  }
+  function flightCard(attr, r, title, when, note) {
+    var v = verdictOf(r);
+    return '<button class="sr-card sr-fcard" ' + attr + '><span class="sr-fmain"><b>' + title + '</b><span class="sr-when">' + when + '</span>' +
+      (v ? '<span>' + pill([v[0], (r.cabin === 'Polaris' ? 'Polaris: ' : '') + v[1]]) + '</span>' : '') + (note ? '<small>' + note + '</small>' : '') + '</span>' + seatBadge(r) + '</button>';
+  }
   function watchCard(sn) {
-    var z = sn[sn.length - 1], v = verdictOf(z);
-    return '<button class="sr-card" data-recheck="' + esc(keyOf(z)) + '"><span class="t"><b>' + esc(z.flight || 'Flight') + ' · ' + esc(z.from) + ' &rarr; ' + esc(z.to) + '</b>' + (v ? pill([v[0], (z.cabin === 'Polaris' ? 'Polaris: ' : '') + v[1]]) : '') + '</span>' +
-      '<span class="sr-when">' + fmt(fromIso(z.date)) + (z.time ? ' · ' + esc(z.time) : '') + '</span><small>' + esc(trendOf(sn)) + '. Tap to check again.</small></button>';
+    var z = sn[sn.length - 1];
+    return flightCard('data-recheck="' + esc(keyOf(z)) + '"', z, esc(z.flight || 'Flight') + ' · ' + esc(z.from) + ' &rarr; ' + esc(z.to),
+      fmt(fromIso(z.date)) + (z.time ? ' · ' + esc(z.time) : ''), esc(trendOf(sn)) + '. Tap to check again.');
   }
 
   /* ---------- calendar ----------
@@ -328,10 +341,10 @@
       '<h1 class="sr-title">Standby Radar<span>.</span></h1>' +
       baseHtml() +
       '<p class="sr-intro">We\u2019re lucky to have a great friend who shares their United standby travel with us. We\u2019ve used it, but not nearly enough. This is our nudge to take a trip once a month and see the world.</p>' +
-      watchedHtml() +
-      picksHtml() +
       '<div class="sr-lbl">Your places · next 6 weeks</div>' +
       (places.length ? places.map(placeCard).join('') : '<button class="sr-card" data-go="settings"><b>Add places you\u2019d like to go</b><small>Pick a few destinations in settings and this shows when each looks open.</small></button>') +
+      watchedHtml() +
+      picksHtml() +
       '<div class="sr-ctas"><button class="sr-cta" data-go="know"><i aria-hidden="true">&#8982;</i>I know where and when</button>' +
       '<button class="sr-cta alt" data-go="dice"><i aria-hidden="true">&#9860;</i>Roll the dice</button></div>';
   };
@@ -347,7 +360,7 @@
   function watchedHtml() {
     var w = watched(); if (!w.length) return '';
     var good = w.filter(function (sn) { var v = verdictOf(sn[sn.length - 1]); return v && v[0] === 'sr-good'; }), rest = w.length - good.length;
-    return '<div class="sr-lbl">Good odds · flights you\u2019re watching</div>' + (good.length ? good.map(watchCard).join('') : '<p class="sr-sub">None of the flights you\u2019ve checked look good right now.</p>') +
+    return '<div class="sr-lbl">Your flights · good odds</div>' + (good.length ? good.map(watchCard).join('') : '<p class="sr-sub">None of the flights you\u2019ve checked look good right now.</p>') +
       '<button class="sr-link" data-go="cal">See every flight on the calendar' + (rest ? ' (' + rest + ' more checked)' : '') + '</button>';
   }
   S.cal = function () {
@@ -514,9 +527,10 @@
       '<p class="sr-note" id="b-status"' + (state.batchStatus ? '' : ' hidden') + '>' + esc(state.batchStatus || '') + '</p>';
     b.forEach(function (d, i) {
       settle(d); var v = verdictOf(d);
-      h += '<button class="sr-card" data-batch="' + i + '"><span class="t"><b>' + esc([d.flight, (d.from || '?') + ' → ' + (d.to || '?')].filter(Boolean).join(' · ')) + '</b>' + (d.saved ? '<span class="sr-pill sr-good">Saved</span>' : v ? pill([v[0], (d.cabin === 'Polaris' ? 'Polaris: ' : '') + v[1]]) : '<span class="sr-pill sr-tight">' + (d.reading ? 'Reading…' : 'Needs numbers') + '</span>') + '</span>' +
-        '<span class="sr-when">' + esc([d.date ? fmt(fromIso(d.date)) : '', d.time].filter(Boolean).join(' · ')) + '</span>' +
-        '<small>' + esc(v ? summaryOf(d) : 'Tap to check the numbers') + '</small></button>';
+      h += v ? flightCard('data-batch="' + i + '"', d, esc([d.flight, (d.from || '?') + ' → ' + (d.to || '?')].filter(Boolean).join(' · ')),
+          esc([d.date ? fmt(fromIso(d.date)) : '', d.time].filter(Boolean).join(' · ')), esc(summaryOf(d)) + (d.saved ? ' · Saved' : ''))
+        : '<button class="sr-card" data-batch="' + i + '"><span class="t"><b>' + esc([d.flight, (d.from || '?') + ' → ' + (d.to || '?')].filter(Boolean).join(' · ')) + '</b><span class="sr-pill sr-tight">' + (d.reading ? 'Reading…' : 'Needs numbers') + '</span></span>' +
+        '<span class="sr-when">' + esc([d.date ? fmt(fromIso(d.date)) : '', d.time].filter(Boolean).join(' · ')) + '</span><small>Tap to check the numbers</small></button>';
     });
     if (left && !b.some(function (d) { return d.reading; })) h += '<button class="sr-btn" data-act="save-all">Save the rest to log</button>';
     return h;
@@ -532,8 +546,8 @@
     var g = timelines();
     Object.keys(g).map(function (k) { return g[k]; }).sort(function (a, b) { return a[0].date < b[0].date ? 1 : -1; }).forEach(function (sn) {
       var z = sn[sn.length - 1], v = verdictOf(z);
-      h += '<div class="sr-card"><span class="t"><b>' + esc(z.flight || 'Flight') + ' · ' + esc(z.from) + ' &rarr; ' + esc(z.to) + '</b>' + (v ? pill([v[0], (z.cabin === 'Polaris' ? 'Polaris: ' : '') + v[1]]) : '') + '</span>' +
-        '<span class="sr-when">' + fmt(fromIso(z.date)) + (z.time ? ' · ' + esc(z.time) : '') + '</span>' +
+      h += '<div class="sr-card"><div class="sr-fcard" style="display:grid"><span class="sr-fmain"><b>' + esc(z.flight || 'Flight') + ' · ' + esc(z.from) + ' &rarr; ' + esc(z.to) + '</b>' +
+        '<span class="sr-when">' + fmt(fromIso(z.date)) + (z.time ? ' · ' + esc(z.time) : '') + '</span>' + (v ? '<span>' + pill([v[0], (z.cabin === 'Polaris' ? 'Polaris: ' : '') + v[1]]) + '</span>' : '') + '</span>' + seatBadge(z) + '</div>' +
         '<small>' + esc(trendOf(sn)) + '</small>' +
         sn.map(function (r) { return '<span class="sr-when">' + esc(whenChecked(r)) + ' · ' + daysOutOf(r) + 'd out · ' + esc(r.open) + (r.cabin === 'Polaris' ? ' Polaris' : '') + ' open, ' + esc(r.listed || 0) + ' listed' + (r.cabin === 'Polaris' && r.openAll !== '' ? ' · ' + esc(r.openAll) + ' open in all' : '') + '</span>'; }).join('') +
         '<div class="sr-chips" role="group" aria-label="How did it go?">' + ['Made it', 'Bumped', "Didn't try"].map(function (x) { return '<button class="sr-chip" data-result="' + z.id + '" data-val="' + x + '" aria-pressed="' + (z.result === x) + '">' + x + '</button>'; }).join('') + '</div></div>';
