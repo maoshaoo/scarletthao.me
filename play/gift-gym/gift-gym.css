@@ -112,3 +112,6 @@ button.gg-card:hover, .gg-pcard:hover { border-color: var(--muted); }
 .gg-steps.sm i { height: 4px; }
 .gg-shop { font-size: .78rem; font-weight: 500; color: var(--scarlet); white-space: nowrap; text-decoration: none; }
 .gg-shop:hover { text-decoration: underline; }
+.gg-occideas { display: grid; gap: .35rem; border-top: 1px solid var(--rule); padding-top: .6rem; }
+.gg-occidea { display: flex; align-items: center; gap: .4rem; text-align: left; background: var(--bg); border: 1px dashed var(--rule); border-radius: 10px; padding: .5rem .6rem; font-size: .86rem; }
+.gg-occidea b { margin-left: auto; color: var(--scarlet); font-weight: 500; }

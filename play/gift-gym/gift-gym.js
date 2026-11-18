@@ -16,12 +16,21 @@
   var people = load('people', []);
   var gym = load('gym', { streak: 0, last: '', rounds: 0 });
 
-  /* Private setup link: ?setup=<base64 JSON> adds people (merged by name), then cleans the address bar. */
-  (function () {
-    var m = /[?&]setup=([^&]+)/.exec(location.search);
-    if (!m) return;
+  /* Private setup link: ?setup=<base64 JSON>, or ?setupz=<base64 gzip JSON> for long lists, adds people
+     (merged by name), then cleans the address bar. */
+  function b64(str) { var b = atob(decodeURIComponent(str).replace(/-/g, '+').replace(/_/g, '/')), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+  var setupDone = (function () {
+    var m = /[?&]setup=([^&]+)/.exec(location.search), z = /[?&]setupz=([^&]+)/.exec(location.search);
+    if (z && window.DecompressionStream) {
+      var ds = new Blob([b64(z[1])]).stream().pipeThrough(new DecompressionStream('gzip'));
+      history.replaceState(null, '', location.pathname);
+      return new Response(ds).text().then(applySetup).catch(function () {});
+    }
+    if (m) { try { applySetup(new TextDecoder().decode(b64(m[1]))); } catch (e) {} history.replaceState(null, '', location.pathname); }
+    return null;
+  })();
+  function applySetup(json) {
     try {
-      var json = decodeURIComponent(escape(atob(decodeURIComponent(m[1]).replace(/-/g, '+').replace(/_/g, '/'))));
       JSON.parse(json).forEach(function (p) {
         var have = people.filter(function (x) { return x.name.toLowerCase() === String(p.name).toLowerCase(); })[0];
         if (!have) { have = { id: uid(), name: p.name, occ: [], clues: [], ideas: [], gifts: [], plans: {} }; people.push(have); }
@@ -32,8 +41,7 @@
       });
       save('people', people);
     } catch (e) {}
-    history.replaceState(null, '', location.pathname);
-  })();
+  }
 
   /* ---------- dates ---------- */
   function today() { var d = new Date(); d.setHours(12, 0, 0, 0); return d; }
@@ -48,6 +56,11 @@
   var HANUKKAH = { 2026: '12-04', 2027: '12-24', 2028: '12-12', 2029: '12-01', 2030: '12-20', 2031: '12-09', 2032: '11-27' };
   function nextOf(o) {
     if (o.date) return fromIso(o.date);
+    if (o.rule && o.rule.indexOf('nth:') === 0) { // nth:month:weekday:n, e.g. Mother's Day = nth:5:0:2
+      var r = o.rule.split(':').map(Number), ty = today().getFullYear();
+      for (var yy = ty; yy <= ty + 1; yy++) { var f = new Date(yy, r[1] - 1, 1, 12), nd = addDays(f, (r[2] - f.getDay() + 7) % 7 + (r[3] - 1) * 7); if (nd >= addDays(today(), -21)) return nd; }
+      return null;
+    }
     if (o.rule === 'hanukkah') {
       var y0 = today().getFullYear();
       for (var y = y0; y <= y0 + 1; y++) { if (!HANUKKAH[y]) continue; var hp = HANUKKAH[y].split('-'), hd = new Date(y, +hp[0] - 1, +hp[1], 12); if (hd >= addDays(today(), -21)) return hd; }
@@ -249,8 +262,8 @@
     if (focus && daysTo(focus.d) <= 60) h += planPanel(p, focus.o, focus.d);
     h += '<div class="gg-lbl">Dates</div>';
     h += occ.length ? occ.map(function (x) { return '<div class="gg-row"><span><b>' + esc(x.o.label) + '</b> <span class="gg-when">' + fmt(x.d) + (x.o.md || x.o.rule ? ' · every year' : '') + '</span></span><button class="gg-x" data-delocc="' + x.o.id + '" aria-label="Remove ' + esc(x.o.label) + '">&times;</button></div>'; }).join('') : '<p class="gg-sub">No dates yet.</p>';
-    h += '<details class="gg-add"><summary>+ Add a date</summary><div class="gg-chips" role="group" aria-label="Kind">' + ['Birthday', 'Anniversary', 'Holidays', 'Hanukkah', 'Other'].map(function (k) { return '<button class="gg-chip" data-occkind="' + k + '" aria-pressed="' + ((state.occKind || 'Birthday') === k) + '">' + k + '</button>'; }).join('') + '</div>' +
-      '<div class="gg-row2"><label class="gg-field">Name<input id="occ-label" value="' + esc(state.occKind === 'Other' ? '' : state.occKind || 'Birthday') + '"></label><label class="gg-field">Date<input type="date" id="occ-date" value="' + (state.occKind === 'Holidays' ? today().getFullYear() + '-12-25' : '') + '"' + (state.occKind === 'Hanukkah' ? ' disabled' : '') + '></label></div>' + (state.occKind === 'Hanukkah' ? '<p class="gg-cap">Hanukkah moves every year. Gift Gym knows the dates.</p>' : '') +
+    h += '<details class="gg-add"><summary>+ Add a date</summary><div class="gg-chips" role="group" aria-label="Kind">' + ['Birthday', 'Anniversary', 'Holidays', 'Hanukkah', 'Mother\u2019s Day', 'Father\u2019s Day', 'Other'].map(function (k) { return '<button class="gg-chip" data-occkind="' + k + '" aria-pressed="' + ((state.occKind || 'Birthday') === k) + '">' + k + '</button>'; }).join('') + '</div>' +
+      '<div class="gg-row2"><label class="gg-field">Name<input id="occ-label" value="' + esc(state.occKind === 'Other' ? '' : state.occKind || 'Birthday') + '"></label><label class="gg-field">Date<input type="date" id="occ-date" value="' + (state.occKind === 'Holidays' ? today().getFullYear() + '-12-25' : '') + '"' + (/Hanukkah|Mother|Father/.test(state.occKind || '') ? ' disabled' : '') + '></label></div>' + (/Hanukkah|Mother|Father/.test(state.occKind || '') ? '<p class="gg-cap">This one moves every year. Gift Gym knows the dates.</p>' : '') +
       '<label class="gg-check"><input type="checkbox" id="occ-yearly" checked> Every year</label><button class="gg-btn" data-act="occ-add">Add date</button></details>';
     h += '<div class="gg-lbl">Clues</div>';
     h += p.clues.length ? p.clues.slice().reverse().map(function (c) { return '<div class="gg-clueitem"><span class="d">' + short(fromIso(c.d)) + '</span><span class="tx">' + esc(c.text) + '</span><button class="gg-link" data-toidea="' + c.id + '">Make it an idea</button></div>'; }).join('') : '<p class="gg-sub">No clues yet. When they mention something they want, need or love, save it from the home screen.</p>';
@@ -266,6 +279,25 @@
     h += '<div class="gg-danger">' + (state.confirmDel ? '<span>Remove ' + esc(p.name) + ' and everything about them from this phone?</span><button class="gg-btn sm danger" data-act="del-person">Remove</button><button class="gg-btn sm ghost" data-act="del-cancel">Keep</button>' : '<button class="gg-link" data-act="del-ask">Remove ' + esc(p.name) + '</button>') + '</div>';
     return h;
   };
+  /* Brainstorm by occasion: a few starting points that fit the kind of day, each one tap to add as an idea. */
+  var OCC_IDEAS = [
+    [/wedding gift|^wedding$|registry|getting married/i, [['Their thing', 'Something from their registry'], ['Callback', 'Their invitation or vows, framed'], ['Together', 'A dinner out for the two of them, on you']]],
+    [/anniversary/i, [['Callback', 'A card that remembers their wedding day'], ['Together', 'A bottle to open together that night'], ['Treat', 'Breakfast delivered the morning of']]],
+    [/baby|twins|arrival|newborn/i, [['Fix', 'Meals delivered for the first weeks'], ['Treat', 'Something just for the parents, not the baby'], ['Callback', 'A board book with a note inside the cover']]],
+    [/1st birthday|first birthday/i, [['Callback', 'A photo book of the first year'], ['Their thing', 'A wooden toy that lasts'], ['Fix', 'Something the parents need: a sitter night']]],
+    [/80th|70th|60th|50th|milestone/i, [['Callback', 'Letters from friends, collected in one book'], ['Callback', 'Photos from each decade, framed together'], ['Together', 'Be there: a toast or a dinner']]],
+    [/retire/i, [['Their thing', 'A starter kit for the hobby they\u2019ll finally have time for'], ['Together', 'A first-week-of-retirement lunch'], ['Treat', 'Something for slow mornings: great coffee or a robe']]],
+    [/closing|move|moving|housewarming|new home|new place/i, [['Fix', 'Lunch delivered on moving day'], ['Fix', 'Your time: help pack, sell or unpack'], ['Callback', 'A photo or print of the old house']]],
+    [/hanukkah/i, [['Treat', 'Eight small gifts, one a night'], ['Their thing', 'Beautiful candles for the menorah'], ['Together', 'Latkes night together']]],
+    [/mother|father/i, [['Callback', 'A handwritten card with one specific memory'], ['Together', 'A call or visit you plan, not them'], ['Callback', 'A framed photo of the two of you']]],
+    [/year-end|thank|team/i, [['Treat', 'Something they\u2019ll use up: great coffee, chocolate or olive oil'], ['Fix', 'A local gift card for a night off'], ['Callback', 'A handwritten note naming what they did']]],
+    [/holiday|christmas/i, [['Treat', 'A consumable treat: chocolate, coffee or a candle'], ['Callback', 'An ornament that marks this year'], ['Upgrade', 'A nicer version of something they use daily']]],
+    [/birthday/i, [['Their thing', 'Feed what they\u2019re into right now'], ['Treat', 'The nice version they\u2019d never buy'], ['Together', 'Plan something you do together']]]
+  ];
+  function occIdeas(o, p) {
+    for (var i = 0; i < OCC_IDEAS.length; i++) if (OCC_IDEAS[i][0].test(o.label)) return OCC_IDEAS[i][1].filter(function (x) { return !p.ideas.some(function (y) { return y.text === x[1]; }); });
+    return [];
+  }
   function planPanel(p, o, d) {
     var st = stepsFor(p, o, d), pl = st.plan, key = planKey(o, d), past = d < today();
     var h = '<div class="gg-plan"><span class="gg-lbl" style="margin:0">' + esc(o.label) + ' · ' + fmt(d) + (past ? ' · just passed' : ' · ' + st.n + ' day' + (st.n === 1 ? '' : 's')) + '</span>';
@@ -277,7 +309,10 @@
       var box = s.k === 'buy' || s.k === 'card' ? '<button class="gg-tick" data-act="plan-tick" data-key="' + key + '" data-step="' + s.k + '" aria-pressed="' + s.done + '" aria-label="' + esc(s.label) + ' done">' + (s.done ? '✓' : '') + '</button>' : '<span class="gg-tick static' + (s.done ? ' on' : '') + '">' + (s.done ? '✓' : '') + '</span>';
       return '<li class="' + (s.done ? 'done' : '') + '">' + box + '<span>' + body + '</span></li>';
     }).join('') + '</ol>';
-    if (!pl.gift && p.clues.length) h += '<p class="gg-cap">Start from the clues below, then run them through the six angles.</p>';
+    var oi = pl.gift ? [] : occIdeas(o, p);
+    if (oi.length) h += '<div class="gg-occideas"><span class="gg-lbl" style="margin:0">Ideas for ' + (/^the |^\w+\u2019s /i.test(o.label) ? '' : 'a ') + esc(o.label.toLowerCase()) + '</span>' + oi.map(function (x) {
+      return '<button class="gg-occidea" data-addidea="' + esc(x[1]) + '" data-lens="' + esc(x[0]) + '"><span class="gg-pill n">' + esc(x[0]) + '</span> ' + esc(x[1]) + ' <b>+</b></button>'; }).join('') + '</div>';
+    if (!pl.gift && p.clues.length) h += '<p class="gg-cap">Start from their clues below, then run them through the six angles.</p>';
     return h + '</div>';
   }
 
@@ -330,7 +365,8 @@
     var P = state.person && byId(state.person);
     if (t.dataset.occkind) { state.occKind = t.dataset.occkind; render(); var dd = document.querySelector('.gg-add'); if (dd) dd.open = true; return; }
     if (a === 'occ-add' && P) {
-      if (state.occKind === 'Hanukkah') { P.occ.push({ id: uid(), label: 'Hanukkah', rule: 'hanukkah' }); persist(); state.occKind = null; render(); return; }
+      var RULES = { 'Hanukkah': 'hanukkah', 'Mother\u2019s Day': 'nth:5:0:2', 'Father\u2019s Day': 'nth:6:0:3' };
+      if (RULES[state.occKind]) { P.occ.push({ id: uid(), label: state.occKind, rule: RULES[state.occKind] }); persist(); state.occKind = null; render(); return; }
       var lb = val('occ-label') || state.occKind || 'Birthday', dt = val('occ-date'); if (!dt) return;
       var yearly = document.getElementById('occ-yearly').checked;
       P.occ.push(yearly ? { id: uid(), label: lb, md: dt.slice(5) } : { id: uid(), label: lb, date: dt }); persist(); state.occKind = null; render(); return;
@@ -339,6 +375,7 @@
     if (t.dataset.idealens) { state.ideaDraft = val('idea-text'); state.ideaLens = state.ideaLens === t.dataset.idealens ? null : t.dataset.idealens; render(); var it = document.getElementById('idea-text'); if (it) it.focus(); return; }
     if (a === 'idea-add' && P) { var itx = val('idea-text'); if (!itx) return; P.ideas.push({ id: uid(), text: itx, lens: state.ideaLens || '' }); persist(); state.ideaDraft = ''; state.ideaLens = null; render(); return; }
     if (t.dataset.toidea && P) { var c = P.clues.filter(function (x) { return x.id === t.dataset.toidea; })[0]; state.ideaDraft = ''; render(); var el = document.getElementById('idea-text'); if (el) { el.placeholder = 'Idea from “' + c.text.slice(0, 40) + '”'; el.focus(); el.scrollIntoView({ block: 'center' }); } return; }
+    if (t.dataset.addidea && P) { P.ideas.push({ id: uid(), text: t.dataset.addidea, lens: t.dataset.lens || '' }); persist(); render(); return; }
     if (t.dataset.delidea && P) { P.ideas = P.ideas.filter(function (i) { return i.id !== t.dataset.delidea; }); persist(); render(); return; }
     if (a === 'plan-pick' && P) { var gtx = val('plan-gift'); if (!gtx) return; P.plans = P.plans || {}; P.plans[t.dataset.key] = Object.assign(P.plans[t.dataset.key] || {}, { gift: gtx }); persist(); render(); return; }
     if (a === 'plan-clear' && P) { P.plans[t.dataset.key].gift = ''; persist(); render(); return; }
@@ -376,4 +413,5 @@
   };
 
   render();
+  if (setupDone) setupDone.then(function () { render(); });
 })();
