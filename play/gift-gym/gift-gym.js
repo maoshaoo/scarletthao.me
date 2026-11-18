@@ -25,9 +25,9 @@
       JSON.parse(json).forEach(function (p) {
         var have = people.filter(function (x) { return x.name.toLowerCase() === String(p.name).toLowerCase(); })[0];
         if (!have) { have = { id: uid(), name: p.name, occ: [], clues: [], ideas: [], gifts: [], plans: {} }; people.push(have); }
-        (p.occ || []).forEach(function (o) { if (!have.occ.some(function (x) { return x.label === o.label; })) have.occ.push({ id: uid(), label: o.label, md: o.md || '', date: o.date || '' }); });
+        (p.occ || []).forEach(function (o) { if (!have.occ.some(function (x) { return x.label === o.label; })) have.occ.push({ id: uid(), label: o.label, md: o.md || '', date: o.date || '', rule: o.rule || '' }); });
         (p.clues || []).forEach(function (c) { if (!have.clues.some(function (x) { return x.text === c; })) have.clues.push({ id: uid(), d: iso(today()), text: c }); });
-        (p.ideas || []).forEach(function (i) { if (!have.ideas.some(function (x) { return x.text === i.text; })) have.ideas.push({ id: uid(), text: i.text, lens: i.lens || '' }); });
+        (p.ideas || []).forEach(function (i) { if (!have.ideas.some(function (x) { return x.text === i.text; })) have.ideas.push({ id: uid(), text: i.text, lens: i.lens || '', url: /^https:\/\//.test(i.url || '') ? i.url : '', price: i.price || '' }); });
         (p.gifts || []).forEach(function (g) { if (!have.gifts.some(function (x) { return x.text === g.text; })) have.gifts.push({ id: uid(), d: g.d || '', occ: g.occ || 'Gift', text: g.text, stars: g.stars || 0, note: g.note || '' }); });
       });
       save('people', people);
@@ -44,8 +44,15 @@
   function short(d) { return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
   function daysTo(d) { return Math.round((d - today()) / DAY); }
   /* The next time an occasion comes around: yearly ones (md "MM-DD") roll over; one-offs keep their date. */
+  /* Hanukkah moves with the Hebrew calendar: first candle, evening of (hebcal.com). */
+  var HANUKKAH = { 2026: '12-04', 2027: '12-24', 2028: '12-12', 2029: '12-01', 2030: '12-20', 2031: '12-09', 2032: '11-27' };
   function nextOf(o) {
     if (o.date) return fromIso(o.date);
+    if (o.rule === 'hanukkah') {
+      var y0 = today().getFullYear();
+      for (var y = y0; y <= y0 + 1; y++) { if (!HANUKKAH[y]) continue; var hp = HANUKKAH[y].split('-'), hd = new Date(y, +hp[0] - 1, +hp[1], 12); if (hd >= addDays(today(), -21)) return hd; }
+      return null;
+    }
     if (!o.md) return null;
     var t = today(), p = o.md.split('-'), d = new Date(t.getFullYear(), +p[0] - 1, +p[1], 12);
     if (d < addDays(t, -21)) d = new Date(t.getFullYear() + 1, +p[0] - 1, +p[1], 12); // stays "just passed" for 3 weeks, for the debrief
@@ -241,14 +248,14 @@
     var focus = occ.filter(function (x) { return state.occ ? x.o.id === state.occ : x.d >= addDays(today(), -21); })[0];
     if (focus && daysTo(focus.d) <= 60) h += planPanel(p, focus.o, focus.d);
     h += '<div class="gg-lbl">Dates</div>';
-    h += occ.length ? occ.map(function (x) { return '<div class="gg-row"><span><b>' + esc(x.o.label) + '</b> <span class="gg-when">' + fmt(x.d) + (x.o.md ? ' · every year' : '') + '</span></span><button class="gg-x" data-delocc="' + x.o.id + '" aria-label="Remove ' + esc(x.o.label) + '">&times;</button></div>'; }).join('') : '<p class="gg-sub">No dates yet.</p>';
-    h += '<details class="gg-add"><summary>+ Add a date</summary><div class="gg-chips" role="group" aria-label="Kind">' + ['Birthday', 'Anniversary', 'Holidays', 'Other'].map(function (k) { return '<button class="gg-chip" data-occkind="' + k + '" aria-pressed="' + ((state.occKind || 'Birthday') === k) + '">' + k + '</button>'; }).join('') + '</div>' +
-      '<div class="gg-row2"><label class="gg-field">Name<input id="occ-label" value="' + esc(state.occKind === 'Other' ? '' : state.occKind || 'Birthday') + '"></label><label class="gg-field">Date<input type="date" id="occ-date" value="' + (state.occKind === 'Holidays' ? today().getFullYear() + '-12-25' : '') + '"></label></div>' +
+    h += occ.length ? occ.map(function (x) { return '<div class="gg-row"><span><b>' + esc(x.o.label) + '</b> <span class="gg-when">' + fmt(x.d) + (x.o.md || x.o.rule ? ' · every year' : '') + '</span></span><button class="gg-x" data-delocc="' + x.o.id + '" aria-label="Remove ' + esc(x.o.label) + '">&times;</button></div>'; }).join('') : '<p class="gg-sub">No dates yet.</p>';
+    h += '<details class="gg-add"><summary>+ Add a date</summary><div class="gg-chips" role="group" aria-label="Kind">' + ['Birthday', 'Anniversary', 'Holidays', 'Hanukkah', 'Other'].map(function (k) { return '<button class="gg-chip" data-occkind="' + k + '" aria-pressed="' + ((state.occKind || 'Birthday') === k) + '">' + k + '</button>'; }).join('') + '</div>' +
+      '<div class="gg-row2"><label class="gg-field">Name<input id="occ-label" value="' + esc(state.occKind === 'Other' ? '' : state.occKind || 'Birthday') + '"></label><label class="gg-field">Date<input type="date" id="occ-date" value="' + (state.occKind === 'Holidays' ? today().getFullYear() + '-12-25' : '') + '"' + (state.occKind === 'Hanukkah' ? ' disabled' : '') + '></label></div>' + (state.occKind === 'Hanukkah' ? '<p class="gg-cap">Hanukkah moves every year. Gift Gym knows the dates.</p>' : '') +
       '<label class="gg-check"><input type="checkbox" id="occ-yearly" checked> Every year</label><button class="gg-btn" data-act="occ-add">Add date</button></details>';
     h += '<div class="gg-lbl">Clues</div>';
     h += p.clues.length ? p.clues.slice().reverse().map(function (c) { return '<div class="gg-clueitem"><span class="d">' + short(fromIso(c.d)) + '</span><span class="tx">' + esc(c.text) + '</span><button class="gg-link" data-toidea="' + c.id + '">Make it an idea</button></div>'; }).join('') : '<p class="gg-sub">No clues yet. When they mention something they want, need or love, save it from the home screen.</p>';
     h += '<div class="gg-lbl">Ideas</div>';
-    h += p.ideas.length ? p.ideas.slice().reverse().map(function (i) { return '<div class="gg-row"><span>' + (i.lens ? '<span class="gg-pill n">' + esc(i.lens) + '</span> ' : '') + esc(i.text) + '</span><button class="gg-x" data-delidea="' + i.id + '" aria-label="Remove idea">&times;</button></div>'; }).join('') : '';
+    h += p.ideas.length ? p.ideas.slice().reverse().map(function (i) { return '<div class="gg-row"><span>' + (i.lens ? '<span class="gg-pill n">' + esc(i.lens) + '</span> ' : '') + esc(i.text) + (i.url ? ' <a class="gg-shop" href="' + esc(i.url) + '" target="_blank" rel="noopener">' + esc(i.price ? i.price + ' · Shop' : 'Shop') + ' &#8599;</a>' : '') + '</span><button class="gg-x" data-delidea="' + i.id + '" aria-label="Remove idea">&times;</button></div>'; }).join('') : '';
     h += '<div class="gg-addidea"><div class="gg-chips" role="group" aria-label="Angle">' + LENSES.map(function (l) { return '<button class="gg-chip" data-idealens="' + l[0] + '" aria-pressed="' + (state.ideaLens === l[0]) + '" title="' + esc(l[1]) + '">' + l[0] + '</button>'; }).join('') + '</div>' +
       '<div class="gg-inline"><input class="gg-in" id="idea-text" value="' + esc(state.ideaDraft || '') + '" placeholder="' + (state.ideaLens ? esc(LENSES.filter(function (l) { return l[0] === state.ideaLens; })[0][1]) + '…' : 'An idea for ' + esc(p.name)) + '"><button class="gg-btn sm" data-act="idea-add">Add</button></div></div>';
     h += '<div class="gg-lbl">Past gifts</div>';
@@ -323,6 +330,7 @@
     var P = state.person && byId(state.person);
     if (t.dataset.occkind) { state.occKind = t.dataset.occkind; render(); var dd = document.querySelector('.gg-add'); if (dd) dd.open = true; return; }
     if (a === 'occ-add' && P) {
+      if (state.occKind === 'Hanukkah') { P.occ.push({ id: uid(), label: 'Hanukkah', rule: 'hanukkah' }); persist(); state.occKind = null; render(); return; }
       var lb = val('occ-label') || state.occKind || 'Birthday', dt = val('occ-date'); if (!dt) return;
       var yearly = document.getElementById('occ-yearly').checked;
       P.occ.push(yearly ? { id: uid(), label: lb, md: dt.slice(5) } : { id: uid(), label: lb, date: dt }); persist(); state.occKind = null; render(); return;

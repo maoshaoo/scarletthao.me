@@ -110,3 +110,5 @@ button.gg-card:hover, .gg-pcard:hover { border-color: var(--muted); }
 .gg-grow b { font-weight: 500; }
 .gg-grow small { color: var(--muted); font-size: .76rem; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .gg-steps.sm i { height: 4px; }
+.gg-shop { font-size: .78rem; font-weight: 500; color: var(--scarlet); white-space: nowrap; text-decoration: none; }
+.gg-shop:hover { text-decoration: underline; }
