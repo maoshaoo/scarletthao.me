@@ -27,6 +27,8 @@
         if (!have) { have = { id: uid(), name: p.name, occ: [], clues: [], ideas: [], gifts: [], plans: {} }; people.push(have); }
         (p.occ || []).forEach(function (o) { if (!have.occ.some(function (x) { return x.label === o.label; })) have.occ.push({ id: uid(), label: o.label, md: o.md || '', date: o.date || '' }); });
         (p.clues || []).forEach(function (c) { if (!have.clues.some(function (x) { return x.text === c; })) have.clues.push({ id: uid(), d: iso(today()), text: c }); });
+        (p.ideas || []).forEach(function (i) { if (!have.ideas.some(function (x) { return x.text === i.text; })) have.ideas.push({ id: uid(), text: i.text, lens: i.lens || '' }); });
+        (p.gifts || []).forEach(function (g) { if (!have.gifts.some(function (x) { return x.text === g.text; })) have.gifts.push({ id: uid(), d: g.d || '', occ: g.occ || 'Gift', text: g.text, stars: g.stars || 0, note: g.note || '' }); });
       });
       save('people', people);
     } catch (e) {}
@@ -250,7 +252,7 @@
     h += '<div class="gg-addidea"><div class="gg-chips" role="group" aria-label="Angle">' + LENSES.map(function (l) { return '<button class="gg-chip" data-idealens="' + l[0] + '" aria-pressed="' + (state.ideaLens === l[0]) + '" title="' + esc(l[1]) + '">' + l[0] + '</button>'; }).join('') + '</div>' +
       '<div class="gg-inline"><input class="gg-in" id="idea-text" value="' + esc(state.ideaDraft || '') + '" placeholder="' + (state.ideaLens ? esc(LENSES.filter(function (l) { return l[0] === state.ideaLens; })[0][1]) + '…' : 'An idea for ' + esc(p.name)) + '"><button class="gg-btn sm" data-act="idea-add">Add</button></div></div>';
     h += '<div class="gg-lbl">Past gifts</div>';
-    h += p.gifts.length ? p.gifts.slice().reverse().map(function (g) { return '<div class="gg-card"><span class="t"><b>' + esc(g.text) + '</b><span class="gg-starshow" aria-label="' + g.stars + ' of 5">' + '★'.repeat(g.stars) + '☆'.repeat(5 - g.stars) + '</span></span><small>' + esc(g.occ) + ' · ' + short(fromIso(g.d)) + (g.note ? ' · “' + esc(g.note) + '”' : '') + '</small></div>'; }).join('') : '<p class="gg-sub">After an occasion, rate how the gift landed and it shows up here.</p>';
+    h += p.gifts.length ? p.gifts.slice().reverse().map(function (g) { return '<div class="gg-card"><span class="t"><b>' + esc(g.text) + '</b>' + (g.stars ? '<span class="gg-starshow" aria-label="' + g.stars + ' of 5">' + '★'.repeat(g.stars) + '☆'.repeat(5 - g.stars) + '</span>' : '<span class="gg-pill n">Not rated yet</span>') + '</span><small>' + esc(g.occ) + (g.d ? ' · ' + short(fromIso(g.d)) : '') + (g.note ? ' · “' + esc(g.note) + '”' : '') + '</small></div>'; }).join('') : '<p class="gg-sub">After an occasion, rate how the gift landed and it shows up here.</p>';
     h += '<details class="gg-add"><summary>+ Log a past gift</summary><div class="gg-row2"><label class="gg-field">What<input id="pg-text"></label><label class="gg-field">When<input type="date" id="pg-date"></label></div><label class="gg-field">Occasion<input id="pg-occ" placeholder="Birthday"></label>' +
       '<div class="gg-stars" role="group" aria-label="How it landed">' + [1, 2, 3, 4, 5].map(function (n) { return '<button data-pgstar="' + n + '" aria-pressed="' + ((state.pgStars || 0) >= n) + '" aria-label="' + n + '">' + ((state.pgStars || 0) >= n ? '★' : '☆') + '</button>'; }).join('') + '</div>' +
       '<label class="gg-field">What made it work, or not?<input id="pg-note"></label><button class="gg-btn" data-act="pg-add">Save</button></details>';
