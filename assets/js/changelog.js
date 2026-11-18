@@ -1,13 +1,13 @@
 /* Changelog: filter by tag (New, Fun, Functionality) or by project (the site, Standby Radar, Brain Power, Snacky Vespa).
    Click a filter, or a tag on any entry, to show only those entries. Click it again, or "Show all", to clear.
-   The filter is kept in the address (#new, #fun, #functionality, #standby-radar, #brain-power, #snacky-vespa, #site)
+   The filter is kept in the address (#new, #fun, #functionality, #standby-radar, #brain-power, #gift-gym, #snacky-vespa, #site)
    so a filtered view can be shared, and each Play project links to its own view. */
 (function () {
   'use strict';
   var NAMES = { new: 'New', fun: 'Fun', func: 'Functionality' };
   var HASH = { new: 'new', fun: 'fun', func: 'functionality' };
-  var PROJ = { site: 'the site', standby: 'Standby Radar', 'brain-power': 'Brain Power', 'snacky-vespa': 'Snacky Vespa' };
-  var PHASH = { site: 'site', standby: 'standby-radar', 'brain-power': 'brain-power', 'snacky-vespa': 'snacky-vespa' };
+  var PROJ = { site: 'the site', standby: 'Standby Radar', 'brain-power': 'Brain Power', 'gift-gym': 'Gift Gym', 'snacky-vespa': 'Snacky Vespa' };
+  var PHASH = { site: 'site', standby: 'standby-radar', 'brain-power': 'brain-power', 'gift-gym': 'gift-gym', 'snacky-vespa': 'snacky-vespa' };
   var entries = document.querySelectorAll('article.entry');
   var btns = document.querySelectorAll('.flt');
   var status = document.getElementById('flt-status');

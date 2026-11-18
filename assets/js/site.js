@@ -206,7 +206,7 @@
   var box = document.querySelector('.built[data-project]');
   if (!box || !window.fetch || !window.DOMParser) return;
   var proj = box.getAttribute('data-project'), dl = box.querySelector('dl');
-  var HASH = { standby: 'standby-radar', 'brain-power': 'brain-power', 'snacky-vespa': 'snacky-vespa' };
+  var HASH = { standby: 'standby-radar', 'brain-power': 'brain-power', 'gift-gym': 'gift-gym', 'snacky-vespa': 'snacky-vespa' };
   fetch('/changelog.html').then(function (r) { return r.ok ? r.text() : ''; }).then(function (html) {
     if (!html || !dl) return;
     var doc = new DOMParser().parseFromString(html, 'text/html'), items = [];

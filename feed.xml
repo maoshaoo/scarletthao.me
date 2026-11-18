@@ -6,7 +6,14 @@
     <atom:link href="https://www.scarletthao.me/feed.xml" rel="self" type="application/rss+xml"/>
     <description>What's shipped on scarletthao.me: new stories, features and small fun things, newest first.</description>
     <language>en-us</language>
-    <lastBuildDate>Sun, 15 Nov 2026 12:00:00 -0800</lastBuildDate>
+    <lastBuildDate>Wed, 18 Nov 2026 12:00:00 -0800</lastBuildDate>
+    <item>
+      <title>Gift Gym (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-18-gift-gym-new</guid>
+      <pubDate>Wed, 18 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>A new <a href="https://www.scarletthao.me/play/gift-gym/">Play</a> project for getting better at gifts: save the clues people drop, keep ideas and past gifts per person, and start every occasion three weeks out.</li><li>A daily two-minute warm-up: a made-up person, three ideas from six angles, then example answers to compare.</li><li>Everything you add stays on your phone.</li></ul>]]></description>
+    </item>
     <item>
       <title>How it’s built (New)</title>
       <link>https://www.scarletthao.me/changelog.html</link>
