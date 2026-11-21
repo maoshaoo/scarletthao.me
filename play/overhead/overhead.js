@@ -6,15 +6,10 @@
   var view = document.getElementById('ov-view');
   if (!view) return;
 
-  var POLL_MS = 10000;
+  var POLL_MS = 20000;
   var RANGES = [2, 5, 10];
   var RINGS = { 2: [1, 2], 5: [1, 3, 5], 10: [2, 5, 10] };
-  var FEEDS = [
-    { name: 'adsb.lol', url: function (la, lo, nm) { return 'https://api.adsb.lol/v2/point/' + la + '/' + lo + '/' + nm; } },
-    { name: 'airplanes.live', url: function (la, lo, nm) { return 'https://api.airplanes.live/v2/point/' + la + '/' + lo + '/' + nm; } },
-    { name: 'adsb.fi', url: function (la, lo, nm) { return 'https://opendata.adsb.fi/api/v2/lat/' + la + '/lon/' + lo + '/dist/' + nm; } }
-  ];
-  var ROUTES_URL = 'https://api.adsb.lol/api/0/routeset';
+  var FEED_URL = 'https://opensky-network.org/api/states/all';
   var GEO_URL = 'https://nominatim.openstreetmap.org/';
 
   var AIRLINES = {
@@ -29,8 +24,7 @@
     ETD: 'Etihad', SAS: 'SAS', FIN: 'Finnair', IBE: 'Iberia', LAN: 'LATAM', AVA: 'Avianca', CXA: 'Xiamen Air', SVA: 'Saudia', ABX: 'ABX Air',
     ASH: 'Mesa Airlines', PDT: 'Piedmont', JIA: 'PSA Airlines', CPZ: 'Compass Airlines', GJS: 'GoJet', EJA: 'NetJets', LXJ: 'Flexjet', XOJ: 'XO'
   };
-  var KEEP_UPPER = { MAX: 1, NG: 1, ER: 1, LR: 1, XLR: 1, CRJ: 1, ERJ: 1, RJ: 1, ATR: 1, LLC: 1, SR: 1, ULR: 1 };
-  var DIRS = ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest'];
+    var DIRS = ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest'];
   var DIRS_SHORT = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
   var PLANE_PATH = 'M12 2c.8 0 1.3.9 1.3 2v5l7.7 4.5v2l-7.7-2.3v4.6l2.4 1.8V21L12 20l-3.7 1v-1.4l2.4-1.8v-4.6L3 15.5v-2L10.7 9V4c0-1.1.5-2 1.3-2z';
 
@@ -44,7 +38,7 @@
     radius: RANGES.indexOf(load('ov.radius', 5)) >= 0 ? load('ov.radius', 5) : 5,
     places: load('ov.places', []),
     planes: [], updated: 0, feed: '', error: '', loaded: false,
-    routes: {}, detail: null, lastDetail: null,
+    detail: null, lastDetail: null,
     results: null, searchMsg: '', locating: false, locMsg: '', naming: false, returnKey: null
   };
   if (!Array.isArray(S.places)) S.places = [];
@@ -66,13 +60,6 @@
     return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
   }
   function dirIdx(b) { return Math.round(b / 45) % 8; }
-  function niceType(desc, code) {
-    if (!desc) return code || 'Unknown type';
-    return String(desc).split(/\s+/).map(function (w) {
-      if (/\d/.test(w) || KEEP_UPPER[w.toUpperCase()]) return w;
-      return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
-    }).join(' ');
-  }
   function operator(cs) {
     if (/^N\d/.test(cs)) return 'Private plane';
     var m = /^([A-Z]{3})\d/.exec(cs);
@@ -89,27 +76,32 @@
     return [vr > 0 ? 'Climbing' : 'Descending', num(Math.abs(vr)) + ' ft/min'];
   }
   function arrow(vr) { return vr == null || Math.abs(vr) < 300 ? '' : (vr > 0 ? ' ↑' : ' ↓'); }
-  function routeOf(p) { var r = S.routes[p.cs]; return r && r !== 'none' ? r : null; }
   function placeLabel(loc) { return loc ? loc.label || 'Your location' : ''; }
   function rangeText() { return 'within ' + S.radius + ' mi'; }
 
-  /* ---------- the flight feed ---------- */
+  /* ---------- the flight feed ----------
+     OpenSky Network's state vectors for a small box around you. Anonymous use is free with a daily allowance
+     per network (a box this size costs 1 credit per call), and it allows calls straight from a browser. */
+  var CATS = { 2: 'Light aircraft', 3: 'Small aircraft', 4: 'Airliner', 5: 'Large airliner', 6: 'Heavy jet', 7: 'High-performance jet', 8: 'Helicopter', 9: 'Glider', 10: 'Balloon', 12: 'Ultralight', 14: 'Drone' };
   function normalize(list) {
-    var out = [], me = S.loc;
-    (list || []).forEach(function (a) {
-      if (a == null || a.lat == null || a.lon == null) return;
-      if (a.alt_baro === 'ground' || a.ground) return;
-      var alt = typeof a.alt_baro === 'number' ? a.alt_baro : (typeof a.alt_geom === 'number' ? a.alt_geom : null);
-      if (alt == null || alt < 50) return;
-      var d = distMi(me.lat, me.lon, a.lat, a.lon);
+    var out = [], me = S.loc, now = Date.now() / 1000;
+    (list || []).forEach(function (s) {
+      if (!Array.isArray(s) || s[5] == null || s[6] == null || s[8]) return;
+      if (s[4] && now - s[4] > 60) return;
+      var altM = typeof s[7] === 'number' ? s[7] : (typeof s[13] === 'number' ? s[13] : null);
+      if (altM == null) return;
+      var alt = altM * 3.28084;
+      if (alt < 50) return;
+      var lat = s[6], lon = s[5], d = distMi(me.lat, me.lon, lat, lon);
       if (d > S.radius) return;
-      var cs = String(a.flight || '').trim() || String(a.r || '').trim() || String(a.hex || '').toUpperCase();
-      var vr = typeof a.baro_rate === 'number' ? a.baro_rate : (typeof a.geom_rate === 'number' ? a.geom_rate : null);
+      var hex = String(s[0] || '').toLowerCase();
+      var cs = String(s[1] || '').trim() || hex.toUpperCase();
+      var cat = s[17];
       out.push({
-        hex: String(a.hex || cs).toLowerCase(), cs: cs, reg: a.r || '', code: a.t || '', type: niceType(a.desc, a.t),
-        op: operator(cs), small: a.category === 'A1' || a.category === 'B1', heli: a.category === 'A7',
-        lat: a.lat, lon: a.lon, alt: alt, gs: typeof a.gs === 'number' ? a.gs : null, trk: typeof a.track === 'number' ? a.track : (typeof a.true_heading === 'number' ? a.true_heading : 0),
-        vr: vr, dist: d, brg: bearing(me.lat, me.lon, a.lat, a.lon),
+        hex: hex || cs, cs: cs, country: s[2] || '', type: CATS[cat] || 'Aircraft',
+        op: operator(cs), small: cat === 2 || cat === 3 || cat === 9 || cat === 12, heli: cat === 8,
+        lat: lat, lon: lon, alt: alt, gs: typeof s[9] === 'number' ? s[9] * 1.94384 : null, trk: typeof s[10] === 'number' ? s[10] : 0,
+        vr: typeof s[11] === 'number' ? s[11] * 196.85 : null, dist: d, brg: bearing(me.lat, me.lon, lat, lon),
         elev: Math.atan2(alt, Math.max(d * 5280, 1)) * 180 / Math.PI
       });
     });
@@ -119,71 +111,49 @@
 
   function get(url, opts, ms) {
     var ctl = 'AbortController' in window ? new AbortController() : null;
-    var t = ctl ? setTimeout(function () { ctl.abort(); }, ms || 8000) : 0;
+    var t = ctl ? setTimeout(function () { ctl.abort(); }, ms || 10000) : 0;
     var o = opts || {}; if (ctl) o.signal = ctl.signal;
     return fetch(url, o).then(function (r) {
       clearTimeout(t);
-      if (!r.ok) throw new Error('HTTP ' + r.status);
+      if (!r.ok) { var e = new Error('HTTP ' + r.status); e.status = r.status; throw e; }
       return r.json();
     }, function (e) { clearTimeout(t); throw e; });
   }
 
-  var pollTimer = 0, polling = false, feedIdx = 0, gen = 0;
+  var pollTimer = 0, polling = false, gen = 0;
   function schedule(ms) { clearTimeout(pollTimer); pollTimer = setTimeout(poll, ms == null ? POLL_MS : ms); }
 
   /* A new place or range starts a fresh poll; answers to an older one are dropped. */
   function restart() { gen++; polling = false; clearTimeout(pollTimer); poll(); }
 
+  function box() {
+    var pad = S.radius + 0.5, dLat = pad / 69, dLon = pad / (69 * Math.max(Math.cos(rad(S.loc.lat)), 0.1));
+    var f = function (n) { return n.toFixed(3); };
+    return 'lamin=' + f(S.loc.lat - dLat) + '&lomin=' + f(S.loc.lon - dLon) + '&lamax=' + f(S.loc.lat + dLat) + '&lomax=' + f(S.loc.lon + dLon);
+  }
+
   function poll() {
     if (!S.loc || polling) return;
     if (document.hidden) { schedule(); return; }
     polling = true;
-    var la = S.loc.lat.toFixed(3), lo = S.loc.lon.toFixed(3);
-    var nm = Math.ceil(S.radius * 0.869 * 10) / 10 + 0.2;
-    var order = FEEDS.slice(feedIdx).concat(FEEDS.slice(0, feedIdx));
-    var i = 0, mine = gen;
-    (function next() {
+    var mine = gen;
+    get(FEED_URL + '?extended=1&' + box()).then(function (data) {
       if (mine !== gen) return;
-      if (i >= order.length) {
-        polling = false;
-        S.error = 'Couldn’t reach the flight feed. Trying again in 10 seconds.';
-        S.loaded = true; update(); schedule(); return;
+      if (!data || typeof data !== 'object' || !('states' in data)) throw new Error('bad shape');
+      polling = false;
+      S.planes = normalize(data.states || []); S.updated = Date.now(); S.feed = 'OpenSky Network'; S.error = ''; S.loaded = true;
+      update(); schedule();
+    }).catch(function (e) {
+      if (mine !== gen) return;
+      polling = false; S.loaded = true;
+      if (e && e.status === 429) {
+        S.error = 'The free flight feed’s daily allowance is used up on this network. It resets overnight (UTC). Checking again in 10 minutes.';
+        update(); schedule(600000);
+      } else {
+        S.error = 'Couldn’t reach the flight feed. Trying again in 30 seconds.';
+        update(); schedule(30000);
       }
-      var f = order[i++];
-      get(f.url(la, lo, nm.toFixed(1))).then(function (data) {
-        if (mine !== gen) return;
-        if (!data || typeof data !== 'object' || !('ac' in data || 'aircraft' in data)) throw new Error('bad shape');
-        var list = data.ac || data.aircraft || [];
-        if (!Array.isArray(list)) throw new Error('bad shape');
-        polling = false;
-        feedIdx = FEEDS.indexOf(f);
-        S.planes = normalize(list); S.updated = Date.now(); S.feed = f.name; S.error = ''; S.loaded = true;
-        update(); lookupRoutes(); schedule();
-      }).catch(next);
-    })();
-  }
-
-  var routeBusy = false;
-  function lookupRoutes() {
-    if (routeBusy) return;
-    var want = S.planes.filter(function (p) { return /^[A-Z]{3}\d/.test(p.cs) && !(p.cs in S.routes); }).slice(0, 20);
-    if (!want.length) return;
-    routeBusy = true;
-    want.forEach(function (p) { S.routes[p.cs] = 'none'; });
-    get(ROUTES_URL, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ planes: want.map(function (p) { return { callsign: p.cs, lat: +p.lat.toFixed(2), lng: +p.lon.toFixed(2) }; }) })
-    }, 10000).then(function (res) {
-      (Array.isArray(res) ? res : []).forEach(function (r) {
-        if (!r || !r.callsign || r.plausible === false) return;
-        var codes = String(r._airport_codes_iata || r.airport_codes || '').split('-').filter(Boolean);
-        if (codes.length < 2 || codes[0] === 'unknown') return;
-        var ap = Array.isArray(r._airports) ? r._airports : [];
-        var first = ap[0] || {}, last = ap[ap.length - 1] || {};
-        S.routes[String(r.callsign).trim()] = { from: codes[0], to: codes[codes.length - 1], fromCity: first.location || '', toCity: last.location || '' };
-      });
-      routeBusy = false; update();
-    }).catch(function () { routeBusy = false; });
+    });
   }
 
   /* ---------- location ---------- */
@@ -299,10 +269,9 @@
     var p = S.planes[0];
     if (!S.loaded) return '<p class="ov-empty">Checking the sky…</p>';
     if (!p) return '<p class="ov-empty">No planes ' + rangeText() + ' right now.<br>Try a wider range, or check back in a minute.</p>';
-    var r = routeOf(p);
     return '<button type="button" class="ov-card" data-act="plane" data-hex="' + esc(p.hex) + '" data-focus="card">' +
       '<span class="row"><span class="k">Closest to you</span><span class="sub">' + p.dist.toFixed(1) + ' mi ' + DIRS_SHORT[dirIdx(p.brg)] + '</span></span>' +
-      '<span class="row"><span class="cs">' + esc(p.cs) + '</span>' + (r ? '<span class="rt">' + esc(r.from) + ' → ' + esc(r.to) + '</span>' : '') + '</span>' +
+      '<span class="row"><span class="cs">' + esc(p.cs) + '</span></span>' +
       '<span class="meta">' + (p.op ? '<span>' + esc(p.op) + '</span>' : '') + '<span>' + esc(p.type) + '</span><span>' + num(p.alt) + ' ft' + arrow(p.vr) + '</span>' + (p.gs != null ? '<span>' + Math.round(p.gs) + ' kt</span>' : '') + '</span>' +
       '<span class="look">' + icon.eye + esc(lookPhrase(p)) + '</span></button>';
   }
@@ -311,11 +280,10 @@
     if (!S.loaded) return '<p class="ov-empty">Checking the sky…</p>';
     if (!S.planes.length) return '<p class="ov-empty">No planes ' + rangeText() + ' right now.<br>Try a wider range, or check back in a minute.</p>';
     return '<p class="ov-lbl">Nearest first</p><ul class="ov-list">' + S.planes.map(function (p, i) {
-      var r = routeOf(p);
       return '<li><button type="button" class="ov-row' + (i === 0 ? ' hi' : '') + '" data-act="plane" data-hex="' + esc(p.hex) + '" data-focus="row-' + esc(p.hex) + '">' +
-        '<span class="cs">' + esc(p.cs) + '</span><span class="rt">' + (r ? esc(r.from) + ' → ' + esc(r.to) : '') + '</span>' +
+        '<span class="cs">' + esc(p.cs) + '</span><span class="rt">' + p.dist.toFixed(1) + ' mi ' + DIRS_SHORT[dirIdx(p.brg)] + '</span>' +
         '<span class="ty">' + esc(p.op ? p.op + ' · ' + p.type : p.type) + '</span>' +
-        '<span class="ad">' + num(p.alt) + ' ft' + arrow(p.vr) + ' · ' + p.dist.toFixed(1) + ' mi ' + DIRS_SHORT[dirIdx(p.brg)] + '</span></button></li>';
+        '<span class="ad">' + num(p.alt) + ' ft' + arrow(p.vr) + '</span></button></li>';
     }).join('') + '</ul>';
   }
 
@@ -329,7 +297,7 @@
     return '<div class="ov-top"><button type="button" class="ov-where" data-act="where" data-focus="where" aria-label="Change location: ' + esc(placeLabel(S.loc)) + ', ' + rangeText() + '">' +
       icon.pin + '<span><b>' + esc(placeLabel(S.loc)) + '</b> · ' + rangeText() + '</span>' + icon.chev + '</button><span id="ov-chip">' + liveChip() + '</span></div>' +
       (S.error ? '<p class="ov-err">' + esc(S.error) + '</p>' : '') + tabs + body +
-      (S.loaded && S.feed ? '<p class="ov-cap">Positions from ' + esc(S.feed) + ', every 10 seconds.</p>' : '');
+      (S.loaded && S.feed ? '<p class="ov-cap">Positions from ' + esc(S.feed) + ', every 20 seconds.</p>' : '');
   }
 
   function detailHtml() {
@@ -339,23 +307,19 @@
     if (p) S.lastDetail = p; else p = S.lastDetail;
     var back = '<button type="button" class="ov-back" data-act="home" data-focus="back">' + icon.back + 'Back</button>';
     if (!p) return back + '<p class="ov-empty">That plane is out of range now.</p>';
-    var r = routeOf(p), ix = dirIdx(p.brg);
-    var route = r ? '<div class="ov-card ov-route"><div><b>' + esc(r.from) + '</b><small>' + esc(r.fromCity) + '</small></div>' +
-      '<svg width="34" height="18" viewBox="0 0 40 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="color: var(--muted)"><path d="M2 10h34M30 4l6 6-6 6"/></svg>' +
-      '<div class="to"><b>' + esc(r.to) + '</b><small>' + esc(r.toCity) + '</small></div></div>' : '';
+    var ix = dirIdx(p.brg);
     var compass = '<svg class="ov-compass" viewBox="0 0 92 92" role="img" aria-label="Compass pointing ' + DIRS[ix] + '"><circle class="face" cx="46" cy="46" r="44"/><text class="n" x="43" y="14">N</text>' +
       '<line class="needle" x1="46" y1="46" x2="46" y2="16" transform="rotate(' + Math.round(p.brg) + ' 46 46)"/><circle class="hub" cx="46" cy="46" r="5"/></svg>';
     var stats = [
       ['Altitude', num(p.alt) + ' ft'], vertStat(p.vr),
       ['Speed', p.gs != null ? Math.round(p.gs) + ' kt' : '—'], ['Heading', Math.round(p.trk) + '°'],
-      ['Distance', p.dist.toFixed(1) + ' mi ' + DIRS_SHORT[ix]], ['Registration', p.reg || '—']
+      ['Distance', p.dist.toFixed(1) + ' mi ' + DIRS_SHORT[ix]], ['Registered in', p.country || '—']
     ].map(function (s) { return '<div><dt>' + s[0] + '</dt><dd>' + esc(s[1]) + '</dd></div>'; }).join('');
     return back +
-      '<div><h2 class="ov-h ov-mono" tabindex="-1" id="ov-vh">' + esc(p.cs) + '</h2><p class="ov-intro">' + esc([p.op, p.type].filter(Boolean).join(' · ')) + (p.code && p.type !== p.code ? ' <span class="ov-mono" style="color: var(--muted)">' + esc(p.code) + '</span>' : '') + '</p></div>' +
-      (gone ? '<p class="ov-err">Out of range now. Showing where it was last seen.</p>' : '') + route +
+      '<div><h2 class="ov-h ov-mono" tabindex="-1" id="ov-vh">' + esc(p.cs) + '</h2><p class="ov-intro">' + esc([p.op, p.type].filter(Boolean).join(' · ')) + '</p></div>' +
+      (gone ? '<p class="ov-err">Out of range now. Showing where it was last seen.</p>' : '') +
       '<div class="ov-card ov-lookcard">' + compass + '<div><p class="ov-lbl">Where to look</p><b>' + esc(lookPhrase(p)) + '</b><p>' + (p.elev >= 75 || p.elev < 8 ? 'Face ' + DIRS[ix] + '.' : 'Face ' + DIRS[ix] + ', then tilt your head up about ' + (p.elev < 27 ? 'a quarter' : p.elev < 40 ? 'a third' : p.elev < 58 ? 'half' : 'two thirds') + ' of the way from the horizon to straight overhead.') + '</p></div></div>' +
-      '<dl class="ov-stats">' + stats + '</dl>' +
-      (r ? '' : '<p class="ov-cap">No route on file for this callsign.</p>');
+      '<dl class="ov-stats">' + stats + '</dl>';
   }
 
   function whereHtml(first) {
@@ -384,7 +348,7 @@
       (S.searchMsg ? '<p class="ov-cap" role="status">' + esc(S.searchMsg) + '</p>' : '') + results +
       '<div class="ov-sec"><p class="ov-lbl">Saved places</p>' + places + saveUi + '</div>' +
       '<div class="ov-sec"><p class="ov-lbl">Show planes within</p>' + radius + '</div>' +
-      '<p class="ov-cap">Your location and saved places stay in this browser. Only rounded coordinates are sent to the flight feed.</p>';
+      '<p class="ov-cap">Your location and saved places stay in this browser. Only a box around your rough position is sent to the flight feed.</p>';
   }
 
   /* ---------- render ---------- */
@@ -418,7 +382,7 @@
     if (S.tab === 'radar') { syncBlips(); var c = document.getElementById('ov-card'); if (c) c.innerHTML = closestCard(); }
     else { var l = document.getElementById('ov-list'); if (l) l.innerHTML = listHtml(); }
     var cap = view.querySelector('.ov-cap');
-    if (cap && S.feed) cap.textContent = 'Positions from ' + S.feed + ', every 10 seconds.';
+    if (cap && S.feed) cap.textContent = 'Positions from ' + S.feed + ', every 20 seconds.';
     else if (!cap && S.feed) render();
     restore(key);
   }
@@ -486,7 +450,7 @@
   });
 
   document.addEventListener('visibilitychange', function () {
-    if (!document.hidden && S.loc && Date.now() - S.updated > 8000) poll();
+    if (!document.hidden && S.loc && Date.now() - S.updated > POLL_MS) poll();
   });
   setInterval(function () { var c = document.getElementById('ov-chip'); if (c && S.view === 'home') c.innerHTML = liveChip(); }, 5000);
 

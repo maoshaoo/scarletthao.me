@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
 <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);var m=/[?&]me(=off)?(&|$)/.exec(location.search);if(m){if(m[1])localStorage.removeItem("umami.disabled");else localStorage.setItem("umami.disabled","1")}}catch(e){}</script>
 <link rel="stylesheet" href="/assets/css/base.css?v=12">
-<link rel="stylesheet" href="overhead.css?v=1">
+<link rel="stylesheet" href="overhead.css?v=2">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
@@ -54,10 +54,11 @@
     <summary><span class="bl">How it&rsquo;s built</span><span class="bs">One web page, a free community flight feed, and a bit of trigonometry.</span></summary>
     <dl>
       <div><dt>The idea</dt><dd>I hear a plane, look up, and wonder where it&rsquo;s going. This answers that, and tells you which way to face and how high to look so you can actually spot it.</dd></div>
-      <div><dt>The data</dt><dd>Planes broadcast their position, altitude and speed over ADS-B. Volunteers with antennas share what they hear with <a href="https://adsb.lol" target="_blank" rel="noopener">adsb.lol</a>, which this checks every 10 seconds. <a href="https://airplanes.live" target="_blank" rel="noopener">airplanes.live</a> and <a href="https://adsb.fi" target="_blank" rel="noopener">adsb.fi</a> are backups.</dd></div>
-      <div><dt>Routes</dt><dd>A plane only broadcasts its callsign, not where it&rsquo;s going. Origin and destination come from a separate route lookup and can be missing or out of date.</dd></div>
+      <div><dt>The data</dt><dd>Planes broadcast their position, altitude and speed over ADS-B. Volunteers with antennas share what they hear with the <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network</a>, a nonprofit research network, which this checks every 20 seconds.</dd></div>
+      <div><dt>What&rsquo;s missing</dt><dd>A plane broadcasts its callsign, not where it&rsquo;s going, so there are no routes. The airline comes from the callsign, and the kind of plane from what it reports about its size.</dd></div>
+      <div><dt>Limits</dt><dd>OpenSky&rsquo;s free access has a daily allowance for each network, about two hours of watching. When it runs out, the page says so and checks back later.</dd></div>
       <div><dt>Where to look</dt><dd>The direction is the compass bearing from you to the plane. The angle up is its altitude against its distance along the ground.</dd></div>
-      <div><dt>Your data</dt><dd>Your location and saved places stay in this browser. Only rounded coordinates go to the flight feed. A typed address goes to <a href="https://nominatim.openstreetmap.org" target="_blank" rel="noopener">OpenStreetMap</a> to find it on the map.</dd></div>
+      <div><dt>Your data</dt><dd>Your location and saved places stay in this browser. Only a box around your rough position goes to the flight feed. A typed address goes to <a href="https://nominatim.openstreetmap.org" target="_blank" rel="noopener">OpenStreetMap</a> to find it on the map.</dd></div>
       <div><dt>Made with</dt><dd><a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a>. <a href="https://github.com/maoshaoo/scarletthao.me/tree/main/play/overhead" target="_blank" rel="noopener">Source on GitHub</a>.</dd></div>
     </dl>
   </details>
@@ -71,7 +72,7 @@
     <p class="fb-note">Words are mine. Built with <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a> (10M+ tokens so far), hosted on <a href="https://github.com/maoshaoo/scarletthao.me" target="_blank" rel="noopener">GitHub</a>, tracked in <a href="https://linear.app" target="_blank" rel="noopener">Linear</a>, and counted (no cookies) by <a href="https://umami.is" target="_blank" rel="noopener">Umami</a>.</p>
   </div>
 </footer>
-<script src="overhead.js?v=1" defer></script>
+<script src="overhead.js?v=2" defer></script>
 <script src="/assets/js/site.js?v=8" defer></script>
 <script src="/assets/js/holidays.js?v=5" defer></script>
 </body>
