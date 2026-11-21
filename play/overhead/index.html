@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scarlett Hao.</title>
+<meta name="description" content="Overhead: see the planes flying above you right now, and where in the sky to look for each one.">
+<meta property="og:title" content="Overhead">
+<meta property="og:description" content="See the planes flying above you right now, and where in the sky to look.">
+<meta property="og:url" content="https://www.scarletthao.me/play/overhead/">
+<meta property="og:image" content="https://www.scarletthao.me/assets/images/og-image.png?v=2">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://www.scarletthao.me/play/overhead/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500&family=Hanken+Grotesk:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
+<script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);var m=/[?&]me(=off)?(&|$)/.exec(location.search);if(m){if(m[1])localStorage.removeItem("umami.disabled");else localStorage.setItem("umami.disabled","1")}}catch(e){}</script>
+<link rel="stylesheet" href="/assets/css/base.css?v=12">
+<link rel="stylesheet" href="overhead.css?v=1">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="b8b771e2-e860-4c8b-abf7-f1401ec97996"></script>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Overhead">
+<link rel="alternate" type="application/rss+xml" title="Scarlett Hao. · What’s new" href="/feed.xml">
+</head>
+<body class="ov-body">
+<a class="skip" href="#app">Skip to content</a>
+<header class="site-hdr" style="--hdr-w: 44rem">
+  <div class="wrap">
+    <div class="who-hdr">
+      <a class="mark" href="/">Scarlett Hao<span>.</span></a>
+      <div class="sf-time"><span class="dot" aria-hidden="true"></span><span id="sf-time">San Francisco</span></div>
+    </div>
+    <nav aria-label="Main">
+      <a href="/#experience"><span class="nav-long">Experience</span><span class="nav-short">Work</span></a>
+      <a href="/#about">About</a>
+      <a href="/play/" data-umami-event="click-nav-play" aria-current="page">Play</a>
+      <a href="/#contact">Contact</a>
+      <span class="theme-slot"></span>
+    </nav>
+  </div>
+</header>
+
+<main class="ov-app" id="app">
+  <h1 class="ov-title">Overhead</h1>
+  <div id="ov-view"></div>
+  <noscript><p>Overhead needs JavaScript.</p></noscript>
+</main>
+
+<section class="built" data-project="overhead" style="--built-w: 28rem" aria-label="How it&rsquo;s built">
+  <details>
+    <summary><span class="bl">How it&rsquo;s built</span><span class="bs">One web page, a free community flight feed, and a bit of trigonometry.</span></summary>
+    <dl>
+      <div><dt>The idea</dt><dd>I hear a plane, look up, and wonder where it&rsquo;s going. This answers that, and tells you which way to face and how high to look so you can actually spot it.</dd></div>
+      <div><dt>The data</dt><dd>Planes broadcast their position, altitude and speed over ADS-B. Volunteers with antennas share what they hear with <a href="https://adsb.lol" target="_blank" rel="noopener">adsb.lol</a>, which this checks every 10 seconds. <a href="https://airplanes.live" target="_blank" rel="noopener">airplanes.live</a> and <a href="https://adsb.fi" target="_blank" rel="noopener">adsb.fi</a> are backups.</dd></div>
+      <div><dt>Routes</dt><dd>A plane only broadcasts its callsign, not where it&rsquo;s going. Origin and destination come from a separate route lookup and can be missing or out of date.</dd></div>
+      <div><dt>Where to look</dt><dd>The direction is the compass bearing from you to the plane. The angle up is its altitude against its distance along the ground.</dd></div>
+      <div><dt>Your data</dt><dd>Your location and saved places stay in this browser. Only rounded coordinates go to the flight feed. A typed address goes to <a href="https://nominatim.openstreetmap.org" target="_blank" rel="noopener">OpenStreetMap</a> to find it on the map.</dd></div>
+      <div><dt>Made with</dt><dd><a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a>. <a href="https://github.com/maoshaoo/scarletthao.me/tree/main/play/overhead" target="_blank" rel="noopener">Source on GitHub</a>.</dd></div>
+    </dl>
+  </details>
+</section>
+
+<p class="ov-foot"><a href="/play/">&larr; Play</a> · Your location stays on this device.</p>
+
+<footer class="site-foot" style="--foot-w: 44rem">
+  <div class="fw">
+    <div class="fb-top"><span>© 2026 Scarlett Hao</span><span><a href="/changelog.html">Changelog</a> · <a href="/feed.xml">RSS</a> · San Francisco</span></div>
+    <p class="fb-note">Words are mine. Built with <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a> (10M+ tokens so far), hosted on <a href="https://github.com/maoshaoo/scarletthao.me" target="_blank" rel="noopener">GitHub</a>, tracked in <a href="https://linear.app" target="_blank" rel="noopener">Linear</a>, and counted (no cookies) by <a href="https://umami.is" target="_blank" rel="noopener">Umami</a>.</p>
+  </div>
+</footer>
+<script src="overhead.js?v=1" defer></script>
+<script src="/assets/js/site.js?v=8" defer></script>
+<script src="/assets/js/holidays.js?v=5" defer></script>
+</body>
+</html>

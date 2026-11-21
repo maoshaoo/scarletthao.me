@@ -6,7 +6,14 @@
     <atom:link href="https://www.scarletthao.me/feed.xml" rel="self" type="application/rss+xml"/>
     <description>What's shipped on scarletthao.me: new stories, features and small fun things, newest first.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 18 Nov 2026 12:00:00 -0800</lastBuildDate>
+    <lastBuildDate>Fri, 20 Nov 2026 12:00:00 -0800</lastBuildDate>
+    <item>
+      <title>Overhead (New)</title>
+      <link>https://www.scarletthao.me/changelog.html</link>
+      <guid isPermaLink="false">2026-11-20-overhead-new</guid>
+      <pubDate>Fri, 20 Nov 2026 12:00:00 -0800</pubDate>
+      <description><![CDATA[<ul><li>A new <a href="https://www.scarletthao.me/play/overhead/">Play</a> project for the planes flying above you right now, on a radar or as a list, nearest first.</li><li>Tap a plane for its route, airline, altitude and speed, and a compass that says which way to face and how far up to look.</li><li>Use your location, type an address, or save a few places to switch between. Pick a range of 2, 5 or 10 miles.</li><li>Positions come from volunteers’ antennas through adsb.lol and refresh every 10 seconds. Your location stays on your phone.</li></ul>]]></description>
+    </item>
     <item>
       <title>Gift Gym (New)</title>
       <link>https://www.scarletthao.me/changelog.html</link>
